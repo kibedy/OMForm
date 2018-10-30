@@ -11,6 +11,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using OM_Form;
 using ortomachine.Model;
+using OM_Form.View;
 
 namespace ortomachine.Model
 {
@@ -55,7 +56,7 @@ namespace ortomachine.Model
             this.offset = float.Parse(ss[3]);
 
             //image = new Bitmap("surface.png");
-            sc.image = new Image<Gray, ushort>("surface.png");
+            sc.image = new Image<Gray, ushort>(SavePath+"\\surface.png");
             for (int i = 0; i < 10; i++)
             {
                 Console.WriteLine("pixelérték: " + sc.image.Data[500 + i, 500 + i, 0]);
@@ -64,28 +65,31 @@ namespace ortomachine.Model
             ;
         }
 
-        /* public void fillHoles()
+         public void fillHoles(Form1 form1)
          {
-             //Emgu.CV.Image<Bgr, Byte> surface = new Emgu.CV.Image<Bgr, Byte>(image);
+            //Emgu.CV.Image<Bgr, Byte> surface = new Emgu.CV.Image<Bgr, Byte>(image);
+            Emgu.CV.Image<Gray, ushort> filledsurface = sc.image;
 
-
-             for (int i = 1; i < image.Width - 1; i++)
+             for (int i = 1; i < sc.image.Width - 1; i++)
              {
-                 for (int j = 1; j < image.Height - 1; j++)
+                 for (int j = 1; j < sc.image.Height - 1; j++)
                  {
-                     if (surface.Data[i, j, 0] == 0)
+                     if (sc.image.Data[i, j, 0] == 0)
                      {
-                         if (surface.Data[i + 1, j, 0] != 0 && surface.Data[i - 1, j, 0] != 0 && surface.Data[i, j - 1, 0] != 0 && surface.Data[i, j + 1, 0] != 0)
+                         if (sc.image.Data[i + 1, j, 0] != 0 && sc.image.Data[i - 1, j, 0] != 0 && sc.image.Data[i, j - 1, 0] != 0 && sc.image.Data[i, j + 1, 0] != 0)
                          {
-                             double r1 = 1 / 2 * surface.Data[i - 1, j - 1, 0] + (1 / 2) * surface.Data[i + 1, j - 1, 0];
-                             double r2 = 1 / 2 * surface.Data[i - 1, j + 1, 0] + (1 / 2) * surface.Data[i + 1, j + 1, 0];
-                             double p = 1 / 2 * r1 + 1 / 2 * r2;
-                             ;
+                            double r1 = 1 / 2 * sc.image.Data[i - 1, j - 1, 0] + (1 / 2) * sc.image.Data[i + 1, j - 1, 0];
+                            double r2 = 1 / 2 * sc.image.Data[i - 1, j + 1, 0] + (1 / 2) * sc.image.Data[i + 1, j + 1, 0];
+                            double p = 1 / 2 * r1 + 1 / 2 * r2;
+                            filledsurface.Data[i, j, 0] = (ushort)p;
+                            ;
                          }
                      }
                  }
              }
-         }*/
+
+            form1.pictureBox1.Image = filledsurface.ToBitmap();
+         }
 
 
 

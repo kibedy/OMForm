@@ -220,7 +220,7 @@ namespace OM_Form
         private System.Windows.Forms.ToolStripMenuItem addPicturesToolStripMenuItem;
         private System.Windows.Forms.ImageList imageList1;
         public System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        public System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolStripMenuItem surfaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fillHolesToolStripMenuItem;
