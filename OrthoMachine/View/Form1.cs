@@ -157,6 +157,12 @@ namespace OM_Form
             sf.bilinearfillHoles(this);
         }
 
+        private void listView1_MouseClick(object sender, MouseEventArgs e)
+        {            
+            photos.ShowPhoto();
+
+        }
+
         private void FileStripMenuItem1_Click(object sender, EventArgs e)
         {
 
@@ -165,96 +171,6 @@ namespace OM_Form
 
 
 
-        #region backup
-        /*
-
-        public Form1()
-        {
-            InitializeComponent();
-            openToolStripMenuItem.Enabled = false;
-            SavePath = null;
-        }
-
-
-
-        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var folderBrowserDialog1 = new FolderBrowserDialog();
-
-
-            string initpath = "g:\\_Magán\\_Óbudai Egyetem\\Szakdolgozat 1\\OrthomachineForm\\ortomachine_project\\";
-            folderBrowserDialog1.SelectedPath = initpath;
-            DialogResult result = folderBrowserDialog1.ShowDialog();
-
-
-            if (result == DialogResult.OK)
-            {
-
-                if (SavePath != null)
-                {
-                    if (MessageBox.Show("Close this and create new Project?", "Create new project?", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                    {
-                        SavePath = folderBrowserDialog1.SelectedPath;
-                        openToolStripMenuItem.Enabled = true;
-                    }
-                }
-                else
-                {
-                    SavePath = folderBrowserDialog1.SelectedPath;
-                    openToolStripMenuItem.Enabled = true;
-                }
-            }
-        }
-
-
-
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();            
-            ofd.DefaultExt = ".asc";
-            ofd.Filter = "Point cloud (*.txt)|*.txt|ASCII file (*.asc)|*.asc";
-
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                filename = ofd.FileName;
-                using (var form2 = new Form2(this))
-                {
-                    form2.ShowDialog();
-                    if (form2.DialogResult == DialogResult.OK)
-                    {
-                        Surface sf = new Surface(filename, offset, rastersize, this);
-                        thread = new Thread(() =>
-                        {
-                            sf.Run();
-                            if (pictureBox1.InvokeRequired)
-                            {
-                                pictureBox1.BeginInvoke((MethodInvoker)delegate ()
-                                {
-                                    pictureBox1.Image = sf.image;
-                                    Application.DoEvents();
-                                });
-                            }
-                        });
-                        thread.Start();
-                        pictureBox1.Image = sf.image;
-                    }
-
-                }
-            }
-        }
-
-        #region unused
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-        private void FileStripMenuItem1_Click(object sender, EventArgs e)
-        {
-
-        }
-        #endregion
-        */
-        #endregion
+     
     }
 }

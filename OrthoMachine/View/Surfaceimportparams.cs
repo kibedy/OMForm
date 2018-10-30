@@ -14,6 +14,8 @@ namespace OM_Form.View
     {
         //float offset;
         //float raster;
+        
+
         public Form1 form1;
 
         public Form2(Form1 form1)
@@ -42,5 +44,6 @@ namespace OM_Form.View
                 MessageBox.Show("Invalid input data!");
             }
         }
-    }
-}
+        
+    }//class
+}//namespace
