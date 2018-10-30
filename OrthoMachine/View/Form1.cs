@@ -140,14 +140,21 @@ namespace OM_Form
         private void fillHolesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //uint[,] surface = new uint[sf.image.Width,sf.image.Height];
+            sf.fillHoles(this);
 
         }
 
         private void loadSurfaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Surface sf = new Surface("surface", 0, 0, this);
+            sf = new Surface("surface", 0, 0, this);
             pictureBox1.Image = sf.LoadSurface(SavePath, this);
             fillHolesToolStripMenuItem.Enabled = true;
+            bilinearFillHolesToolStripMenuItem.Enabled = true;
+        }
+
+        private void bilinearFillHolesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            sf.bilinearfillHoles(this);
         }
 
         private void FileStripMenuItem1_Click(object sender, EventArgs e)

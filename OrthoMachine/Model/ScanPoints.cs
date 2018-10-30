@@ -60,6 +60,7 @@ namespace ortomachine.Model
             procbarvalue = 0;
             //this.worker = worker;
             lc = 0;
+            
 
         }
 
@@ -281,7 +282,7 @@ namespace ortomachine.Model
 
         public Bitmap saveSurface()
         {
-            Image<Gray, ushort> image = new Image<Gray, ushort>(xwidth, yheight);
+            image = new Image<Gray, ushort>(xwidth, yheight);
             for (int x = 0; x < xwidth; x++)
             {
                 for (int y = 0; y < yheight; y++)
