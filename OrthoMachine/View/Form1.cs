@@ -106,7 +106,7 @@ namespace OM_Form
         }
 
 
-        #region unused
+        
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -135,6 +135,7 @@ namespace OM_Form
                 backgroundWorker1.RunWorkerAsync();
             }
             fillHolesToolStripMenuItem.Enabled = true;
+            bilinearFillHolesToolStripMenuItem.Enabled = true;
         }
 
         private void fillHolesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -167,7 +168,7 @@ namespace OM_Form
         {
 
         }
-        #endregion
+        
 
 
 
