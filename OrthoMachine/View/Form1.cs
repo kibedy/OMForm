@@ -102,6 +102,7 @@ namespace OM_Form
             project = new NewProject(this);
             project.GetProjectDir();
             createToolStripMenuItem.Enabled = true;
+            loadSurfaceToolStripMenuItem.Enabled = true;
             this.fillHolesToolStripMenuItem.Enabled = false;
         }
 

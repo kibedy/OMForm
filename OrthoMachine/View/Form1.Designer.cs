@@ -115,6 +115,7 @@ namespace OM_Form
             this.loadSurfaceToolStripMenuItem.Name = "loadSurfaceToolStripMenuItem";
             this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadSurfaceToolStripMenuItem.Text = "Load surface";
+            this.loadSurfaceToolStripMenuItem.Enabled = false;
             this.loadSurfaceToolStripMenuItem.Click += new System.EventHandler(this.loadSurfaceToolStripMenuItem_Click);
             // 
             // fillHolesToolStripMenuItem
