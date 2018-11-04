@@ -33,7 +33,7 @@ namespace OM_Form.ViewModel
             var folderBrowserDialog1 = new FolderBrowserDialog();
 
 
-            string initpath = "d:\\__magán\\orto_mentések\\";
+            string initpath = "g:\\_Magán\\_Óbudai Egyetem\\Szakdolgozat 1\\OM_projekt\\";
             folderBrowserDialog1.SelectedPath = initpath;
             DialogResult result = folderBrowserDialog1.ShowDialog();
 
