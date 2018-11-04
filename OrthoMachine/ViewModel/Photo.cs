@@ -11,6 +11,7 @@ using OM_Form.View;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using OrthoMachine.View;
+using OrthoMachine.Model;
 
 namespace OM_Form.ViewModel
 {
@@ -21,10 +22,12 @@ namespace OM_Form.ViewModel
         List<string> projimagefilenames; //image list with filenames
         List<string> projthumbfilenames;
         Form1 form1;
+        List<Marker> markers;
 
         internal void LoadPhotos(Form1 form1)
         {
             this.form1 = form1;
+            markers = new List<Marker>();
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (projimagefilenames == null)
             {
@@ -147,7 +150,7 @@ namespace OM_Form.ViewModel
             
                 //Filename = ofd.FileName;
                 
-                using (var improcform = new ImageProcess(form1, form1.listView1.SelectedItems[0].SubItems[0].Text))
+                using (var improcform = new ImageProcess(form1, form1.listView1.SelectedItems[0].SubItems[0].Text, markers))
                 {
                     improcform.ShowDialog();
                    

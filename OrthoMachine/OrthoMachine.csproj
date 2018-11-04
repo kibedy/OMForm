@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Marker.cs" />
     <Compile Include="ViewModel\NewProject.cs" />
     <Compile Include="ViewModel\Photo.cs" />
     <Compile Include="View\Form1.cs">
