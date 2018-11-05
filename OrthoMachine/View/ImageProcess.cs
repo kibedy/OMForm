@@ -22,6 +22,7 @@ namespace OrthoMachine.View
         Point _mousePt = new Point();
         bool _tracking = false;
         List<Marker> markers;
+        Form1 form1;
 
 
         public ImageProcess(Form1 form1, string filename, List<Marker> markers)
@@ -29,7 +30,8 @@ namespace OrthoMachine.View
             InitializeComponent();
             this.filename = filename;
             this.markers = markers;
-            Image<Bgr, byte> photo = new Image<Bgr, byte>(form1.SavePath + "\\"+filename);
+            this.form1 = form1;
+            Image<Bgr, byte> photo = new Image<Bgr, byte>(form1.SavePath + "\\photos\\"+filename);
             this.pictureBox1.Image = photo.ToBitmap();
             this.pictureBox1.Cursor = Cursors.Hand;
 
@@ -44,9 +46,14 @@ namespace OrthoMachine.View
             pictureBoxOverlay.Parent = pictureBox1;
             */
             this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.Columns.Add("Id", 28, HorizontalAlignment.Left);
-            this.listView1.Columns.Add("X", 55, HorizontalAlignment.Left);
-            this.listView1.Columns.Add("Y", 55, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("Point Id", 28, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("Image X", 55, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("Image Y", 55, HorizontalAlignment.Left);
+            this.listView2.View = System.Windows.Forms.View.Details;
+            this.listView2.Columns.Add("Point Id", 28, HorizontalAlignment.Left);
+            this.listView2.Columns.Add("Global X", 55, HorizontalAlignment.Left);
+            this.listView2.Columns.Add("Global Y", 55, HorizontalAlignment.Left);
+            this.listView2.Columns.Add("Global Z", 55, HorizontalAlignment.Left);
 
         }
 
@@ -99,6 +106,33 @@ namespace OrthoMachine.View
         private void panel1_MouseWheel(object sender, MouseEventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void orientateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panel1.Height -= 80;
+            panel1.Size = new Size(this.Width / 2-2, panel1.Height);
+            //panel2.Size = new Size(this.Width / 2, panel1.Height);
+            this.listView1.Visible = true;
+            this.listView2.Visible = true;
+            panel2.Location= new Point( panel1.Location.X+panel1.Width+2, panel1.Location.Y) ;
+            panel2.Width = panel1.Width-4;
+           
+            Image<Gray, ushort> surf = new Image<Gray, ushort>(form1.SavePath + "\\" + "surface.png");
+            this.pictureBox2.Image = surf.ToBitmap();
+            this.pictureBox2.Cursor = Cursors.Hand;
+            this.pictureBox2.Visible = true;
+            this.panel2.Visible = true;
+            this.SizeChanged += new System.EventHandler(this.ImageProcess_SizeChanged);
+        }
+
+        private void ImageProcess_SizeChanged(object sender, EventArgs e)
+        {
+            this.panel1.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            this.panel2.Anchor = (AnchorStyles.Top | AnchorStyles.Right);
+            panel1.Size = new Size(this.Width / 2 - 10, this.Height-160);
+            panel2.Size = new Size(this.Width / 2 - 10, panel1.Height);
+            panel2.Location = new Point(panel1.Location.X + panel1.Width + 2, panel1.Location.Y);
         }
 
         private void addMarker(object sender, MouseEventArgs e)

@@ -10,6 +10,8 @@ namespace OrthoMachine.Model
     {
         public float X;
         public float Y;
+        public int gX, gZ;
+        public ushort gY; 
         string imagename;
         public Marker(float x, float y, string imagename)
         {
@@ -23,6 +25,15 @@ namespace OrthoMachine.Model
         {
             return X.ToString("0.00") + ", " + Y.ToString("0.00");
         }
+
+        public void AddGlobalCoord(int gX, int gZ, ushort gY)
+        {
+            this.gX = gX;
+            this.gY = gY;
+            this.gZ = gZ;
+
+        }
+
     }
 
    

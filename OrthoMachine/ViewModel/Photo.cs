@@ -72,7 +72,7 @@ namespace OM_Form.ViewModel
                     try
                     {
                         string[] fname = file.Split('\\');
-                        string savename = imagesavepath + fname[fname.Length - 1];
+                        string savename = imagesavepath + "\\"+fname[fname.Length - 1];
                         projimagefilenames.Add(savename);
 
                         Image<Bgr, byte> loadedimage = new Image<Bgr, byte>(file);
