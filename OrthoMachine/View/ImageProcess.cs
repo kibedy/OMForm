@@ -17,8 +17,9 @@ namespace OrthoMachine.View
     public partial class ImageProcess : Form
     {
         string filename;
-        private int ImageWidth, ImageHeight;
+        private int ImageWidth, ImageHeight, ImageWidthS, ImageHeightS;
         private float ImageScale = 1.0f;
+        private float ImageScaleS = 1.0f;
         Point _mousePt = new Point();
         bool _tracking = false;
         List<Marker> markers;
@@ -26,13 +27,16 @@ namespace OrthoMachine.View
         bool EnablePickpoints;
         //bool EnablePictureBox1Functions;
         Image<Gray, ushort> surface;
+        Orientation orientation;
 
 
-        public ImageProcess(Form1 form1, string filename, List<Marker> markers)
+
+
+        public ImageProcess(Form1 form1, string filename, Orientation orientation)
         {
             InitializeComponent();
             this.filename = filename;
-            this.markers = markers;
+            this.orientation = orientation;
             this.form1 = form1;
             Image<Bgr, byte> photo = new Image<Bgr, byte>(form1.SavePath + "\\photos\\"+filename);
             this.pictureBox1.Image = photo.ToBitmap();
@@ -41,7 +45,7 @@ namespace OrthoMachine.View
             //EnablePictureBox1Functions = true;
 
             ImageWidth = pictureBox1.Image.Width;
-            ImageHeight = pictureBox1.Image.Height;
+            ImageHeight = pictureBox1.Image.Height;            
             this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             this.pictureBox1.Size = new Size(ImageWidth, ImageHeight);
             EnablePickpoints = false;
@@ -51,14 +55,14 @@ namespace OrthoMachine.View
             pictureBoxOverlay.Parent = pictureBox1;
             */
             this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.Columns.Add("Point Id", 28, HorizontalAlignment.Left);
-            this.listView1.Columns.Add("Image X", 55, HorizontalAlignment.Left);
-            this.listView1.Columns.Add("Image Y", 55, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("Point Id", 80, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("Image X", 80, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("Image Y", 80, HorizontalAlignment.Left);
             this.listView2.View = System.Windows.Forms.View.Details;
-            this.listView2.Columns.Add("Point Id", 28, HorizontalAlignment.Left);
-            this.listView2.Columns.Add("Global X", 55, HorizontalAlignment.Left);
-            this.listView2.Columns.Add("Global Y", 55, HorizontalAlignment.Left);
-            this.listView2.Columns.Add("Global Z", 55, HorizontalAlignment.Left);
+            this.listView2.Columns.Add("Point Id", 80, HorizontalAlignment.Left);
+            this.listView2.Columns.Add("Global X", 80, HorizontalAlignment.Left);
+            this.listView2.Columns.Add("Global Y", 80, HorizontalAlignment.Left);
+            this.listView2.Columns.Add("Global Z", 80, HorizontalAlignment.Left);
 
         }
 
@@ -110,6 +114,23 @@ namespace OrthoMachine.View
         #endregion
 
         # region PictureBox_2_Events
+
+        private void pictureBox2_MouseWheel(object sender, MouseEventArgs e)
+        {
+            const float scale_per_delta = 0.1f / 120;
+            ImageScaleS += e.Delta * scale_per_delta;
+
+
+            if (ImageScaleS < 0) ImageScaleS = 0;
+            this.pictureBox2.Size = new Size((int)(ImageWidthS * ImageScaleS), (int)(ImageHeightS * ImageScaleS));
+            Console.WriteLine(this.pictureBox2.Size.Width + " "+this.pictureBox2.Size.Height+" kell_width:"+ ImageWidthS * ImageScaleS+" kellHeight:"+ ImageHeightS * ImageScaleS);
+            if ((pictureBox2.Image.Width > this.ClientSize.Width || pictureBox2.Image.Height > this.ClientSize.Height))
+            {
+                panel2.AutoScrollPosition = new Point(-panel2.AutoScrollPosition.X + (e.X), -panel2.AutoScrollPosition.Y + (e.Y));
+            }
+
+        }
+
         private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -147,19 +168,27 @@ namespace OrthoMachine.View
         private void orientateToolStripMenuItem_Click(object sender, EventArgs e)
         {            
             EnablePickpoints = true;
-            panel1.Height -= 80;
+            buttonCalculate.Visible = true;
+            //panel1.Height -= 140;
+            panel1.Height = this.Height - 200;
             panel1.Size = new Size(this.Width / 2-2, panel1.Height);
             //panel2.Size = new Size(this.Width / 2, panel1.Height);
             this.listView1.Visible = true;
             this.listView2.Visible = true;
             panel2.Location= new Point( panel1.Location.X+panel1.Width+2, panel1.Location.Y) ;
             panel2.Width = panel1.Width-4;
-           
+            panel2.Height = panel1.Height;
+            
+
             surface = new Image<Gray, ushort>(form1.SavePath + "\\" + "surface.png");
-            this.pictureBox2.Image = surface.ToBitmap();
-            this.pictureBox2.Cursor = Cursors.Hand;
             this.pictureBox2.Visible = true;
             this.panel2.Visible = true;
+            this.pictureBox2.Image = surface.ToBitmap();
+            this.pictureBox2.Cursor = Cursors.Hand;
+            ImageWidthS = pictureBox2.Image.Width;
+            ImageHeightS = pictureBox2.Image.Height;
+            this.pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            this.pictureBox2.Size = new Size(ImageWidthS, ImageHeightS);                                               
             this.SizeChanged += new System.EventHandler(this.ImageProcess_SizeChanged);
             this.buttonPhotoUp.Visible = true;
             this.buttonPhotoDown.Visible = true;
@@ -174,7 +203,7 @@ namespace OrthoMachine.View
         {
             this.panel1.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             this.panel2.Anchor = (AnchorStyles.Top | AnchorStyles.Right);
-            panel1.Size = new Size(this.Width / 2 - 10, this.Height-160);
+            panel1.Size = new Size(this.Width / 2 - 10, this.Height-200);
             panel2.Size = new Size(this.Width / 2 - 10, panel1.Height);
             panel2.Location = new Point(panel1.Location.X + panel1.Width + 2, panel1.Location.Y);
         }
@@ -216,8 +245,8 @@ namespace OrthoMachine.View
             {
                 Point pp = e.Location;
                 //markers.Add(new Marker(pp.X / ImageScale, pp.Y / ImageScale, filename));
-                int xx = (int)(pp.X / ImageScale);
-                int yy = (int)(pp.Y / ImageScale);
+                int xx = (int)(pp.X / ImageScaleS);
+                int yy = (int)(pp.Y / ImageScaleS);
                 var item = new ListViewItem(new[] { (listView2.Items.Count.ToString()).ToString(), xx.ToString("0"),(surface.Data[yy,xx,0]).ToString()  ,yy.ToString("0") });
                 this.listView2.Items.Add(item);
             }

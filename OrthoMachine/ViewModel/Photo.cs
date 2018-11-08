@@ -22,12 +22,13 @@ namespace OM_Form.ViewModel
         List<string> projimagefilenames; //image list with filenames
         List<string> projthumbfilenames;
         Form1 form1;
-        List<Marker> markers;
+        //List<Marker> markers;
+        Orientation orientation;
 
         internal void LoadPhotos(Form1 form1)
         {
             this.form1 = form1;
-            markers = new List<Marker>();
+            //markers = new List<Marker>();
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (projimagefilenames == null)
             {
@@ -150,7 +151,7 @@ namespace OM_Form.ViewModel
             
                 //Filename = ofd.FileName;
                 
-                using (var improcform = new ImageProcess(form1, form1.listView1.SelectedItems[0].SubItems[0].Text, markers))
+                using (var improcform = new ImageProcess(form1, form1.listView1.SelectedItems[0].SubItems[0].Text, orientation))
                 {
                     improcform.ShowDialog();
                    

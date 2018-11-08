@@ -44,6 +44,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceDel = new System.Windows.Forms.Button();
             this.buttonSurfaceUp = new System.Windows.Forms.Button();
             this.buttonSurfaceDown = new System.Windows.Forms.Button();
+            this.buttonCalculate = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -60,8 +61,9 @@ namespace OrthoMachine.View
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(4, 27);
+            this.panel1.MinimumSize = new System.Drawing.Size(100, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(930, 383);
+            this.panel1.Size = new System.Drawing.Size(930, 470);
             this.panel1.TabIndex = 3;
             this.panel1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
             // 
@@ -82,10 +84,12 @@ namespace OrthoMachine.View
             // listView1
             // 
             this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(4, 428);
+            this.listView1.Location = new System.Drawing.Point(4, 395);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(392, 69);
+            this.listView1.Size = new System.Drawing.Size(360, 102);
             this.listView1.TabIndex = 4;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.Visible = false;
@@ -120,9 +124,11 @@ namespace OrthoMachine.View
             this.panel2.Size = new System.Drawing.Size(81, 386);
             this.panel2.TabIndex = 6;
             this.panel2.Visible = false;
+            this.panel2.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseWheel);
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox2.Location = new System.Drawing.Point(1, 1);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(41, 50);
@@ -139,9 +145,9 @@ namespace OrthoMachine.View
             // 
             this.listView2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.listView2.GridLines = true;
-            this.listView2.Location = new System.Drawing.Point(542, 428);
+            this.listView2.Location = new System.Drawing.Point(574, 395);
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(392, 69);
+            this.listView2.Size = new System.Drawing.Size(360, 102);
             this.listView2.TabIndex = 7;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.Visible = false;
@@ -151,7 +157,7 @@ namespace OrthoMachine.View
             this.buttonPhotoDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonPhotoDown.BackgroundImage = global::OrthoMachine.Properties.Resources.down_arrow;
             this.buttonPhotoDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonPhotoDown.Location = new System.Drawing.Point(402, 451);
+            this.buttonPhotoDown.Location = new System.Drawing.Point(370, 418);
             this.buttonPhotoDown.Name = "buttonPhotoDown";
             this.buttonPhotoDown.Size = new System.Drawing.Size(24, 23);
             this.buttonPhotoDown.TabIndex = 2;
@@ -163,7 +169,7 @@ namespace OrthoMachine.View
             this.buttonPhotoDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonPhotoDel.BackgroundImage = global::OrthoMachine.Properties.Resources.red_X;
             this.buttonPhotoDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonPhotoDel.Location = new System.Drawing.Point(402, 474);
+            this.buttonPhotoDel.Location = new System.Drawing.Point(370, 441);
             this.buttonPhotoDel.Name = "buttonPhotoDel";
             this.buttonPhotoDel.Size = new System.Drawing.Size(24, 23);
             this.buttonPhotoDel.TabIndex = 8;
@@ -175,7 +181,7 @@ namespace OrthoMachine.View
             this.buttonPhotoUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonPhotoUp.BackgroundImage = global::OrthoMachine.Properties.Resources.up_arrow;
             this.buttonPhotoUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonPhotoUp.Location = new System.Drawing.Point(402, 428);
+            this.buttonPhotoUp.Location = new System.Drawing.Point(370, 395);
             this.buttonPhotoUp.Name = "buttonPhotoUp";
             this.buttonPhotoUp.Size = new System.Drawing.Size(24, 23);
             this.buttonPhotoUp.TabIndex = 1;
@@ -188,7 +194,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSurfaceDel.BackgroundImage = global::OrthoMachine.Properties.Resources.red_X;
             this.buttonSurfaceDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonSurfaceDel.Location = new System.Drawing.Point(512, 474);
+            this.buttonSurfaceDel.Location = new System.Drawing.Point(544, 441);
             this.buttonSurfaceDel.Name = "buttonSurfaceDel";
             this.buttonSurfaceDel.Size = new System.Drawing.Size(24, 23);
             this.buttonSurfaceDel.TabIndex = 11;
@@ -200,7 +206,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSurfaceUp.BackgroundImage = global::OrthoMachine.Properties.Resources.up_arrow;
             this.buttonSurfaceUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonSurfaceUp.Location = new System.Drawing.Point(512, 428);
+            this.buttonSurfaceUp.Location = new System.Drawing.Point(544, 395);
             this.buttonSurfaceUp.Name = "buttonSurfaceUp";
             this.buttonSurfaceUp.Size = new System.Drawing.Size(24, 23);
             this.buttonSurfaceUp.TabIndex = 9;
@@ -212,12 +218,26 @@ namespace OrthoMachine.View
             this.buttonSurfaceDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSurfaceDown.BackgroundImage = global::OrthoMachine.Properties.Resources.down_arrow;
             this.buttonSurfaceDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonSurfaceDown.Location = new System.Drawing.Point(512, 451);
+            this.buttonSurfaceDown.Location = new System.Drawing.Point(544, 418);
             this.buttonSurfaceDown.Name = "buttonSurfaceDown";
             this.buttonSurfaceDown.Size = new System.Drawing.Size(24, 23);
             this.buttonSurfaceDown.TabIndex = 10;
             this.buttonSurfaceDown.UseVisualStyleBackColor = true;
             this.buttonSurfaceDown.Visible = false;
+            // 
+            // buttonCalculate
+            // 
+            this.buttonCalculate.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.buttonCalculate.AutoSize = true;
+            this.buttonCalculate.Location = new System.Drawing.Point(412, 395);
+            this.buttonCalculate.MaximumSize = new System.Drawing.Size(150, 45);
+            this.buttonCalculate.MinimumSize = new System.Drawing.Size(113, 45);
+            this.buttonCalculate.Name = "buttonCalculate";
+            this.buttonCalculate.Size = new System.Drawing.Size(113, 45);
+            this.buttonCalculate.TabIndex = 12;
+            this.buttonCalculate.Text = "Calculate orientation";
+            this.buttonCalculate.UseVisualStyleBackColor = true;
+            this.buttonCalculate.Visible = false;
             // 
             // ImageProcess
             // 
@@ -225,18 +245,20 @@ namespace OrthoMachine.View
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(940, 503);
-            this.Controls.Add(this.buttonSurfaceDel);
-            this.Controls.Add(this.buttonSurfaceUp);
-            this.Controls.Add(this.buttonSurfaceDown);
+            this.Controls.Add(this.buttonCalculate);
             this.Controls.Add(this.buttonPhotoDel);
-            this.Controls.Add(this.buttonPhotoUp);
             this.Controls.Add(this.buttonPhotoDown);
+            this.Controls.Add(this.buttonSurfaceDel);
             this.Controls.Add(this.listView2);
             this.Controls.Add(this.panel2);
+            this.Controls.Add(this.buttonSurfaceUp);
             this.Controls.Add(this.listView1);
+            this.Controls.Add(this.buttonPhotoUp);
+            this.Controls.Add(this.buttonSurfaceDown);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(956, 542);
             this.Name = "ImageProcess";
             this.Text = "Image Processing";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -269,5 +291,6 @@ namespace OrthoMachine.View
         private Button buttonSurfaceDel;
         private Button buttonSurfaceUp;
         private Button buttonSurfaceDown;
+        private Button buttonCalculate;
     }
 }
