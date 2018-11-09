@@ -208,6 +208,16 @@ namespace OrthoMachine.View
             panel2.Location = new Point(panel1.Location.X + panel1.Width + 2, panel1.Location.Y);
         }
 
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = panel1.CreateGraphics();
+            Pen p = new Pen(Color.Red);
+            SolidBrush sb = new SolidBrush(Color.Red);
+            //Point pp = new Point(mouse.X, mouse.Y);
+            g.DrawEllipse(p, 100, 100, 6, 6);
+            g.FillEllipse(sb, 100, 100, 6, 6);
+        }
+
         private void addMarkerPhoto(object sender, MouseEventArgs e)
         {   if (EnablePickpoints)
             {
@@ -215,6 +225,7 @@ namespace OrthoMachine.View
                 //markers.Add(new Marker(pp.X / ImageScale, pp.Y / ImageScale, filename));
                 var item = new ListViewItem(new[] { listView1.Items.Count.ToString(), (pp.X / ImageScale).ToString("0.00"), (pp.Y / ImageScale).ToString("0.00") });
                 this.listView1.Items.Add(item);
+                panel1.Invalidate();
             }
         }
 
