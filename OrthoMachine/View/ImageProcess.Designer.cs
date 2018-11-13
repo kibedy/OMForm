@@ -64,12 +64,11 @@ namespace OrthoMachine.View
             this.panel1.MinimumSize = new System.Drawing.Size(100, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(930, 470);
-            this.panel1.TabIndex = 3;            
+            this.panel1.TabIndex = 3;
             this.panel1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseWheel);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";

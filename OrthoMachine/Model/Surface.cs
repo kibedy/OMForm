@@ -181,6 +181,7 @@ namespace ortomachine.Model
 
             form1.progressBar1.Value = 100;
             filledsurface.Save(form1.SavePath + "\\" + "surface_filled.png");
+            filledsurface.Save(form1.SavePath + "\\" + "surface.png");
             form1.pictureBox1.Image = filledsurface.ToBitmap();
             sc.image = filledsurface;
 
@@ -237,6 +238,7 @@ namespace ortomachine.Model
             }
             form1.progressBar1.Value = 100;
             filledsurface.Save(form1.SavePath + "\\" + "surface_bilin_filled.png");
+            filledsurface.Save(form1.SavePath + "\\" + "surface.png");
             form1.pictureBox1.Image = filledsurface.ToBitmap();
             sc.image = filledsurface;
         }

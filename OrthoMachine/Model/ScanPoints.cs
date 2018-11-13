@@ -27,6 +27,7 @@ namespace ortomachine.Model
         LinkedList<Points> PointList = new LinkedList<Points>();
         //string path = "";
         UInt16[,] surface;
+        byte[,] intSurface;
         byte[,,] RGBsurface;
         ushort xwidth;
         ushort yheight;
@@ -144,6 +145,7 @@ namespace ortomachine.Model
                 {
                     line = sr.ReadLine();
                     numbers = line.Split(delimiterChars);
+                    CountLines(lc);
                     {
                         point = new Points(
                             double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
@@ -174,6 +176,7 @@ namespace ortomachine.Model
 
                     line = sr.ReadLine();
                     numbers = line.Split(delimiterChars);
+                    CountLines(lc);
                     {
                         point = new Points(
                             double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
@@ -197,21 +200,60 @@ namespace ortomachine.Model
             surface = new UInt16[xwidth, yheight];
             if (filetype == 7)
             {
+                intSurface = new byte[xwidth, yheight];
+                RGBsurface = new byte[xwidth, yheight,3];
+                form1.intensityToolStripMenuItem.Enabled = true;
+                form1.depthToolStripMenuItem.Enabled = true;
+                form1.rGBToolStripMenuItem.Enabled = true;
                 RGBsurface = new byte[xwidth, yheight, 3];
+                foreach (Points item in PointList)
+                {
+                    uint i = (uint)(((item.X - X0) + offset) / rastersize);
+                    uint j = (uint)(((item.Z - Z0) + offset) / rastersize);
+                    if (surface[i, j] == 0 || surface[i, j] > item.Y * 1000)
+                    {
+                        surface[i, j] = (ushort)(item.Y * 1000);  //computing in mm                
+                        RGBsurface[i, j, 0] = (byte)item.R;
+                        RGBsurface[i, j, 1] = (byte)item.G;
+                        RGBsurface[i, j, 2] = (byte)item.B;
+                        intSurface[i, j] = (byte)item.intensity;
 
+                    }
+                }
+
+            }
+            else if (filetype == 4)
+            {
+                form1.intensityToolStripMenuItem.Enabled = true;
+                form1.depthToolStripMenuItem.Enabled = true;                
+                intSurface = new byte[xwidth, yheight];
+                foreach (Points item in PointList)
+                {
+                    uint i = (uint)(((item.X - X0) + offset) / rastersize);
+                    uint j = (uint)(((item.Z - Z0) + offset) / rastersize);
+                    if (surface[i, j] == 0 || surface[i, j] > item.Y * 1000)
+                    {
+                        surface[i, j] = (ushort)(item.Y * 1000);    //computing in mm     
+                        intSurface[i, j] = (byte)item.intensity;
+                    }
+
+                }
             }
 
             //double minY = 999999;
 
-            foreach (Points item in PointList)
+            else
             {
-                uint i = (uint)(((item.X - X0) + offset) / rastersize);
-                uint j = (uint)(((item.Z - Z0) + offset) / rastersize);
-                if (surface[i, j] > item.Y || surface[i, j] == 0)
+                foreach (Points item in PointList)
                 {
-                    surface[i, j] = (ushort)(item.Y * 1000);    //computing in mm                
-                }
+                    uint i = (uint)(((item.X - X0) + offset) / rastersize);
+                    uint j = (uint)(((item.Z - Z0) + offset) / rastersize);
+                    if (surface[i, j] == 0 || surface[i, j] > item.Y * 1000)
+                    {
+                        surface[i, j] = (ushort)(item.Y * 1000);    //computing in mm                
+                    }
 
+                }
             }
         }
 
@@ -283,6 +325,37 @@ namespace ortomachine.Model
         public Bitmap saveSurface()
         {
             image = new Image<Gray, ushort>(xwidth, yheight);
+            if (filetype ==4)
+            {                
+                Image<Gray, byte> intSurfImage = new Image<Gray, byte>(xwidth, yheight);
+                for (int x = 0; x < xwidth; x++)
+                {
+                    for (int y = 0; y < yheight; y++)
+                    {
+                        intSurfImage.Data[yheight - y - 1, x, 0] = intSurface[x, y];                       
+                    }
+                }
+                intSurfImage.Save(form1.SavePath + "\\" + "surface_int.png");
+            }
+            if (filetype == 7)
+            {
+                Image<Gray, byte> intSurfImage = new Image<Gray, byte>(xwidth, yheight);
+                Image<Bgr, byte> RGBsurfImage = new Image<Bgr, byte>(xwidth, yheight);
+                for (int x = 0; x < xwidth; x++)
+                {
+                    for (int y = 0; y < yheight; y++)
+                    {
+                        intSurfImage.Data[yheight - y - 1, x, 0] = intSurface[x, y];
+                        RGBsurfImage.Data[yheight - y - 1, x, 2] = RGBsurface[x, y, 0];
+                        RGBsurfImage.Data[yheight - y - 1, x, 1] = RGBsurface[x, y, 1];
+                        RGBsurfImage.Data[yheight - y - 1, x, 0] = RGBsurface[x, y, 2];
+                    }
+                }
+                intSurfImage.Save(form1.SavePath + "\\" + "surface_int.png");
+                RGBsurfImage.Save(form1.SavePath + "\\" + "surface_rgb.png");
+            }
+            
+            
             for (int x = 0; x < xwidth; x++)
             {
                 for (int y = 0; y < yheight; y++)
@@ -291,6 +364,7 @@ namespace ortomachine.Model
                 }
             }
             image.Save(form1.SavePath + "\\" + "surface.png");
+            image.Save(form1.SavePath + "\\" + "surface_raw.png");
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\" + "surface.xyz");
             sw.WriteLine("{0} {1} {2} {3}", X0.ToString(), Z0.ToString(), rastersize.ToString(), offset.ToString());
             sw.Close();
