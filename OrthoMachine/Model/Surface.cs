@@ -57,39 +57,21 @@ namespace ortomachine.Model
             this.offset = float.Parse(ss[3]);
 
             //image = new Bitmap("surface.png");
-            sc.image = new Image<Gray, ushort>(SavePath+"\\surface.png");
+            sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");
             for (int i = 0; i < 10; i++)
             {
                 Console.WriteLine("pixelérték: " + sc.image.Data[500 + i, 500 + i, 0]);
             }
             return sc.image.ToBitmap();
-            ;
+            
         }
 
-         public void fillHoles(Form1 form1)
-         {
+        public void fillHoles(Form1 form1)
+        {
             //Emgu.CV.Image<Bgr, Byte> surface = new Emgu.CV.Image<Bgr, Byte>(image);
             ;
             Emgu.CV.Image<Gray, ushort> filledsurface = sc.image;
-
-            /*
-             for (int i = 1; i < sc.image.Width - 1; i++)
-             {
-                 for (int j = 1; j < sc.image.Height - 1; j++)
-                 {
-                     if (sc.image.Data[i, j, 0] == 0)
-                     {
-                         if (sc.image.Data[i + 1, j, 0] != 0 && sc.image.Data[i - 1, j, 0] != 0 && sc.image.Data[i, j - 1, 0] != 0 && sc.image.Data[i, j + 1, 0] != 0)
-                         {
-                            double r1 = 1 / 2 * sc.image.Data[i - 1, j - 1, 0] + (1 / 2) * sc.image.Data[i + 1, j - 1, 0];
-                            double r2 = 1 / 2 * sc.image.Data[i - 1, j + 1, 0] + (1 / 2) * sc.image.Data[i + 1, j + 1, 0];
-                            double p = 1 / 2 * r1 + 1 / 2 * r2;
-                            filledsurface.Data[i, j, 0] = (ushort)p;
-                            ;
-                         }
-                     }
-                 }
-             }*/
+           
             for (int i = 3; i < filledsurface.Height - 4; i++)
             {
                 form1.progressBar1.Value = i / filledsurface.Height;
@@ -102,7 +84,7 @@ namespace ortomachine.Model
                     #region frame check
                     for (int k = -3; k <= 3; k++)
                     {
-                        if (filledsurface.Data[i + k, j-3, 0] != 0)
+                        if (filledsurface.Data[i + k, j - 3, 0] != 0)
                         {
                             sumframe += filledsurface.Data[i + k, j - 3, 0];
                         }
@@ -117,11 +99,11 @@ namespace ortomachine.Model
                         else
                         {
                             frame = false;
-                        }                        
+                        }
                     }
                     for (int k = -2; k <= 2; k++)
                     {
-                        if (filledsurface.Data[i -3, j + k, 0] != 0 && frame == true)
+                        if (filledsurface.Data[i - 3, j + k, 0] != 0 && frame == true)
                         {
                             sumframe += filledsurface.Data[i - 3, j + k, 0];
                         }
@@ -140,7 +122,7 @@ namespace ortomachine.Model
                     }
                     #endregion
 
-                    if (frame==false)
+                    if (frame == false)
                     {
                         continue;
                     }
@@ -155,12 +137,12 @@ namespace ortomachine.Model
                             }
                         }
                     }
-                    if (count==0 || count==25)
+                    if (count == 0 || count == 25)
                     {
                         continue;
                     }
                     //Console.WriteLine(sumframe+"  " + suminner +" " + count);
-                    if (Math.Abs(suminner/count - sumframe/24)> 1 )
+                    if (Math.Abs(suminner / count - sumframe / 24) > 1)
                     {
                         for (int k = -2; k <= 2; k++)
                         {
@@ -175,7 +157,7 @@ namespace ortomachine.Model
                             }
                         }
                     }
-                    
+
                 }
             }
 
@@ -192,46 +174,46 @@ namespace ortomachine.Model
             //Emgu.CV.Image<Bgr, Byte> surface = new Emgu.CV.Image<Bgr, Byte>(image);
             ;
             Emgu.CV.Image<Gray, ushort> filledsurface = sc.image;
-                            
 
-            
-             for (int i = 1; i < sc.image.Height - 1; i++)
-             {
+
+
+            for (int i = 1; i < sc.image.Height - 1; i++)
+            {
                 form1.progressBar1.Value = i / filledsurface.Height;
                 for (int j = 1; j < sc.image.Width - 1; j++)
-                 {
-                     if (sc.image.Data[i, j, 0] == 0)
-                     {
-                         if (sc.image.Data[i + 1, j+1, 0] != 0 && sc.image.Data[i - 1, j-1, 0] != 0 && sc.image.Data[i+1, j - 1, 0] != 0 && sc.image.Data[i-1, j + 1, 0] != 0)
-                         {
+                {
+                    if (sc.image.Data[i, j, 0] == 0)
+                    {
+                        if (sc.image.Data[i + 1, j + 1, 0] != 0 && sc.image.Data[i - 1, j - 1, 0] != 0 && sc.image.Data[i + 1, j - 1, 0] != 0 && sc.image.Data[i - 1, j + 1, 0] != 0)
+                        {
                             ushort a11 = sc.image.Data[i - 1, j - 1, 0];
                             ushort a12 = sc.image.Data[i + 1, j - 1, 0];
                             ushort a21 = sc.image.Data[i - 1, j + 1, 0];
                             ushort a22 = sc.image.Data[i + 1, j + 1, 0];
 
-                            float r1 =  a11 / 2 + a12 / 2;
+                            float r1 = a11 / 2 + a12 / 2;
                             float r2 = a21 / 2 + a22 / 2;
                             float p = r1 / 2 + r2 / 2;
-                            filledsurface.Data[i, j, 0] = (ushort)p;                            
-                         }
-                     }
-                 }
+                            filledsurface.Data[i, j, 0] = (ushort)p;
+                        }
+                    }
+                }
                 for (int j = 1; j < sc.image.Width - 1; j++)
                 {
                     form1.progressBar1.Value = i / filledsurface.Height;
                     if (sc.image.Data[i, j, 0] == 0)
                     {
-                        if (sc.image.Data[i + 1, j, 0] != 0 && sc.image.Data[i - 1, j, 0] != 0 && sc.image.Data[i, j - 1, 0] != 0 && sc.image.Data[i , j + 1, 0] != 0)
+                        if (sc.image.Data[i + 1, j, 0] != 0 && sc.image.Data[i - 1, j, 0] != 0 && sc.image.Data[i, j - 1, 0] != 0 && sc.image.Data[i, j + 1, 0] != 0)
                         {
-                            ushort a11 = sc.image.Data[i - 1, j , 0];
-                            ushort a12 = sc.image.Data[i , j + 1, 0];
-                            ushort a21 = sc.image.Data[i , j - 1, 0];
+                            ushort a11 = sc.image.Data[i - 1, j, 0];
+                            ushort a12 = sc.image.Data[i, j + 1, 0];
+                            ushort a21 = sc.image.Data[i, j - 1, 0];
                             ushort a22 = sc.image.Data[i + 1, j, 0];
 
                             float r1 = a11 / 2 + a12 / 2;
                             float r2 = a21 / 2 + a22 / 2;
                             float p = r1 / 2 + r2 / 2;
-                            filledsurface.Data[i, j, 0] = (ushort)p;                            
+                            filledsurface.Data[i, j, 0] = (ushort)p;
                         }
                     }
                 }
@@ -243,6 +225,71 @@ namespace ortomachine.Model
             sc.image = filledsurface;
         }
 
+        public void SurfaceResize(Form1 form1)
+        {
+            using (var surfaceresize = new Surfaceresize(form1))
+            {
+                DialogResult result = surfaceresize.ShowDialog();
+                if (surfaceresize.DialogResult == DialogResult.OK)
+                {
+
+                    float newRastersize = float.Parse(surfaceresize.rasterbox.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
+                    //Bilinresize(newRastersize, form1);
+                    new Thread(() =>
+                    {
+                        Thread.CurrentThread.IsBackground = true;
+                        Bilinresize(newRastersize, form1);
+                    }).Start();
+
+
+                }
+            }
+
+        }
+
+        private void Bilinresize(float newrastersize, Form1 form1)
+        {
+            //throw new NotImplementedException();
+            Emgu.CV.Image<Gray, ushort> resizedSurf = new Image<Gray, ushort>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
+
+
+            for (int i = 1; i < resizedSurf.Height - 1; i++)
+            {              
+                for (int j = 1; j < resizedSurf.Width - 1; j++)
+                {
+                    if (i * newrastersize / rastersize < (sc.image.Height - 1) && j * newrastersize / rastersize < (sc.image.Width - 1))
+                    {                        
+                        int surf_X = (int)Math.Ceiling(j / rastersize * newrastersize); //lower neighbor oldpixel
+                        int surf_Y = (int)Math.Ceiling(i / rastersize * newrastersize);
+
+                        float dx = (j / rastersize * newrastersize) - surf_X;
+                        float dy = (i / rastersize * newrastersize) - surf_Y;
+
+                        ushort a11 = sc.image.Data[surf_Y, surf_X, 0];
+                        ushort a12 = sc.image.Data[surf_Y, surf_X + 1, 0];
+                        ushort a21 = sc.image.Data[surf_Y + 1, surf_X, 0];
+                        ushort a22 = sc.image.Data[surf_Y + 1, surf_X + 1, 0];
+
+                        resizedSurf.Data[i, j, 0] = (ushort)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                    }
+                }
+            }
+            resizedSurf.Save(form1.SavePath + "\\" + "surface.png");
+            sc.image.Save(form1.SavePath + "\\" + "surface_origsize.png");
+            form1.rastersize = newrastersize;
+            if (form1.pictureBox1.InvokeRequired)
+            {
+                form1.pictureBox1.BeginInvoke((MethodInvoker)delegate ()
+                {
+                    form1.pictureBox1.Image = resizedSurf.ToBitmap(); 
+                    Application.DoEvents();
+                });
+            }
+            StreamWriter sw = new StreamWriter(form1.SavePath + "\\" + "surface.xyz");
+            sw.WriteLine("{0} {1} {2} {3}", sc.X0.ToString(), sc.Z0.ToString(), rastersize.ToString(), offset.ToString());
+            sw.Close();
+        }
+
 
     } //class
-    } //namespace
+} //namespace

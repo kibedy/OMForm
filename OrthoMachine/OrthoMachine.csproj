@@ -78,6 +78,12 @@
     <Compile Include="View\ImageProcess.Designer.cs">
       <DependentUpon>ImageProcess.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Surfaceresize.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Surfaceresize.Designer.cs">
+      <DependentUpon>Surfaceresize.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Surfaceimportparams.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\ImageProcess.resx">
       <DependentUpon>ImageProcess.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Surfaceresize.resx">
+      <DependentUpon>Surfaceresize.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

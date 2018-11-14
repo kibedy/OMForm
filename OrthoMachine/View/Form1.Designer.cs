@@ -43,6 +43,7 @@ namespace OM_Form
             this.loadSurfaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fillHolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bilinearFillHolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.picturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -103,7 +104,8 @@ namespace OM_Form
             this.createToolStripMenuItem,
             this.loadSurfaceToolStripMenuItem,
             this.fillHolesToolStripMenuItem,
-            this.bilinearFillHolesToolStripMenuItem});
+            this.bilinearFillHolesToolStripMenuItem,
+            this.resizeToolStripMenuItem});
             this.surfaceToolStripMenuItem.Name = "surfaceToolStripMenuItem";
             this.surfaceToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.surfaceToolStripMenuItem.Text = "Surface";
@@ -111,7 +113,7 @@ namespace OM_Form
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.createToolStripMenuItem.Text = "Create...";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
@@ -119,7 +121,7 @@ namespace OM_Form
             // 
             this.loadSurfaceToolStripMenuItem.Enabled = false;
             this.loadSurfaceToolStripMenuItem.Name = "loadSurfaceToolStripMenuItem";
-            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadSurfaceToolStripMenuItem.Text = "Load surface";
             this.loadSurfaceToolStripMenuItem.Click += new System.EventHandler(this.loadSurfaceToolStripMenuItem_Click);
             // 
@@ -127,7 +129,7 @@ namespace OM_Form
             // 
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.fillHolesToolStripMenuItem.Name = "fillHolesToolStripMenuItem";
-            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fillHolesToolStripMenuItem.Text = "Fill larger holes";
             this.fillHolesToolStripMenuItem.Click += new System.EventHandler(this.fillHolesToolStripMenuItem_Click);
             // 
@@ -135,9 +137,17 @@ namespace OM_Form
             // 
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Name = "bilinearFillHolesToolStripMenuItem";
-            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.bilinearFillHolesToolStripMenuItem.Text = "Bilinear fill holes";
             this.bilinearFillHolesToolStripMenuItem.Click += new System.EventHandler(this.bilinearFillHolesToolStripMenuItem_Click);
+            // 
+            // resizeToolStripMenuItem
+            // 
+            this.resizeToolStripMenuItem.Enabled = false;
+            this.resizeToolStripMenuItem.Name = "resizeToolStripMenuItem";
+            this.resizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resizeToolStripMenuItem.Text = "Resize";
+            this.resizeToolStripMenuItem.Click += new System.EventHandler(this.resizeToolStripMenuItem_Click);
             // 
             // picturesToolStripMenuItem
             // 
@@ -185,26 +195,26 @@ namespace OM_Form
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(120, 70);
             // 
-            // heightToolStripMenuItem
+            // depthToolStripMenuItem
             // 
+            this.depthToolStripMenuItem.Enabled = false;
             this.depthToolStripMenuItem.Name = "depthToolStripMenuItem";
             this.depthToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.depthToolStripMenuItem.Text = "Depth";
-            this.depthToolStripMenuItem.Enabled = false;
             // 
             // rGBToolStripMenuItem
             // 
+            this.rGBToolStripMenuItem.Enabled = false;
             this.rGBToolStripMenuItem.Name = "rGBToolStripMenuItem";
             this.rGBToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.rGBToolStripMenuItem.Text = "RGB";
-            this.rGBToolStripMenuItem.Enabled = false;
             // 
             // intensityToolStripMenuItem
             // 
+            this.intensityToolStripMenuItem.Enabled = false;
             this.intensityToolStripMenuItem.Name = "intensityToolStripMenuItem";
             this.intensityToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.intensityToolStripMenuItem.Text = "Intensity";
-            this.intensityToolStripMenuItem.Enabled = false;
             // 
             // progressBar1
             // 
@@ -279,6 +289,7 @@ namespace OM_Form
         public System.Windows.Forms.ToolStripMenuItem depthToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem rGBToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem resizeToolStripMenuItem;
         //public BackgroundWorker backgroundWorker1;
     }
 }

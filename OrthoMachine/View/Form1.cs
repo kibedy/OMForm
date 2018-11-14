@@ -31,6 +31,7 @@ namespace OM_Form
         public List<Bitmap> photolist;
 
 
+
         public Form1()
         {
             InitializeComponent();
@@ -104,6 +105,8 @@ namespace OM_Form
             createToolStripMenuItem.Enabled = true;
             loadSurfaceToolStripMenuItem.Enabled = true;
             this.fillHolesToolStripMenuItem.Enabled = false;
+            this.resizeToolStripMenuItem.Enabled = false;
+            this.bilinearFillHolesToolStripMenuItem.Enabled = false;
         }
 
 
@@ -137,6 +140,7 @@ namespace OM_Form
             }
             fillHolesToolStripMenuItem.Enabled = true;
             bilinearFillHolesToolStripMenuItem.Enabled = true;
+            resizeToolStripMenuItem.Enabled = false;
         }
 
         private void fillHolesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -152,6 +156,7 @@ namespace OM_Form
             pictureBox1.Image = sf.LoadSurface(SavePath, this);
             fillHolesToolStripMenuItem.Enabled = true;
             bilinearFillHolesToolStripMenuItem.Enabled = true;
+            resizeToolStripMenuItem.Enabled = true;
         }
 
         private void bilinearFillHolesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -163,6 +168,11 @@ namespace OM_Form
         {            
             photos.ShowPhoto();
 
+        }
+
+        private void resizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            sf.SurfaceResize(this);
         }
 
         private void FileStripMenuItem1_Click(object sender, EventArgs e)
