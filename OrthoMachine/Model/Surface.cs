@@ -55,6 +55,7 @@ namespace ortomachine.Model
             this.sc.Z0 = double.Parse(ss[1]);
             this.rastersize = float.Parse(ss[2]);
             this.offset = float.Parse(ss[3]);
+            sr.Close();
 
             //image = new Bitmap("surface.png");
             sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");
@@ -257,7 +258,7 @@ namespace ortomachine.Model
             {              
                 for (int j = 1; j < resizedSurf.Width - 1; j++)
                 {
-                    if (i * newrastersize / rastersize < (sc.image.Height - 1) && j * newrastersize / rastersize < (sc.image.Width - 1))
+                    if (i * newrastersize / rastersize < (sc.image.Height - 2) && j * newrastersize / rastersize < (sc.image.Width - 2))
                     {                        
                         int surf_X = (int)Math.Ceiling(j / rastersize * newrastersize); //lower neighbor oldpixel
                         int surf_Y = (int)Math.Ceiling(i / rastersize * newrastersize);
@@ -286,7 +287,7 @@ namespace ortomachine.Model
                 });
             }
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\" + "surface.xyz");
-            sw.WriteLine("{0} {1} {2} {3}", sc.X0.ToString(), sc.Z0.ToString(), rastersize.ToString(), offset.ToString());
+            sw.WriteLine("{0} {1} {2} {3}", sc.X0.ToString(), sc.Z0.ToString(), form1.rastersize.ToString(), offset.ToString());
             sw.Close();
         }
 

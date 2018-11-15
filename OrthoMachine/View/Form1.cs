@@ -140,7 +140,7 @@ namespace OM_Form
             }
             fillHolesToolStripMenuItem.Enabled = true;
             bilinearFillHolesToolStripMenuItem.Enabled = true;
-            resizeToolStripMenuItem.Enabled = false;
+            resizeToolStripMenuItem.Enabled = true;
         }
 
         private void fillHolesToolStripMenuItem_Click(object sender, EventArgs e)
