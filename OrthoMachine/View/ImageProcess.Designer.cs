@@ -51,10 +51,6 @@ namespace OrthoMachine.View
             this.depthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.intensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ContextMenuStrip = this.contextMenuStrip1;
-
-
-
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -121,7 +117,6 @@ namespace OrthoMachine.View
             this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
             this.pictureBox2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseMove);
             this.pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseUp);
-            //this.pictureBox2.ContextMenuStrip = this.contextMenuStrip1;
             // 
             // listView1
             // 
@@ -175,6 +170,7 @@ namespace OrthoMachine.View
             this.buttonPhotoDown.TabIndex = 2;
             this.buttonPhotoDown.UseVisualStyleBackColor = true;
             this.buttonPhotoDown.Visible = false;
+            this.buttonPhotoDown.Click += new System.EventHandler(this.buttonPhotoDown_Click);
             // 
             // buttonPhotoDel
             // 
@@ -187,6 +183,7 @@ namespace OrthoMachine.View
             this.buttonPhotoDel.TabIndex = 8;
             this.buttonPhotoDel.UseVisualStyleBackColor = true;
             this.buttonPhotoDel.Visible = false;
+            this.buttonPhotoDel.Click += new System.EventHandler(this.buttonPhotoDel_Click);
             // 
             // buttonPhotoUp
             // 
@@ -212,6 +209,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceDel.TabIndex = 11;
             this.buttonSurfaceDel.UseVisualStyleBackColor = true;
             this.buttonSurfaceDel.Visible = false;
+            this.buttonSurfaceDel.Click += new System.EventHandler(this.buttonSurfaceDel_Click);
             // 
             // buttonSurfaceUp
             // 
@@ -224,6 +222,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceUp.TabIndex = 9;
             this.buttonSurfaceUp.UseVisualStyleBackColor = true;
             this.buttonSurfaceUp.Visible = false;
+            this.buttonSurfaceUp.Click += new System.EventHandler(this.buttonSurfaceUp_Click);
             // 
             // buttonSurfaceDown
             // 
@@ -236,6 +235,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceDown.TabIndex = 10;
             this.buttonSurfaceDown.UseVisualStyleBackColor = true;
             this.buttonSurfaceDown.Visible = false;
+            this.buttonSurfaceDown.Click += new System.EventHandler(this.buttonSurfaceDown_Click);
             // 
             // buttonCalculate
             // 
@@ -254,30 +254,30 @@ namespace OrthoMachine.View
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.depthToolStripMenuItem,           
+            this.depthToolStripMenuItem,
             this.intensityToolStripMenuItem,
             this.rGBToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(120, 70);
-            contextMenuStrip1.ItemClicked += new ToolStripItemClickedEventHandler(contextMenuStrip1_ItemClicked);
+            this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
             // 
-            // toolStripMenuItem2
+            // depthToolStripMenuItem
             // 
             this.depthToolStripMenuItem.Name = "depthToolStripMenuItem";
             this.depthToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.depthToolStripMenuItem.Text = "Depth";
             // 
-            // toolStripMenuItem3
+            // intensityToolStripMenuItem
             // 
             this.intensityToolStripMenuItem.Name = "intensityToolStripMenuItem";
             this.intensityToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.intensityToolStripMenuItem.Text = "Intensity";
             // 
-            // toolStripMenuItem4
+            // rGBToolStripMenuItem
             // 
             this.rGBToolStripMenuItem.Name = "rGBToolStripMenuItem";
             this.rGBToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.rGBToolStripMenuItem.Text = "RGB";            
+            this.rGBToolStripMenuItem.Text = "RGB";
             // 
             // ImageProcess
             // 
@@ -285,6 +285,7 @@ namespace OrthoMachine.View
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(940, 503);
+            this.ContextMenuStrip = this.contextMenuStrip1;
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.buttonCalculate);
             this.Controls.Add(this.buttonPhotoDel);
