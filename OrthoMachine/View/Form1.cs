@@ -24,11 +24,12 @@ namespace OM_Form
         //Thread thread;
         public float offset, rastersize;
         public string SavePath;
-        Surface sf;
+        public Surface sf;
         public BackgroundWorker backgroundWorker1;
         NewProject project;
-        Photo photos;
+        public Photo photos;
         public List<Bitmap> photolist;
+        public int filetype;
 
 
 
@@ -41,6 +42,7 @@ namespace OM_Form
             InitializeBackgroundWorker();
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
+            project = new NewProject(this);
         }
 
 
@@ -77,6 +79,10 @@ namespace OM_Form
             pictureBox1.Image = (Bitmap)e.Result;
             this.progressBar1.Value = 100;
             addPicturesToolStripMenuItem.Enabled = true;
+            fillHolesToolStripMenuItem.Enabled = true;
+            bilinearFillHolesToolStripMenuItem.Enabled = true;
+            resizeToolStripMenuItem.Enabled = true;
+            saveProjectToolStripMenuItem.Enabled = true;
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -90,20 +96,44 @@ namespace OM_Form
 
         private void openToolStripMenuItem_Click(System.Object sender, System.EventArgs e)
         {
-            /*if (project.GetSurfParams()== true)
+            //project = new NewProject(this);
+            project.GetProjectDir();
+            //sf = new Surface(project.Filename, project.offset, project.rastersize, this);
+            //pictureBox1.Image = sf.LoadSurface(SavePath,this);            
+
+            
+            project.LoadProjectParams(this, SavePath);
+            ;
+            createToolStripMenuItem.Enabled = true;
+            loadSurfaceToolStripMenuItem.Enabled = true;
+            this.fillHolesToolStripMenuItem.Enabled = true;
+            this.resizeToolStripMenuItem.Enabled = true;
+            this.bilinearFillHolesToolStripMenuItem.Enabled = true;
+            this.addPicturesToolStripMenuItem.Enabled = true;
+            /*
+            if (project.GetSurfParams())
             {
-                // Start the asynchronous operation.
-                backgroundWorker1.RunWorkerAsync();               
-            }    
+                createToolStripMenuItem.Enabled = true;
+                loadSurfaceToolStripMenuItem.Enabled = true;
+                this.fillHolesToolStripMenuItem.Enabled = false;
+                this.resizeToolStripMenuItem.Enabled = false;
+                this.bilinearFillHolesToolStripMenuItem.Enabled = false;
+                sf = new Surface(project.Filename, project.offset, project.rastersize, this);
+                //sf.LoadSurface(SavePath, this);
+                sf.sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");
+                pictureBox1.Image = sf.sc.image.ToBitmap();
+
+            }     
             */
+
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            project = new NewProject(this);
+            //project = new NewProject(this);
             project.GetProjectDir();
             createToolStripMenuItem.Enabled = true;
-            loadSurfaceToolStripMenuItem.Enabled = true;
+            loadSurfaceToolStripMenuItem.Enabled = false;
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
@@ -136,11 +166,9 @@ namespace OM_Form
             if (project.GetSurfParams() == true)
             {
                 // Start the asynchronous operation.
-                backgroundWorker1.RunWorkerAsync();
+                backgroundWorker1.RunWorkerAsync();                
             }
-            fillHolesToolStripMenuItem.Enabled = true;
-            bilinearFillHolesToolStripMenuItem.Enabled = true;
-            resizeToolStripMenuItem.Enabled = true;
+            
         }
 
         private void fillHolesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -157,6 +185,7 @@ namespace OM_Form
             fillHolesToolStripMenuItem.Enabled = true;
             bilinearFillHolesToolStripMenuItem.Enabled = true;
             resizeToolStripMenuItem.Enabled = true;
+            saveProjectToolStripMenuItem.Enabled = true;
         }
 
         private void bilinearFillHolesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -173,6 +202,28 @@ namespace OM_Form
         private void resizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             sf.SurfaceResize(this);
+        }
+
+        private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StreamWriter sw = new StreamWriter(SavePath+"\\project.prj");
+            sw.WriteLine(filetype);
+
+            sw.Close();
+
+            sw = new StreamWriter(SavePath + "\\imagelist.txt");
+            try
+            {               
+                foreach (string item in photos.projimagefilenames)
+                {
+                    sw.WriteLine(item);
+                }               
+            }            
+            catch
+            {
+
+            }
+            sw.Close();
         }
 
         private void FileStripMenuItem1_Click(object sender, EventArgs e)

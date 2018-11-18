@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using OM_Form;
 using OrthoMachine.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,7 +15,7 @@ using System.Windows.Forms;
 
 namespace OrthoMachine.View
 {
-    public partial class ImageProcess : Form
+    public partial class ImageProcess: Form
     {
         string filename;
         private int ImageWidth, ImageHeight, ImageWidthS, ImageHeightS;
@@ -29,8 +30,11 @@ namespace OrthoMachine.View
         Image<Gray, ushort> surface;
         Orientation orientation;
         Point pp;
+        //Image<Bgra, byte> markerimage;
         Image<Gray, byte> markerimage;
         Image<Bgra, byte> photo;
+        Image<Bgra, byte> rgbsurf;
+        ArrayList colors;
 
 
 
@@ -43,24 +47,44 @@ namespace OrthoMachine.View
             this.orientation = orientation;
             this.form1 = form1;
             photo = new Image<Bgra, byte>(form1.SavePath + "\\photos\\" + filename);
-            //this.pictureBox1.BackgroundImage = photo.ToBitmap();
             this.pictureBox1.Image = photo.ToBitmap();
             ImageWidth = pictureBox1.Image.Width;
             ImageHeight = pictureBox1.Image.Height;
+            //this.pictureBox1.BackgroundImage = photo.ToBitmap();
             //ImageWidth = pictureBox1.BackgroundImage.Width;
             //ImageHeight = pictureBox1.BackgroundImage.Height;
+            colors = CreateColorList();
 
+
+            if (form1.filetype == 7)
+            {
+                rGBToolStripMenuItem.Visible = true;
+                intensityToolStripMenuItem.Visible = true;
+                depthToolStripMenuItem.Visible = true;
+            }
+            else if (form1.filetype == 4)
+            {
+                intensityToolStripMenuItem.Visible = true;
+                depthToolStripMenuItem.Visible = true;
+                rGBToolStripMenuItem.Visible = false;
+            }
+            else
+            {
+                intensityToolStripMenuItem.Visible = false;
+                depthToolStripMenuItem.Visible = false;
+                rGBToolStripMenuItem.Visible = false;
+            }
 
             //markerimage = new Image<Gray, byte>(new Size(ImageWidth, ImageHeight));
             ;
             //markerimage.ro
             //photo.Mul()
-           
+
             //this.pictureBox1.Cursor = Cursors.Hand;
 
             //EnablePictureBox1Functions = true;
 
-         
+
             this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             this.pictureBox1.Size = new Size(ImageWidth, ImageHeight);
             EnablePickpoints = false;
@@ -80,6 +104,8 @@ namespace OrthoMachine.View
             this.listView2.Columns.Add("Global Y", 80, HorizontalAlignment.Left);
 
         }
+
+
 
 
 
@@ -176,10 +202,36 @@ namespace OrthoMachine.View
         #endregion
 
 
+        private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            ToolStripItem item = e.ClickedItem;
+            // your code here
+            if (e.ClickedItem.Name == "rGBToolStripMenuItem")
+            {
+
+                //rgbsurf= new Image<Bgra, byte>(form1.SavePath +"\\surface_rgb.png)");
+                pictureBox2.Image = form1.sf.sc.RGBsurfImage.ToBitmap();
+                DrawMarkers(listView2, pictureBox2, new Bitmap(pictureBox2.Image));
+                
+                //this.pictureBox2.Image=
+            }
+            else if (e.ClickedItem.Name == "intensityToolStripMenuItem")
+            {
+                pictureBox2.Image = form1.sf.sc.intSurfImage.ToBitmap();
+                DrawMarkers(listView2, pictureBox2, new Bitmap(pictureBox2.Image));
+            }
+            else
+            {
+                pictureBox2.Image = form1.sf.sc.image.ToBitmap();
+                DrawMarkers(listView2, pictureBox2, new Bitmap(pictureBox2.Image));
+            }
+        }
+
         private void panel1_MouseWheel(object sender, MouseEventArgs e)
         {
             throw new NotImplementedException();
         }
+
 
         private void orientateToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -245,81 +297,6 @@ namespace OrthoMachine.View
 
         }
 
-        private void addMarkerPhoto(object sender, MouseEventArgs e)
-        {
-            if (EnablePickpoints)
-            {
-                pp = e.Location;                
-                var item = new ListViewItem(new[] { listView1.Items.Count.ToString(), (pp.X / ImageScale).ToString("0.00"), (pp.Y / ImageScale).ToString("0.00") });
-                this.listView1.Items.Add(item);
-                /*
-                PointF center = new PointF(pp.X / ImageScale, pp.Y / ImageScale);
-                float r = 10;
-                CircleF circle = new CircleF(center, r);
-                markerimage.Draw(circle, new Gray(150), 2);
-                markerimage._SmoothGaussian(7, 7, 3, 3);
-
-                Image<Bgra, byte> temp = photo.Clone();
-                temp.SetValue(new Bgra(0, 0, 255, 255), markerimage);
-                pictureBox1.Image = temp.Bitmap;                
-                */
-                DrawMarkers(listView1, pictureBox1,new Bitmap(pictureBox1.Image));
-                panel1.Invalidate();
-            }
-        }
-
-        private void DrawMarkers(ListView list, PictureBox pbox, Image source)
-        {
-            markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
-            Image<Bgra, byte> toDraw = new Image<Bgra, byte>((Bitmap)source);
-            if (list.Items.Count!=0)
-            {
-                ListViewItem[] items = new ListViewItem[list.Items.Count];
-                list.Items.CopyTo(items, 0);
-                foreach (ListViewItem item in list.Items)
-                {
-                    float X = float.Parse(item.SubItems[1].Text);
-                    float Y = float.Parse(item.SubItems[2].Text);
-                    PointF center = new PointF(X, Y);
-                    float r = 10;
-                    CircleF circle1 = new CircleF(center, r);
-                    CircleF circle2 = new CircleF(center, 1);
-                    markerimage.Draw(circle1, new Gray(250), 1);
-                    markerimage.Draw(circle2, new Gray(250), 1);
-                }
-                markerimage._SmoothGaussian(3, 3, 1, 1);
-
-                Image<Bgra, byte> temp = toDraw.Clone();
-                               
-
-                temp.SetValue(new Bgra(0, 0, 255, 255), markerimage);                
-                pbox.Image = temp.Bitmap;
-
-            }
-           
-        }
-
-        private void buttonPhotoUp_Click(object sender, EventArgs e)
-        {
-            if (listView1.Items.Count > 2)
-            {
-                /*int index = listView1.SelectedIndices[0];
-                index--;
-                this.listView1.Items[index].Selected = true;
-                listView1.Refresh();*/
-                ListViewItem item = listView1.SelectedItems[0];
-                int index = listView1.SelectedItems[0].Index;
-                ListViewItem itemUpper = listView1.Items[index - 1];
-                listView1.Items.RemoveAt(item.Index - 1);
-                listView1.Items.RemoveAt(item.Index);
-                listView1.Items.Insert(index - 1, item);
-                listView1.Items.Insert(index, itemUpper);
-                //listView1.Items[item.Index-1] = item;
-                listView1.Refresh();
-                //TODO change ID number;
-            }
-        }
-
         private void addMarkerSurface(object sender, MouseEventArgs e)
         {
             if (EnablePickpoints)
@@ -328,14 +305,139 @@ namespace OrthoMachine.View
                 //markers.Add(new Marker(pp.X / ImageScale, pp.Y / ImageScale, filename));
                 int xx = (int)(pp.X / ImageScaleS);
                 int yy = (int)(pp.Y / ImageScaleS);
-                var item = new ListViewItem(new[] { (listView2.Items.Count.ToString()).ToString(), xx.ToString("0"),  yy.ToString("0"), (surface.Data[yy, xx, 0]).ToString() });
-                this.listView2.Items.Add(item);
+                var item = new ListViewItem(new[] { (listView2.Items.Count.ToString()).ToString(), xx.ToString("0"), yy.ToString("0"), (surface.Data[yy, xx, 0]).ToString() });
+                if (listView1.Items.Count < 20)
+                {
+                    this.listView2.Items.Add(item);
+                }
+                else
+                {
+                    MessageBox.Show("Too many markers!");
+                }
                 DrawMarkers(listView2, pictureBox2, new Bitmap(pictureBox2.Image));
+            }
+        }
+
+        private void addMarkerPhoto(object sender, MouseEventArgs e)
+        {
+            if (EnablePickpoints)
+            {
+                pp = e.Location;
+                var item = new ListViewItem(new[] { listView1.Items.Count.ToString(), (pp.X / ImageScale).ToString("0.00"), (pp.Y / ImageScale).ToString("0.00") });
+
+                if (listView1.Items.Count < 20)
+                {
+                    this.listView1.Items.Add(item);
+                }
+                else
+                {
+                    MessageBox.Show("Too many markers!");
+                }
+
+                DrawMarkers(listView1, pictureBox1, new Bitmap(pictureBox1.Image));
+
+                //DrawMarkers(listView1, pictureBox1, new Bitmap(pictureBox1.BackgroundImage));
+                panel1.Invalidate();
+            }
+        }
+
+        private void DrawMarkers(ListView list, PictureBox pbox, Image source)
+        {
+            //markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
+            //markerimage = new Image<Bgra, byte>(new Size(source.Width, source.Height));
+            Image<Bgra, byte> toDraw = new Image<Bgra, byte>((Bitmap)source);
+            Image<Bgra, byte> temp = toDraw.Clone();
+            if (list.Items.Count != 0)
+            {
+                ListViewItem[] items = new ListViewItem[list.Items.Count];
+                list.Items.CopyTo(items, 0);
+                int i = 0;
+                foreach (ListViewItem item in list.Items)
+                {
+                    markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
+
+                    float X = float.Parse(item.SubItems[1].Text);
+                    float Y = float.Parse(item.SubItems[2].Text);
+                    PointF center = new PointF(X, Y);
+                    float r = 10;
+                    CircleF circle1 = new CircleF(center, r);
+                    CircleF circle2 = new CircleF(center, 1);
+                    markerimage.Draw(circle1, new Gray(250), 1);
+                    //markerimage.Draw(circle1, (Bgra)colors[0], i);
+                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
+                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
+                    //i++;
+                    markerimage.Draw(circle2, new Gray(250), 1);
+
+                    markerimage._SmoothGaussian(3, 3, 1, 1);
+                    temp.SetValue((Bgra)colors[i], markerimage);
+                    i++;
+                    GC.Collect();
+
+                }
+                //markerimage._SmoothGaussian(3, 3, 1, 1);
+
+                //Image<Bgra, byte> temp = toDraw.Clone();
+
+
+                //temp.SetValue(new Bgra(0, 0, 255, 255), markerimage);
+                //temp.SetValue(new Bgra(colors[0]), markerimage);
+                //temp.Add(markerimage);
+
+                pbox.Image = temp.Bitmap;
 
             }
 
+        }
+        private ArrayList CreateColorList()
+        {
+            ArrayList colors = new ArrayList();
+            colors.Add(new Bgra(0, 0, 255, 255));
+            colors.Add(new Bgra(0, 255, 0, 255));
+            colors.Add(new Bgra(255, 0, 0, 255));
+            colors.Add(new Bgra(255, 0, 255, 255));
+            colors.Add(new Bgra(255, 255, 0, 255));
+            colors.Add(new Bgra(0, 255, 255, 255));
+
+            colors.Add(new Bgra(128, 128, 128, 255));
+            colors.Add(new Bgra(128, 0, 0, 255));
+            colors.Add(new Bgra(0, 128, 0, 255));
+            colors.Add(new Bgra(0, 0, 128, 255));
+            colors.Add(new Bgra(128, 128, 0, 255));
+            colors.Add(new Bgra(0, 128, 128, 255));
+            colors.Add(new Bgra(128, 0, 128, 255));
+
+            colors.Add(new Bgra(50, 50, 50, 255));
+            colors.Add(new Bgra(50, 0, 0, 255));
+            colors.Add(new Bgra(0, 50, 0, 255));
+            colors.Add(new Bgra(0, 0, 50, 255));
+            colors.Add(new Bgra(50, 50, 0, 255));
+            colors.Add(new Bgra(0, 50, 50, 255));
+            colors.Add(new Bgra(50, 0, 50, 255));
+
+            return colors;
 
         }
+
+        private void buttonPhotoUp_Click(object sender, EventArgs e)
+        {
+            if (listView1.Items.Count >= 2 && listView1.SelectedItems[0].Index>=1)
+            {
+                ListViewItem item = listView1.SelectedItems[0];
+                int index = listView1.SelectedItems[0].Index;
+                ListViewItem itemUpper = listView1.Items[index - 1];                
+                itemUpper.Text = index.ToString();
+                item.Text = (index-1).ToString();
+                listView1.Items.RemoveAt(item.Index - 1);
+                listView1.Items.RemoveAt(item.Index);
+                listView1.Items.Insert(index - 1, item);
+                listView1.Items.Insert(index, itemUpper);                                
+                listView1.Refresh();
+                DrawMarkers(listView1, pictureBox1, new Bitmap(pictureBox1.Image));             
+            }
+        }
+
+
 
 
 
@@ -346,3 +448,4 @@ namespace OrthoMachine.View
          }*/
     }
 }
+

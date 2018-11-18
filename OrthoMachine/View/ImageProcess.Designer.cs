@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace OrthoMachine.View
 {
@@ -30,13 +31,14 @@ namespace OrthoMachine.View
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.listView1 = new System.Windows.Forms.ListView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.orientateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.listView2 = new System.Windows.Forms.ListView();
             this.buttonPhotoDown = new System.Windows.Forms.Button();
             this.buttonPhotoDel = new System.Windows.Forms.Button();
@@ -45,11 +47,20 @@ namespace OrthoMachine.View
             this.buttonSurfaceUp = new System.Windows.Forms.Button();
             this.buttonSurfaceDown = new System.Windows.Forms.Button();
             this.buttonCalculate = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.depthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.intensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuStrip = this.contextMenuStrip1;
+
+
+
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.menuStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -81,6 +92,37 @@ namespace OrthoMachine.View
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.AutoScroll = true;
+            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel2.Controls.Add(this.pictureBox2);
+            this.panel2.Location = new System.Drawing.Point(888, 27);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(46, 401);
+            this.panel2.TabIndex = 6;
+            this.panel2.Visible = false;
+            this.panel2.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseWheel);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox2.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(41, 50);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox2.TabIndex = 0;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Visible = false;
+            this.pictureBox2.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.addMarkerSurface);
+            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
+            this.pictureBox2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseMove);
+            this.pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseUp);
+            //this.pictureBox2.ContextMenuStrip = this.contextMenuStrip1;
+            // 
             // listView1
             // 
             this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -110,36 +152,6 @@ namespace OrthoMachine.View
             this.orientateToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.orientateToolStripMenuItem.Text = "Orientate";
             this.orientateToolStripMenuItem.Click += new System.EventHandler(this.orientateToolStripMenuItem_Click);
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.AutoScroll = true;
-            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel2.Controls.Add(this.pictureBox2);
-            this.panel2.Location = new System.Drawing.Point(853, 27);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(81, 386);
-            this.panel2.TabIndex = 6;
-            this.panel2.Visible = false;
-            this.panel2.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseWheel);
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Location = new System.Drawing.Point(1, 1);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(41, 50);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox2.TabIndex = 0;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Visible = false;
-            this.pictureBox2.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.addMarkerSurface);
-            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
-            this.pictureBox2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseMove);
-            this.pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseUp);
             // 
             // listView2
             // 
@@ -239,18 +251,46 @@ namespace OrthoMachine.View
             this.buttonCalculate.UseVisualStyleBackColor = true;
             this.buttonCalculate.Visible = false;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.depthToolStripMenuItem,           
+            this.intensityToolStripMenuItem,
+            this.rGBToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(120, 70);
+            contextMenuStrip1.ItemClicked += new ToolStripItemClickedEventHandler(contextMenuStrip1_ItemClicked);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.depthToolStripMenuItem.Name = "depthToolStripMenuItem";
+            this.depthToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.depthToolStripMenuItem.Text = "Depth";
+            // 
+            // toolStripMenuItem3
+            // 
+            this.intensityToolStripMenuItem.Name = "intensityToolStripMenuItem";
+            this.intensityToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.intensityToolStripMenuItem.Text = "Intensity";
+            // 
+            // toolStripMenuItem4
+            // 
+            this.rGBToolStripMenuItem.Name = "rGBToolStripMenuItem";
+            this.rGBToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.rGBToolStripMenuItem.Text = "RGB";            
+            // 
             // ImageProcess
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(940, 503);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.buttonCalculate);
             this.Controls.Add(this.buttonPhotoDel);
             this.Controls.Add(this.buttonPhotoDown);
             this.Controls.Add(this.buttonSurfaceDel);
             this.Controls.Add(this.listView2);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.buttonSurfaceUp);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.buttonPhotoUp);
@@ -265,15 +305,21 @@ namespace OrthoMachine.View
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
+
+        /*private void rGBToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }*/
 
         #endregion
 
@@ -291,6 +337,13 @@ namespace OrthoMachine.View
         private Button buttonSurfaceDel;
         private Button buttonSurfaceUp;
         private Button buttonSurfaceDown;
-        private Button buttonCalculate;
+        private Button buttonCalculate;        
+        public System.Windows.Forms.ToolStripMenuItem depthToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem rGBToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
+        private ContextMenuStrip contextMenuStrip1;
+
+
+    
     }
 }

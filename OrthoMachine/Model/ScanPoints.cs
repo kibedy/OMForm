@@ -25,13 +25,13 @@ namespace ortomachine.Model
     public class ScanPoints
     {
         LinkedList<Points> PointList = new LinkedList<Points>();
-        //string path = "";
+        //string path = "";        
         UInt16[,] surface;
         byte[,] intSurface;
         byte[,,] RGBsurface;
         ushort xwidth;
         ushort yheight;
-        int filetype;
+        public int filetype;
         float offset;    //offset: black border
         float rastersize;
         public double Xmax, Zmax, X0, Z0;
@@ -43,6 +43,8 @@ namespace ortomachine.Model
         int actline;
         public int procbarvalue;
         public Image<Gray, ushort> image;
+        public Image<Gray, byte> intSurfImage;
+        public Image<Bgr, byte> RGBsurfImage; 
         //BackgroundWorker worker;
         //public int progress;
         //public delegate void ProgressUpdate(int value);
@@ -81,6 +83,7 @@ namespace ortomachine.Model
             SurfaceMap = saveSurface();
 
         }
+        
 
         private void preprocess(string fn)
         {
@@ -91,16 +94,18 @@ namespace ortomachine.Model
                 lc++;
             }
             srl.Close();
-
-
+           
             StreamReader sr = new StreamReader(fn);
             char[] delimiterChars = { ' ', ',', '\t' };
 
             string line = sr.ReadLine();
             string[] numbers = line.Split(delimiterChars);
             filetype = numbers.Length;
+            form1.filetype = filetype;
             actline = 1;
             ;
+
+
             if (filetype == 3)
             {
                 double X = double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture);
@@ -198,7 +203,7 @@ namespace ortomachine.Model
             yheight = (ushort)((((Zmax - Z0) + 2 * offset) / rastersize) + 1);
 
             surface = new UInt16[xwidth, yheight];
-            if (filetype == 7)
+            if (form1.filetype == 7)
             {
                 intSurface = new byte[xwidth, yheight];
                 RGBsurface = new byte[xwidth, yheight,3];
@@ -222,7 +227,7 @@ namespace ortomachine.Model
                 }
 
             }
-            else if (filetype == 4)
+            else if (form1.filetype == 4)
             {
                 form1.intensityToolStripMenuItem.Enabled = true;
                 form1.depthToolStripMenuItem.Enabled = true;                
@@ -327,7 +332,7 @@ namespace ortomachine.Model
             image = new Image<Gray, ushort>(xwidth, yheight);
             if (filetype ==4)
             {                
-                Image<Gray, byte> intSurfImage = new Image<Gray, byte>(xwidth, yheight);
+                intSurfImage = new Image<Gray, byte>(xwidth, yheight);
                 for (int x = 0; x < xwidth; x++)
                 {
                     for (int y = 0; y < yheight; y++)
@@ -339,8 +344,8 @@ namespace ortomachine.Model
             }
             if (filetype == 7)
             {
-                Image<Gray, byte> intSurfImage = new Image<Gray, byte>(xwidth, yheight);
-                Image<Bgr, byte> RGBsurfImage = new Image<Bgr, byte>(xwidth, yheight);
+                intSurfImage = new Image<Gray, byte>(xwidth, yheight);
+                RGBsurfImage = new Image<Bgr, byte>(xwidth, yheight);
                 for (int x = 0; x < xwidth; x++)
                 {
                     for (int y = 0; y < yheight; y++)

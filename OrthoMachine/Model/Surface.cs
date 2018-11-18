@@ -33,6 +33,7 @@ namespace ortomachine.Model
             this.offset = offset;
             this.rastersize = rastersize;
             this.obj = obj;
+            sc = new ScanPoints(filename, rastersize, offset, obj);
         }
 
         public Bitmap Run()
@@ -43,7 +44,7 @@ namespace ortomachine.Model
             return imagebitmap;
         }
 
-        public Bitmap LoadSurface(string SavePath, Form1 obj)
+        public Bitmap LoadSurface(string SavePath, Form1 form1)
         {
             //Bitmap bitmap = new Bitmap("surface.png");
             StreamReader sr = new StreamReader(SavePath + "\\" + "surface.xyz");
@@ -53,16 +54,16 @@ namespace ortomachine.Model
             this.sc = new ScanPoints("surface", float.Parse(ss[2]), float.Parse(ss[3]), obj);
             this.sc.X0 = double.Parse(ss[0]);
             this.sc.Z0 = double.Parse(ss[1]);
-            this.rastersize = float.Parse(ss[2]);
-            this.offset = float.Parse(ss[3]);
+            form1.rastersize = float.Parse(ss[2]);
+            form1.offset = float.Parse(ss[3]);
             sr.Close();
 
             //image = new Bitmap("surface.png");
             sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");
-            for (int i = 0; i < 10; i++)
+            /*for (int i = 0; i < 10; i++)
             {
                 Console.WriteLine("pixelérték: " + sc.image.Data[500 + i, 500 + i, 0]);
-            }
+            }*/
             return sc.image.ToBitmap();
             
         }
@@ -270,15 +271,57 @@ namespace ortomachine.Model
                         ushort a12 = sc.image.Data[surf_Y, surf_X + 1, 0];
                         ushort a21 = sc.image.Data[surf_Y + 1, surf_X, 0];
                         ushort a22 = sc.image.Data[surf_Y + 1, surf_X + 1, 0];
-
-                        resizedSurf.Data[i, j, 0] = (ushort)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                        if (a11!=0 && a12 != 0 && a21 != 0 && a22 != 0)
+                        {
+                            resizedSurf.Data[i, j, 0] = (ushort)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                        }                        
                     }
                 }
             }
 
-            resizedSurf.Save(form1.SavePath + "\\" + "surface.png");
+            resizedSurf.Save(form1.SavePath + "\\" + "surface.png");           
             sc.image.Save(form1.SavePath + "\\" + "surface_origsize.png");
-            try
+
+            try //intensity surface model resizing
+            {
+                Image<Gray, byte> resizedInt = new Image<Gray, byte>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
+                Image<Bgr, byte> intsurf = new Image<Bgr, byte>(form1.SavePath + "\\surface_int.png");
+
+                for (int i = 1 ; i < resizedInt.Height - 1 ; i++)
+                {
+                    for (int j = 1 ; j < resizedInt.Width - 1 ; j++)
+                    {
+                        if (i * newrastersize / rastersize < (sc.image.Height - 2) && j * newrastersize / rastersize < (sc.image.Width - 2))
+                        {
+                            int surf_X = (int)Math.Ceiling(j / rastersize * newrastersize); //lower neighbor oldpixel
+                            int surf_Y = (int)Math.Ceiling(i / rastersize * newrastersize);
+
+                            float dx = (j / rastersize * newrastersize) - surf_X;
+                            float dy = (i / rastersize * newrastersize) - surf_Y;
+
+                            ushort a11 = intsurf.Data[surf_Y, surf_X, 0];
+                            ushort a12 = intsurf.Data[surf_Y, surf_X + 1, 0];
+                            ushort a21 = intsurf.Data[surf_Y + 1, surf_X, 0];
+                            ushort a22 = intsurf.Data[surf_Y + 1, surf_X + 1, 0];
+                            if (a11 != 0 && a12 != 0 && a21 != 0 && a22 != 0)
+                            {
+                                resizedInt.Data[i, j, 0] = (byte)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                            }
+                        }
+                    }
+                }
+                resizedInt.Save(form1.SavePath + "\\" + "surface_int.png");
+                intsurf.Save(form1.SavePath + "\\" + "surface_int_origsize.png");
+
+            }
+            catch
+            {
+                
+
+            }
+
+
+            try  //rgb point cloud surf image resizing
             {
                 Image<Bgr, byte> resizedRGB = new Image<Bgr, byte>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
 
@@ -299,19 +342,34 @@ namespace ortomachine.Model
                             byte a12 = rgbsurf.Data[surf_Y, surf_X + 1, 0];
                             byte a21 = rgbsurf.Data[surf_Y + 1, surf_X, 0];
                             byte a22 = rgbsurf.Data[surf_Y + 1, surf_X + 1, 0];
-                            resizedRGB.Data[i, j, 0] = (byte)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                            if (a11 != 0 && a12 != 0 && a21 != 0 && a22 != 0)
+                            {
+                                resizedRGB.Data[i, j, 0] = (byte)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                            }
 
-                             a11 = rgbsurf.Data[surf_Y, surf_X, 1];
-                             a12 = rgbsurf.Data[surf_Y, surf_X + 1, 1];
-                             a21 = rgbsurf.Data[surf_Y + 1, surf_X, 1];
+                            
+
+                            a11 = rgbsurf.Data[surf_Y, surf_X, 1];
+                            a12 = rgbsurf.Data[surf_Y, surf_X + 1, 1];
+                            a21 = rgbsurf.Data[surf_Y + 1, surf_X, 1];
                             a22 = rgbsurf.Data[surf_Y + 1, surf_X + 1, 1];
-                            resizedRGB.Data[i, j, 1] = (byte)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+
+                            if (a11 != 0 && a12 != 0 && a21 != 0 && a22 != 0)
+                            {
+                                resizedRGB.Data[i, j, 1] = (byte)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                            }
+                            
 
                             a11 = rgbsurf.Data[surf_Y, surf_X, 2];
                             a12 = rgbsurf.Data[surf_Y, surf_X + 1, 2];
                             a21 = rgbsurf.Data[surf_Y + 1, surf_X, 2];
                             a22 = rgbsurf.Data[surf_Y + 1, surf_X + 1, 2];
-                            resizedRGB.Data[i, j, 2] = (byte)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+
+                            if (a11 != 0 && a12 != 0 && a21 != 0 && a22 != 0)
+                            {
+                                resizedRGB.Data[i, j, 2] = (byte)(a11 + dx * (a11 - a12) + dy * (a21 - a11) + dx * dy * (a11 - a12 - a21 + a22));
+                            }
+                            
 
                         }
                     }
@@ -322,7 +380,7 @@ namespace ortomachine.Model
             }
             catch
             {
-                Console.WriteLine("suxx");
+                Console.WriteLine("No color in Cloud");
             }
 
             form1.rastersize = newrastersize;
@@ -337,6 +395,7 @@ namespace ortomachine.Model
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\" + "surface.xyz");
             sw.WriteLine("{0} {1} {2} {3}", sc.X0.ToString(), sc.Z0.ToString(), form1.rastersize.ToString(), offset.ToString());
             sw.Close();
+            sc.image = resizedSurf;
         }
 
 

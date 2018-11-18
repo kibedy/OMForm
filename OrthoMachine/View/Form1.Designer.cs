@@ -56,6 +56,7 @@ namespace OM_Form
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.listView1 = new System.Windows.Forms.ListView();
+            this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -78,7 +79,8 @@ namespace OM_Form
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newProjectToolStripMenuItem,
-            this.openToolStripMenuItem});
+            this.openToolStripMenuItem,
+            this.saveProjectToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItem1.Text = "File";
@@ -87,14 +89,14 @@ namespace OM_Form
             // newProjectToolStripMenuItem
             // 
             this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
-            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newProjectToolStripMenuItem.Text = "New Project...";
             this.newProjectToolStripMenuItem.Click += new System.EventHandler(this.newProjectToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -113,7 +115,7 @@ namespace OM_Form
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.createToolStripMenuItem.Text = "Create...";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
@@ -121,7 +123,7 @@ namespace OM_Form
             // 
             this.loadSurfaceToolStripMenuItem.Enabled = false;
             this.loadSurfaceToolStripMenuItem.Name = "loadSurfaceToolStripMenuItem";
-            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.loadSurfaceToolStripMenuItem.Text = "Load surface";
             this.loadSurfaceToolStripMenuItem.Click += new System.EventHandler(this.loadSurfaceToolStripMenuItem_Click);
             // 
@@ -129,7 +131,7 @@ namespace OM_Form
             // 
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.fillHolesToolStripMenuItem.Name = "fillHolesToolStripMenuItem";
-            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.fillHolesToolStripMenuItem.Text = "Fill larger holes";
             this.fillHolesToolStripMenuItem.Click += new System.EventHandler(this.fillHolesToolStripMenuItem_Click);
             // 
@@ -137,7 +139,7 @@ namespace OM_Form
             // 
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Name = "bilinearFillHolesToolStripMenuItem";
-            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.bilinearFillHolesToolStripMenuItem.Text = "Bilinear fill holes";
             this.bilinearFillHolesToolStripMenuItem.Click += new System.EventHandler(this.bilinearFillHolesToolStripMenuItem_Click);
             // 
@@ -145,7 +147,7 @@ namespace OM_Form
             // 
             this.resizeToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Name = "resizeToolStripMenuItem";
-            this.resizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resizeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.resizeToolStripMenuItem.Text = "Resize";
             this.resizeToolStripMenuItem.Click += new System.EventHandler(this.resizeToolStripMenuItem_Click);
             // 
@@ -159,8 +161,9 @@ namespace OM_Form
             // 
             // addPicturesToolStripMenuItem
             // 
+            this.addPicturesToolStripMenuItem.Enabled = false;
             this.addPicturesToolStripMenuItem.Name = "addPicturesToolStripMenuItem";
-            this.addPicturesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.addPicturesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addPicturesToolStripMenuItem.Text = "Add pictures...";
             this.addPicturesToolStripMenuItem.Click += new System.EventHandler(this.addPicturesToolStripMenuItem_Click);
             // 
@@ -242,6 +245,14 @@ namespace OM_Form
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
             // 
+            // saveProjectToolStripMenuItem
+            // 
+            this.saveProjectToolStripMenuItem.Enabled = false;
+            this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
+            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveProjectToolStripMenuItem.Text = "Save Project";
+            this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,6 +301,7 @@ namespace OM_Form
         public System.Windows.Forms.ToolStripMenuItem rGBToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resizeToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
         //public BackgroundWorker backgroundWorker1;
     }
 }
