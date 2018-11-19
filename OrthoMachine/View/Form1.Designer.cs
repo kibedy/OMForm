@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace OM_Form
 {
@@ -38,6 +40,7 @@ namespace OM_Form
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.surfaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadSurfaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +59,7 @@ namespace OM_Form
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.listView1 = new System.Windows.Forms.ListView();
-            this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeSelectedPictureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -89,16 +92,24 @@ namespace OM_Form
             // newProjectToolStripMenuItem
             // 
             this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
-            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.newProjectToolStripMenuItem.Text = "New Project...";
             this.newProjectToolStripMenuItem.Click += new System.EventHandler(this.newProjectToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.openToolStripMenuItem.Text = "Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // saveProjectToolStripMenuItem
+            // 
+            this.saveProjectToolStripMenuItem.Enabled = false;
+            this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
+            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.saveProjectToolStripMenuItem.Text = "Save Project";
+            this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
             // 
             // surfaceToolStripMenuItem
             // 
@@ -154,7 +165,8 @@ namespace OM_Form
             // picturesToolStripMenuItem
             // 
             this.picturesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addPicturesToolStripMenuItem});
+            this.addPicturesToolStripMenuItem,
+            this.removeSelectedPictureToolStripMenuItem});
             this.picturesToolStripMenuItem.Name = "picturesToolStripMenuItem";
             this.picturesToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.picturesToolStripMenuItem.Text = "Pictures";
@@ -163,7 +175,7 @@ namespace OM_Form
             // 
             this.addPicturesToolStripMenuItem.Enabled = false;
             this.addPicturesToolStripMenuItem.Name = "addPicturesToolStripMenuItem";
-            this.addPicturesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addPicturesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.addPicturesToolStripMenuItem.Text = "Add pictures...";
             this.addPicturesToolStripMenuItem.Click += new System.EventHandler(this.addPicturesToolStripMenuItem_Click);
             // 
@@ -197,6 +209,7 @@ namespace OM_Form
             this.intensityToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(120, 70);
+            this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
             // 
             // depthToolStripMenuItem
             // 
@@ -244,14 +257,14 @@ namespace OM_Form
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
+            this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
             // 
-            // saveProjectToolStripMenuItem
+            // removeSelectedPictureToolStripMenuItem
             // 
-            this.saveProjectToolStripMenuItem.Enabled = false;
-            this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
-            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveProjectToolStripMenuItem.Text = "Save Project";
-            this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
+            this.removeSelectedPictureToolStripMenuItem.Name = "removeSelectedPictureToolStripMenuItem";
+            this.removeSelectedPictureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeSelectedPictureToolStripMenuItem.Text = "Remove selected";
+            this.removeSelectedPictureToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedPictureToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -278,6 +291,8 @@ namespace OM_Form
 
         }
 
+       
+
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -302,6 +317,7 @@ namespace OM_Form
         public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resizeToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeSelectedPictureToolStripMenuItem;
         //public BackgroundWorker backgroundWorker1;
     }
 }

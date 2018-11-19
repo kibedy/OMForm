@@ -195,7 +195,7 @@ namespace OM_Form
 
         private void listView1_MouseClick(object sender, MouseEventArgs e)
         {            
-            photos.ShowPhoto();
+            //photos.ShowPhoto();
 
         }
 
@@ -226,14 +226,46 @@ namespace OM_Form
             sw.Close();
         }
 
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            photos.ShowPhoto();
+        }
+
+        private void removeSelectedPictureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listView1.Items.Count >= 1)
+            {
+                ListViewItem item = listView1.SelectedItems[0];
+                int index = listView1.SelectedItems[0].Index;
+                listView1.Items.RemoveAt(index);
+                photos.projimagefilenames.RemoveAt(index);
+            }
+        }
+
         private void FileStripMenuItem1_Click(object sender, EventArgs e)
         {
-
+           
         }
-        
+        private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+            ToolStripItem item = e.ClickedItem;
+            if (e.ClickedItem.Name == "rGBToolStripMenuItem")
+            {                
+                pictureBox1.Image = sf.sc.RGBsurfImage.ToBitmap();
+            }
+            else if (e.ClickedItem.Name == "intensityToolStripMenuItem")
+            {               
+                pictureBox1.Image = sf.sc.intSurfImage.ToBitmap();                
+            }
+            else
+            {                
+                pictureBox1.Image = sf.sc.image.ToBitmap();                
+            }
+        }
 
 
 
-     
+
     }
 }
