@@ -110,7 +110,7 @@ namespace OM_Form.ViewModel
                     form1.sf.sc.RGBsurfImage = new Image<Bgr, byte>(SavePath + "\\surface_rgb.png");
                     form1.sf.sc.intSurfImage = new Image<Gray, byte>(SavePath + "\\surface_int.png");
                     form1.intensityToolStripMenuItem.Enabled = true;
-                    form1.depthToolStripMenuItem.Enabled = true;
+                    form1.depthToolStripMenuItem.Enabled = true;                    
                     form1.rGBToolStripMenuItem.Enabled = true;
                 }
                 else if (form1.filetype == 4)
@@ -144,6 +144,7 @@ namespace OM_Form.ViewModel
                     //form1.photos.projimagefilenames = photolist;
                     form1.photos.SilentLoadPhotos(form1, photolist);
                     form1.saveProjectToolStripMenuItem.Enabled = true;
+                    form1.removeSelectedToolStripMenuItem.Enabled = true;
                     sr.Close();
 
                 }

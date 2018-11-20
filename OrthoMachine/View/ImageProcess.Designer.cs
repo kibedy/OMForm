@@ -250,6 +250,7 @@ namespace OrthoMachine.View
             this.buttonCalculate.Text = "Calculate orientation";
             this.buttonCalculate.UseVisualStyleBackColor = true;
             this.buttonCalculate.Visible = false;
+            this.buttonCalculate.Click += new System.EventHandler(this.buttonCalculate_Click);
             // 
             // contextMenuStrip1
             // 

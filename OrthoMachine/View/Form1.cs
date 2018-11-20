@@ -264,7 +264,16 @@ namespace OM_Form
             }
         }
 
-
+        private void contextMenuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (listView1.Items.Count >= 1)
+            {
+                ListViewItem item = listView1.SelectedItems[0];
+                int index = listView1.SelectedItems[0].Index;
+                listView1.Items.RemoveAt(index);
+                photos.projimagefilenames.RemoveAt(index);
+            }
+        }
 
 
     }

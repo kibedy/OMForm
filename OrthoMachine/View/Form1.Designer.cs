@@ -52,6 +52,8 @@ namespace OM_Form
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.removeSelectedToolStripMenuItem = new ToolStripMenuItem();
             this.depthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.intensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,6 +66,7 @@ namespace OM_Form
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -193,7 +196,7 @@ namespace OM_Form
             // 
             // pictureBox1
             // 
-            this.pictureBox1.ContextMenuStrip = this.contextMenuStrip1;
+            this.panel1.ContextMenuStrip = this.contextMenuStrip1;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(100, 50);
@@ -211,13 +214,28 @@ namespace OM_Form
             this.contextMenuStrip1.Size = new System.Drawing.Size(120, 70);
             this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
             // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeSelectedToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(120, 70);
+            this.contextMenuStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip2_ItemClicked);
+            // 
+            // RemoveSelectedMenuItem
+            // 
+            this.removeSelectedToolStripMenuItem.Enabled = false;
+            this.removeSelectedToolStripMenuItem.Name = "RemoveSelectedMenuItem";
+            this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.removeSelectedToolStripMenuItem.Text = "Remove selected";
+            // 
             // depthToolStripMenuItem
             // 
             this.depthToolStripMenuItem.Enabled = false;
             this.depthToolStripMenuItem.Name = "depthToolStripMenuItem";
             this.depthToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.depthToolStripMenuItem.Text = "Depth";
-            // 
+            // contextMenuStrip1
             // rGBToolStripMenuItem
             // 
             this.rGBToolStripMenuItem.Enabled = false;
@@ -248,6 +266,7 @@ namespace OM_Form
             // 
             // listView1
             // 
+            this.listView1.ContextMenuStrip = this.contextMenuStrip2;
             this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.listView1.Location = new System.Drawing.Point(12, 31);
@@ -263,7 +282,7 @@ namespace OM_Form
             // 
             this.removeSelectedPictureToolStripMenuItem.Name = "removeSelectedPictureToolStripMenuItem";
             this.removeSelectedPictureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.removeSelectedPictureToolStripMenuItem.Text = "Remove selected";
+            this.removeSelectedPictureToolStripMenuItem.Text = "Remove";
             this.removeSelectedPictureToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedPictureToolStripMenuItem_Click);
             // 
             // Form1
@@ -286,12 +305,15 @@ namespace OM_Form
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
-       
+
+
+
 
         #endregion
 
@@ -312,7 +334,9 @@ namespace OM_Form
         private System.Windows.Forms.ToolStripMenuItem loadSurfaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bilinearFillHolesToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         public System.Windows.Forms.ToolStripMenuItem depthToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem rGBToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resizeToolStripMenuItem;
