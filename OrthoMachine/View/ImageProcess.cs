@@ -121,7 +121,7 @@ namespace OrthoMachine.View
             try
             {
                 string[] fn = filename.Split('.');
-                StreamReader sr = new StreamReader(form1.SavePath + "\\photos\\" + fn[0] + ".ori");                
+                StreamReader sr = new StreamReader(form1.SavePath + "\\photos\\" + fn[0] + ".ori");
                 bool photobool = true;
                 while (!sr.EndOfStream)
                 {
@@ -129,7 +129,7 @@ namespace OrthoMachine.View
                     string[] lineE = line.Split(';');
                     if (lineE[0].Equals("zzz"))
                     {
-                        photobool = false;                        
+                        photobool = false;
                         continue;
                     }
                     else
@@ -148,13 +148,13 @@ namespace OrthoMachine.View
 
                 }
                 sr.Close();
-                
-                
+
+
             }
             catch { }
-            listView1.Refresh();            
-            DrawMarkers(listView1, pictureBox1, photo.ToBitmap());            
-            listView2.Refresh();            
+            listView1.Refresh();
+            DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+            listView2.Refresh();
             //SSS = ShowState.depth;
             //DrawMarkers(listView2, pictureBox2,form1.sf.sc.image.ToBitmap());
             SetOrientationForm();
@@ -335,7 +335,7 @@ namespace OrthoMachine.View
             this.pictureBox2.Cursor = Cursors.Hand;
             ImageWidthS = surface.Bitmap.Width;
             //ImageHeightS = pictureBox2.Image.Height;
-            ImageHeightS = surface.Bitmap.Height; 
+            ImageHeightS = surface.Bitmap.Height;
             this.pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             this.pictureBox2.Size = new Size(ImageWidthS, ImageHeightS);
             this.SizeChanged += new System.EventHandler(this.ImageProcess_SizeChanged);
@@ -346,7 +346,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceUp.Visible = true;
             this.buttonSurfaceDown.Visible = true;
             //listView1.Refresh();
-            
+
             //DrawMarkers(listView2, pictureBox2, surface.Bitmap);
             //DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
 
@@ -723,6 +723,7 @@ namespace OrthoMachine.View
             double sumX = 0;
             double sumY = 0;
             double sumZ = 0;
+            double c = 28;
             foreach (ListViewItem item in listView2.Items)
             {
                 sumX += double.Parse(item.SubItems[1].Text);
@@ -730,15 +731,32 @@ namespace OrthoMachine.View
                 sumZ += double.Parse(item.SubItems[2].Text);
             }
             Xo = sumX / listView2.Items.Count;
-            Yo = sumY / listView2.Items.Count -20;  //start position in negative 
+            Yo = sumY / listView2.Items.Count - 20;  //start position in negative 
             Zo = sumZ / listView2.Items.Count;
 
             int iter = 0;
             double var2 = 0.01;
             double var3 = 0.01;
             double a11, a12, a13, a21, a22, a23, a31, a32, a33;
+            int pointpaircount = Math.Min(listView1.Items.Count, listView2.Items.Count);
+            double[] DX = new double[pointpaircount];
+            double[] DY = new double[pointpaircount];
+            double[] DZ = new double[pointpaircount];
+            double[] x = new double[pointpaircount];
+            double[] y = new double[pointpaircount];
+            double[] xo = new double[pointpaircount * 2];
 
-            while (iter<20)
+            //int i = 0;
+            //foreach (ListViewItem item in listView1.Items)
+            for (int j = 0; j < pointpaircount; j++)
+            {
+                ListViewItem item = listView1.Items[j];
+                x[j] = double.Parse(item.SubItems[1].Text) - Xo;
+                y[j] = double.Parse(item.SubItems[2].Text) - Yo;
+            }
+            int j = 0;
+
+            while (iter < 20)
             {
                 a11 = cos(p) * cos(k);
                 a12 = -cos(p) * sin(k);
@@ -749,8 +767,17 @@ namespace OrthoMachine.View
                 a31 = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
                 a32 = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
                 a33 = cos(o) * cos(p);
-
-                
+                int i = 0;
+                foreach (ListViewItem item in listView2.Items)
+                {
+                    DX[i] = double.Parse(item.SubItems[1].Text) - Xo;
+                    DY[i] = double.Parse(item.SubItems[3].Text) - Yo;
+                    DZ[i] = double.Parse(item.SubItems[2].Text) - Zo;
+                    xo[2 * i] = c * (a11 * DX[i] + a21 * DY[i] + a31 * DZ[i]) / (a13 * DX[i] + a23 * DY[i] + a33 * DZ[i]);
+                    xo[2 * i + 1] = c * (a12 * DX[i] + a22 * DY[i] + a32 * DZ[i]) / (a13 * DX[i] + a23 * DY[i] + a33 * DZ[i]);
+                    //lm[i] = DZ[i] / (a31 * x[i] + a32 * y[i] + a33 * c);
+                    i++;
+                }
                 //TO DO Folytatni
 
             }
