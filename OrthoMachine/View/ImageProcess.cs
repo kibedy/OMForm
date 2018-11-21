@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -59,6 +61,8 @@ namespace OrthoMachine.View
             //ImageHeight = pictureBox1.BackgroundImage.Height;
             colors = CreateColorList();
             //this.FormClosing + = ImageProcess_Closing;
+            this.FormClosing += ImageProcess_FormClosing;
+            SSS = ShowState.depth;
 
 
             if (form1.filetype == 7)
@@ -108,18 +112,77 @@ namespace OrthoMachine.View
             this.listView2.Columns.Add("Global Z", 80, HorizontalAlignment.Left);
             this.listView2.Columns.Add("Global Y", 80, HorizontalAlignment.Left);
 
+            LoadMarkerCoordinates();
+
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void LoadMarkerCoordinates()
         {
-            if (string.Equals((sender as Button).Name, @"CloseButton"))
+            try
             {
-                // Do something proper to CloseButton.
+                string[] fn = filename.Split('.');
+                StreamReader sr = new StreamReader(form1.SavePath + "\\photos\\" + fn[0] + ".ori");                
+                bool photobool = true;
+                while (!sr.EndOfStream)
+                {
+                    string line = sr.ReadLine();
+                    string[] lineE = line.Split(';');
+                    if (lineE[0].Equals("zzz"))
+                    {
+                        photobool = false;                        
+                        continue;
+                    }
+                    else
+                    {
+                        if (photobool == true)
+                        {
+                            ListViewItem item = new ListViewItem(new[] { listView1.Items.Count.ToString(), lineE[1], lineE[2] });
+                            listView1.Items.Add(item);
+                        }
+                        if (photobool == false)
+                        {
+                            ListViewItem item = new ListViewItem(new[] { listView2.Items.Count.ToString(), lineE[1], lineE[2], lineE[3] });
+                            listView2.Items.Add(item);
+                        }
+                    }
+
+                }
+                sr.Close();
+                
+                
             }
-            else
+            catch { }
+            listView1.Refresh();            
+            DrawMarkers(listView1, pictureBox1, photo.ToBitmap());            
+            listView2.Refresh();            
+            //SSS = ShowState.depth;
+            //DrawMarkers(listView2, pictureBox2,form1.sf.sc.image.ToBitmap());
+            SetOrientationForm();
+        }
+
+        private void ImageProcess_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            string[] fn = filename.Split('.');
+            StreamWriter sw = new StreamWriter(form1.SavePath + "\\photos\\" + fn[0] + ".ori");
+            //throw new NotImplementedException();
+            if (listView1.Items.Count > 0)
             {
-                // Then assume that X has been clicked and act accordingly.
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    sw.WriteLine(item.SubItems[0].Text + ";" + item.SubItems[1].Text + ";" + item.SubItems[2].Text);
+                }
             }
+            sw.WriteLine("zzz");
+
+            if (listView2.Items.Count > 0)
+            {
+                foreach (ListViewItem item in listView2.Items)
+                {
+                    sw.WriteLine(item.SubItems[0].Text + ";" + item.SubItems[1].Text + ";" + item.SubItems[2].Text + ";" + item.SubItems[3].Text);
+                }
+            }
+            sw.Close();
+
         }
 
 
@@ -248,9 +311,54 @@ namespace OrthoMachine.View
             throw new NotImplementedException();
         }
 
+        private void SetOrientationForm()
+        {
+            EnablePickpoints = true;
+            buttonCalculate.Visible = true;
+            //panel1.Height -= 140;
+            panel1.Height = this.Height - 200;
+            panel1.Size = new Size(this.Width / 2 - 2, panel1.Height);
+            //panel2.Size = new Size(this.Width / 2, panel1.Height);
+            this.listView1.Visible = true;
+            this.listView2.Visible = true;
+            panel2.Location = new Point(panel1.Location.X + panel1.Width + 2, panel1.Location.Y);
+            panel2.Width = panel1.Width - 4;
+            panel2.Height = panel1.Height;
+
+
+            //surface = new Image<Gray, ushort>(form1.SavePath + "\\" + "surface.png");
+            surface = form1.sf.sc.image;
+            SSS = ShowState.depth;
+            this.pictureBox2.Visible = true;
+            this.panel2.Visible = true;
+            //this.pictureBox2.Image = surface.ToBitmap();
+            this.pictureBox2.Cursor = Cursors.Hand;
+            ImageWidthS = surface.Bitmap.Width;
+            //ImageHeightS = pictureBox2.Image.Height;
+            ImageHeightS = surface.Bitmap.Height; 
+            this.pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            this.pictureBox2.Size = new Size(ImageWidthS, ImageHeightS);
+            this.SizeChanged += new System.EventHandler(this.ImageProcess_SizeChanged);
+            this.buttonPhotoUp.Visible = true;
+            this.buttonPhotoDown.Visible = true;
+            this.buttonPhotoDel.Visible = true;
+            this.buttonSurfaceDel.Visible = true;
+            this.buttonSurfaceUp.Visible = true;
+            this.buttonSurfaceDown.Visible = true;
+            //listView1.Refresh();
+            
+            //DrawMarkers(listView2, pictureBox2, surface.Bitmap);
+            //DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+
+
+
+
+        }
 
         private void orientateToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SetOrientationForm();
+            /*
             EnablePickpoints = true;
             buttonCalculate.Visible = true;
             //panel1.Height -= 140;
@@ -282,6 +390,7 @@ namespace OrthoMachine.View
             this.buttonSurfaceDel.Visible = true;
             this.buttonSurfaceUp.Visible = true;
             this.buttonSurfaceDown.Visible = true;
+            */
 
         }
 
@@ -406,7 +515,7 @@ namespace OrthoMachine.View
             {
                 pbox.Image = source;
             }
-
+            GC.Collect();
         }
 
         private void buttonPhotoDel_Click(object sender, EventArgs e)
@@ -416,62 +525,68 @@ namespace OrthoMachine.View
 
         private void buttonSurfaceUp_Click(object sender, EventArgs e)
         {
-
-            if (listView2.Items.Count >= 2 && listView2.SelectedItems[0].Index >= 1)
+            try
             {
-                ListViewItem item = listView2.SelectedItems[0];
-                int index = listView2.SelectedItems[0].Index;
-                ListViewItem itemUpper = listView2.Items[index - 1];
-                itemUpper.Text = index.ToString();
-                item.Text = (index - 1).ToString();
-                listView2.Items.RemoveAt(item.Index - 1);
-                listView2.Items.RemoveAt(item.Index);
-                listView2.Items.Insert(index - 1, item);
-                listView2.Items.Insert(index, itemUpper);
-                listView2.Refresh();
-                if (SSS == ShowState.depth)
+                if (listView2.Items.Count >= 2 && listView2.SelectedItems[0].Index >= 1)
                 {
-                    DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
-                }
-                else if (SSS == ShowState.rgb)
-                {
-                    DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
-                }
-                else
-                {
-                    DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                    ListViewItem item = listView2.SelectedItems[0];
+                    int index = listView2.SelectedItems[0].Index;
+                    ListViewItem itemUpper = listView2.Items[index - 1];
+                    itemUpper.Text = index.ToString();
+                    item.Text = (index - 1).ToString();
+                    listView2.Items.RemoveAt(item.Index - 1);
+                    listView2.Items.RemoveAt(item.Index);
+                    listView2.Items.Insert(index - 1, item);
+                    listView2.Items.Insert(index, itemUpper);
+                    listView2.Refresh();
+                    if (SSS == ShowState.depth)
+                    {
+                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
+                    }
+                    else if (SSS == ShowState.rgb)
+                    {
+                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                    }
+                    else
+                    {
+                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                    }
                 }
             }
+            catch { }
         }
 
         private void buttonSurfaceDown_Click(object sender, EventArgs e)
         {
-
-            if (listView2.Items.Count >= 2 && listView2.SelectedItems[0].Index < listView2.Items.Count - 1)
+            try
             {
-                ListViewItem item = listView2.SelectedItems[0];
-                int index = listView2.SelectedItems[0].Index;
-                ListViewItem lowerItem = listView2.Items[index + 1];
-                lowerItem.Text = (index).ToString();
-                item.Text = (index + 1).ToString();
-                listView2.Items.RemoveAt(item.Index + 1);
-                listView2.Items.RemoveAt(item.Index);
-                listView2.Items.Insert(index, lowerItem);
-                listView2.Items.Insert(index + 1, item);
-                listView2.Refresh();
-                if (SSS == ShowState.depth)
+                if (listView2.Items.Count >= 2 && listView2.SelectedItems[0].Index < listView2.Items.Count - 1)
                 {
-                    DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
-                }
-                else if (SSS == ShowState.rgb)
-                {
-                    DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
-                }
-                else
-                {
-                    DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                    ListViewItem item = listView2.SelectedItems[0];
+                    int index = listView2.SelectedItems[0].Index;
+                    ListViewItem lowerItem = listView2.Items[index + 1];
+                    lowerItem.Text = (index).ToString();
+                    item.Text = (index + 1).ToString();
+                    listView2.Items.RemoveAt(item.Index + 1);
+                    listView2.Items.RemoveAt(item.Index);
+                    listView2.Items.Insert(index, lowerItem);
+                    listView2.Items.Insert(index + 1, item);
+                    listView2.Refresh();
+                    if (SSS == ShowState.depth)
+                    {
+                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
+                    }
+                    else if (SSS == ShowState.rgb)
+                    {
+                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                    }
+                    else
+                    {
+                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                    }
                 }
             }
+            catch { }
         }
 
         private void DelMarker(ListView listview, PictureBox picturebox, ShowState SSS)
@@ -596,7 +711,7 @@ namespace OrthoMachine.View
              ;
          }*/
 
-      //orientation
+        //orientation
         //initialization
 
         private void initOrientation(ListView listView1, ListView listView2)
@@ -610,15 +725,42 @@ namespace OrthoMachine.View
             double sumZ = 0;
             foreach (ListViewItem item in listView2.Items)
             {
-                sumX+=double.Parse(item.SubItems[1].Text);
+                sumX += double.Parse(item.SubItems[1].Text);
                 sumY += double.Parse(item.SubItems[3].Text);
                 sumZ += double.Parse(item.SubItems[2].Text);
             }
-            ;
+            Xo = sumX / listView2.Items.Count;
+            Yo = sumY / listView2.Items.Count -20;  //start position in negative 
+            Zo = sumZ / listView2.Items.Count;
+
+            int iter = 0;
+            double var2 = 0.01;
+            double var3 = 0.01;
+            double a11, a12, a13, a21, a22, a23, a31, a32, a33;
+
+            while (iter<20)
+            {
+                a11 = cos(p) * cos(k);
+                a12 = -cos(p) * sin(k);
+                a13 = sin(p);
+                a21 = cos(o) * sin(k) + sin(o) * sin(p) * cos(k);
+                a22 = cos(o) * cos(k) - sin(o) * sin(p) * sin(k);
+                a23 = -sin(o) * cos(p);
+                a31 = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
+                a32 = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
+                a33 = cos(o) * cos(p);
+
+                
+                //TO DO Folytatni
+
+            }
+
+
 
         }
 
-
+        double cos(double deg) { return Math.Cos(deg); }
+        double sin(double deg) { return Math.Sin(deg); }
 
 
     }//class

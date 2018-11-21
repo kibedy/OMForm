@@ -285,13 +285,15 @@ namespace OM_Form.ViewModel
         internal void ShowPhoto()
         {
             //MessageBox.Show(listView1.SelectedItems[0].SubItems[0].Text);
-            
-                //Filename = ofd.FileName;
-                
-                using (var improcform = new ImageProcess(form1, form1.listView1.SelectedItems[0].SubItems[0].Text, orientation))
-                {
-                    improcform.ShowDialog();                   
-                }                        
+
+            //Filename = ofd.FileName;
+
+            /*using (var improcform = new ImageProcess(form1, form1.listView1.SelectedItems[0].SubItems[0].Text, orientation))
+            {
+                improcform.ShowDialog();                   
+            } */
+            ImageProcess improcform = new ImageProcess(form1, form1.listView1.SelectedItems[0].SubItems[0].Text, orientation);
+            improcform.ShowDialog();
         }
 
         public Photo()
