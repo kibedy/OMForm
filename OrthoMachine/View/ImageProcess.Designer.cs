@@ -85,6 +85,7 @@ namespace OrthoMachine.View
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.addMarkerPhoto);
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
+            this.pictureBox1.MouseEnter += new System.EventHandler(this.pictureBox1_MouseEnter);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
@@ -115,6 +116,7 @@ namespace OrthoMachine.View
             this.pictureBox2.Visible = false;
             this.pictureBox2.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.addMarkerSurface);
             this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
+            this.pictureBox2.MouseEnter += new System.EventHandler(this.pictureBox2_MouseEnter);
             this.pictureBox2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseMove);
             this.pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseUp);
             // 

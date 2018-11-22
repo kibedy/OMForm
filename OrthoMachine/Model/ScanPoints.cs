@@ -329,6 +329,7 @@ namespace ortomachine.Model
 
         public Bitmap saveSurface()
         {
+            GCHandle gch = GCHandle.Alloc(image, GCHandleType.Pinned);
             image = new Image<Gray, ushort>(xwidth, yheight);
             if (filetype ==4)
             {                

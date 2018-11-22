@@ -13,6 +13,7 @@ using OM_Form;
 using ortomachine.Model;
 using OM_Form.View;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace ortomachine.Model
 {
@@ -60,6 +61,7 @@ namespace ortomachine.Model
 
             //image = new Bitmap("surface.png");
             sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");
+            //GCHandle gch = GCHandle.Alloc(sc.image);
             /*for (int i = 0; i < 10; i++)
             {
                 Console.WriteLine("pixelérték: " + sc.image.Data[500 + i, 500 + i, 0]);

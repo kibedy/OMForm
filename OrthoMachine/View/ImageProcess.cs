@@ -10,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,6 +52,7 @@ namespace OrthoMachine.View
             this.filename = filename;
             this.orientation = orientation;
             this.form1 = form1;
+            GCHandle gchphoto = GCHandle.Alloc(photo, GCHandleType.Pinned);
             photo = new Image<Bgra, byte>(form1.SavePath + "\\photos\\" + filename);
             photo_orig = photo.Clone();
             this.pictureBox1.Image = photo.ToBitmap();
@@ -148,15 +150,21 @@ namespace OrthoMachine.View
 
                 }
                 sr.Close();
-
+                
 
             }
             catch { }
             listView1.Refresh();
-            DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+            //DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+            DrawMarkersPhoto();
+            //pictureBox1.Image = photo.Bitmap;
             listView2.Refresh();
-            //SSS = ShowState.depth;
-            //DrawMarkers(listView2, pictureBox2,form1.sf.sc.image.ToBitmap());
+            SSS = ShowState.depth;
+            //GCHandle gchsu = GCHandle.Alloc(surface, GCHandleType.Pinned);
+            surface = form1.sf.sc.image;
+            //pictureBox2.Image = form1.sf.sc.image.Bitmap;
+            //DrawMarkers(listView2, pictureBox2,surface.Bitmap);
+            DrawMarkerSurface();
             SetOrientationForm();
         }
 
@@ -188,7 +196,7 @@ namespace OrthoMachine.View
 
         #region PictureBox_1_Events
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
-        {
+        {            
             const float scale_per_delta = 0.1f / 120;
             ImageScale += e.Delta * scale_per_delta;
 
@@ -214,7 +222,7 @@ namespace OrthoMachine.View
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
-        {
+        {            
             if (_tracking && (pictureBox1.Image.Width > this.ClientSize.Width || pictureBox1.Image.Height > this.ClientSize.Height))
             {
                 panel1.AutoScrollPosition = new Point(-panel1.AutoScrollPosition.X + (_mousePt.X - e.X), -panel1.AutoScrollPosition.Y + (_mousePt.Y - e.Y));
@@ -236,9 +244,10 @@ namespace OrthoMachine.View
 
         private void pictureBox2_MouseWheel(object sender, MouseEventArgs e)
         {
+            pictureBox2.Refresh();
             const float scale_per_delta = 0.1f / 120;
             ImageScaleS += e.Delta * scale_per_delta;
-
+            
 
             if (ImageScaleS < 0) ImageScaleS = 0;
             this.pictureBox2.Size = new Size((int)(ImageWidthS * ImageScaleS), (int)(ImageHeightS * ImageScaleS));
@@ -261,7 +270,7 @@ namespace OrthoMachine.View
 
 
         private void pictureBox2_MouseMove(object sender, MouseEventArgs e)
-        {
+        {            
             if (_tracking &&
              (pictureBox2.Image.Width > this.ClientSize.Width ||
              pictureBox2.Image.Height > this.ClientSize.Height))
@@ -288,7 +297,8 @@ namespace OrthoMachine.View
                 //rgbsurf= new Image<Bgra, byte>(form1.SavePath +"\\surface_rgb.png)");
                 //pictureBox2.Image = form1.sf.sc.RGBsurfImage.ToBitmap();
                 SSS = ShowState.rgb;
-                DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                //DrawMarkerSurface();
 
                 //this.pictureBox2.Image=
             }
@@ -296,14 +306,17 @@ namespace OrthoMachine.View
             {
                 SSS = ShowState.intensity;
                 //pictureBox2.Image = form1.sf.sc.intSurfImage.ToBitmap();
-                DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                //DrawMarkerSurface();
             }
             else
             {
                 SSS = ShowState.depth;
                 //pictureBox2.Image = form1.sf.sc.image.ToBitmap();
-                DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
+                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
+                //DrawMarkerSurface();
             }
+            DrawMarkerSurface();
         }
 
         private void panel1_MouseWheel(object sender, MouseEventArgs e)
@@ -445,8 +458,10 @@ namespace OrthoMachine.View
                 {
 
                 }
-                DrawMarkers(listView2, pictureBox2, new Bitmap(pictureBox2.Image));
+                DrawMarkerSurface();
+                panel2.Invalidate();
             }
+            GC.Collect();
         }
 
         private void addMarkerPhoto(object sender, MouseEventArgs e)
@@ -466,21 +481,148 @@ namespace OrthoMachine.View
                 }
 
                 //DrawMarkers(listView1, pictureBox1, new Bitmap(pictureBox1.Image));
-                DrawMarkers(listView1, pictureBox1, new Bitmap(photo.ToBitmap()));
+                DrawMarkersPhoto();
 
                 //DrawMarkers(listView1, pictureBox1, new Bitmap(pictureBox1.BackgroundImage));
                 panel1.Invalidate();
+                GC.Collect();
             }
+         
+
         }
 
 
 
-        private void DrawMarkers(ListView list, PictureBox pbox, Image source)
+        private void DrawMarkersPhoto()
         {
             //markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
             //markerimage = new Image<Bgra, byte>(new Size(source.Width, source.Height));
+            
+            Image<Bgra, byte> toDraw = new Image<Bgra, byte>(photo.Bitmap);
+            //Image<Bgra, byte> temp = ((toDraw).Clone());
+            Image<Bgra, byte> temp = new Image<Bgra, byte>(toDraw.Bitmap);
+            if (listView1.Items.Count != 0)
+            {
+                ListViewItem[] items = new ListViewItem[listView1.Items.Count];
+                listView1.Items.CopyTo(items, 0);
+                int i = 0;
+                foreach (ListViewItem item in listView1.Items)
+                {                    
+                    /*Graphics g = Graphics.FromImage(temp.Bitmap);
+
+                    Pen pen = new Pen((Color)colors[i]);
+
+                    float X = float.Parse(item.SubItems[1].Text);
+                    float Y = float.Parse(item.SubItems[2].Text);
+                    float r = 10;
+                    g.DrawEllipse(pen, X, Y, r, r);
+                    i++;
+                    */
+                    
+                    markerimage = new Image<Gray, byte>(new Size(photo.Width, photo.Height));
+
+                    float X = float.Parse(item.SubItems[1].Text);
+                    float Y = float.Parse(item.SubItems[2].Text);
+                    PointF center = new PointF(X, Y);
+                    float r = 10;
+                    CircleF circle1 = new CircleF(center, r);
+                    CircleF circle2 = new CircleF(center, 1);
+                    markerimage.Draw(circle1, new Gray(250), 1);
+                    //markerimage.Draw(circle1, (Bgra)colors[0], i);
+                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
+                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
+                    //i++;
+                    markerimage.Draw(circle2, new Gray(250), 1);
+
+                    markerimage._SmoothGaussian(3, 3, 1, 1);
+                    temp.SetValue((Bgra)colors[i], markerimage);
+                    i++;
+                    //GC.Collect();
+                    
+
+                }
+                pictureBox1.Image = temp.Bitmap;                
+            }
+            else
+            {
+                pictureBox1.Image = photo.Bitmap;               
+            }
+        }
+
+        private void DrawMarkerSurface()
+        {
+            Image<Bgra, byte> toDraw;
+            if (SSS == ShowState.depth)
+            {
+                toDraw = new Image<Bgra, byte>(form1.sf.sc.image.Bitmap);
+            }
+            else if (SSS == ShowState.rgb)
+            {
+               toDraw = new Image<Bgra, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
+            }
+            else
+            {
+                toDraw = new Image<Bgra, byte>(form1.sf.sc.intSurfImage.Bitmap);
+                
+            }
+            //Image<Bgra, byte> temp = ((toDraw).Clone());
+            Image<Bgra, byte> temp = new Image<Bgra, byte>(toDraw.Bitmap);
+            if (listView2.Items.Count != 0)
+            {
+                ListViewItem[] items = new ListViewItem[listView2.Items.Count];
+                listView2.Items.CopyTo(items, 0);
+                int i = 0;
+                foreach (ListViewItem item in listView2.Items)
+                {
+                    /*Graphics g = Graphics.FromImage(temp.Bitmap);
+
+                    Pen pen = new Pen((Color)colors[i]);
+
+                    float X = float.Parse(item.SubItems[1].Text);
+                    float Y = float.Parse(item.SubItems[2].Text);
+                    float r = 10;
+                    g.DrawEllipse(pen, X, Y, r, r);
+                    i++;
+                    */
+
+                    markerimage = new Image<Gray, byte>(new Size(surface.Width, surface.Height));
+
+                    float X = float.Parse(item.SubItems[1].Text);
+                    float Y = float.Parse(item.SubItems[2].Text);
+                    PointF center = new PointF(X, Y);
+                    float r = 10;
+                    CircleF circle1 = new CircleF(center, r);
+                    CircleF circle2 = new CircleF(center, 1);
+                    markerimage.Draw(circle1, new Gray(250), 1);
+                    //markerimage.Draw(circle1, (Bgra)colors[0], i);
+                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
+                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
+                    //i++;
+                    markerimage.Draw(circle2, new Gray(250), 1);
+
+                    markerimage._SmoothGaussian(3, 3, 1, 1);
+                    temp.SetValue((Bgra)colors[i], markerimage);
+                    i++;
+                    //GC.Collect();
+
+
+                }
+                pictureBox2.Image = temp.Bitmap;
+            }
+            else
+            {
+                pictureBox2.Image = toDraw.Bitmap;
+            }
+        }
+
+        /*  original
+        private void DrawMarker(ListView list, PictureBox pbox, Image source)
+        {
+            //markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
+            //markerimage = new Image<Bgra, byte>(new Size(source.Width, source.Height));
+
             Image<Bgra, byte> toDraw = new Image<Bgra, byte>((Bitmap)source);
-            Image<Bgra, byte> temp = (toDraw.Clone());
+            Image<Bgra, byte> temp = ((toDraw).Clone());
             if (list.Items.Count != 0)
             {
                 ListViewItem[] items = new ListViewItem[list.Items.Count];
@@ -488,6 +630,7 @@ namespace OrthoMachine.View
                 int i = 0;
                 foreach (ListViewItem item in list.Items)
                 {
+
                     markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
 
                     float X = float.Parse(item.SubItems[1].Text);
@@ -506,7 +649,8 @@ namespace OrthoMachine.View
                     markerimage._SmoothGaussian(3, 3, 1, 1);
                     temp.SetValue((Bgra)colors[i], markerimage);
                     i++;
-                    GC.Collect();
+                    //GC.Collect();
+
 
                 }
                 pbox.Image = temp.Bitmap;
@@ -515,8 +659,12 @@ namespace OrthoMachine.View
             {
                 pbox.Image = source;
             }
-            GC.Collect();
+            //GCHandle gch1 = GCHandle.Alloc(form1.sf.sc.image,GCHandleType.Pinned);
+            //GCHandle gch2 = GCHandle.Alloc(pictureBox2.Image, GCHandleType.Pinned);
+            //GC.Collect();
         }
+        */
+    
 
         private void buttonPhotoDel_Click(object sender, EventArgs e)
         {
@@ -541,15 +689,18 @@ namespace OrthoMachine.View
                     listView2.Refresh();
                     if (SSS == ShowState.depth)
                     {
-                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
+                        //DrawMarker(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
+                        DrawMarkerSurface();
                     }
                     else if (SSS == ShowState.rgb)
                     {
-                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                        //DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                        DrawMarkerSurface();
                     }
                     else
                     {
-                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                        //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                        DrawMarkerSurface();
                     }
                 }
             }
@@ -572,7 +723,7 @@ namespace OrthoMachine.View
                     listView2.Items.Insert(index, lowerItem);
                     listView2.Items.Insert(index + 1, item);
                     listView2.Refresh();
-                    if (SSS == ShowState.depth)
+                    /*if (SSS == ShowState.depth)
                     {
                         DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
                     }
@@ -583,7 +734,8 @@ namespace OrthoMachine.View
                     else
                     {
                         DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
-                    }
+                    }*/
+                    DrawMarkerSurface();
                 }
             }
             catch { }
@@ -591,24 +743,34 @@ namespace OrthoMachine.View
 
         private void DelMarker(ListView listview, PictureBox picturebox, ShowState SSS)
         {
-            if (listview.Items.Count >= 1)
+            try
             {
-                ListViewItem item = listview.SelectedItems[0];
-                int index = listview.SelectedItems[0].Index;
-                listview.Items.RemoveAt(item.Index);
-                ListViewItem lowerItem;
-                if (index != (listview.Items.Count) && listview.Items.Count != 0)
+                int index;
+                if (listview.Items.Count >= 1)
                 {
-                    for (int i = index; i < listview.Items.Count; i++)
+                    ListViewItem item = listview.SelectedItems[0];
+                    index = listview.SelectedItems[0].Index;
+                    listview.Items.RemoveAt(item.Index);
+                    ListViewItem lowerItem;
+                    if (index != (listview.Items.Count) && listview.Items.Count != 0)
                     {
-                        lowerItem = listview.Items[i];
-                        lowerItem.Text = (i).ToString();
+                        for (int i = index ; i < listview.Items.Count ; i++)
+                        {
+                            lowerItem = listview.Items[i];
+                            lowerItem.Text = (i).ToString();
+                        }
                     }
-                }
-
+                    if (index>1)
+                    {
+                        listview.Items[(index - 1)].Selected = true;
+                        listview.Refresh();
+                    }
+                    
+                }                                
             }
+            catch { MessageBox.Show("No item selected!"); }
             listview.Refresh();
-            if (SSS == ShowState.depth)
+            /*if (SSS == ShowState.depth)
             {
                 DrawMarkers(listview, picturebox, form1.sf.sc.image.ToBitmap());
             }
@@ -623,7 +785,12 @@ namespace OrthoMachine.View
             else if (SSS == ShowState.photo)
             {
                 DrawMarkers(listview, picturebox, photo.ToBitmap());
+            }*/
+            if (SSS == ShowState.photo)
+            {
+                DrawMarkersPhoto();
             }
+            else DrawMarkerSurface();
 
         }
         private void buttonSurfaceDel_Click(object sender, EventArgs e)
@@ -633,8 +800,32 @@ namespace OrthoMachine.View
         }
 
         private ArrayList CreateColorList()
-        {
+        {          
             ArrayList colors = new ArrayList();
+            /*
+            colors.Add(Color.Red);
+            colors.Add(Color.Blue);
+            colors.Add((Color.Green));
+            colors.Add((Color.Magenta));
+            colors.Add((Color.Cyan));
+            colors.Add((Color.Yellow));
+            colors.Add((Color.Violet));
+            colors.Add((Color.SpringGreen));
+            colors.Add((Color.Salmon));
+            colors.Add((Color.Purple));
+            colors.Add((Color.Olive));
+            colors.Add((Color.NavajoWhite));
+            colors.Add((Color.MidnightBlue));
+            colors.Add((Color.MediumPurple));
+            colors.Add((Color.LimeGreen));
+            colors.Add((Color.LightPink));
+            colors.Add((Color.Goldenrod));
+            colors.Add((Color.DarkViolet));
+            colors.Add((Color.Cornsilk));
+            colors.Add((Color.Bisque));
+
+            */
+            
             colors.Add(new Bgra(0, 0, 255, 255));
             colors.Add(new Bgra(0, 255, 0, 255));
             colors.Add(new Bgra(255, 0, 0, 255));
@@ -657,7 +848,7 @@ namespace OrthoMachine.View
             colors.Add(new Bgra(50, 50, 0, 255));
             colors.Add(new Bgra(0, 50, 50, 255));
             colors.Add(new Bgra(50, 0, 50, 255));
-
+            
             return colors;
 
         }
@@ -681,7 +872,8 @@ namespace OrthoMachine.View
                 listView1.Items.Insert(index - 1, item);
                 listView1.Items.Insert(index, itemUpper);
                 listView1.Refresh();
-                DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+                //DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+                DrawMarkersPhoto();
             }
         }
 
@@ -700,8 +892,19 @@ namespace OrthoMachine.View
                 listView1.Items.Insert(index, lowerItem);
                 listView1.Items.Insert(index + 1, item);
                 listView1.Refresh();
-                DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+                //DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+                DrawMarkersPhoto();
             }
+        }
+
+        private void pictureBox1_MouseEnter(object sender, EventArgs e)
+        {
+            DrawMarkersPhoto();
+        }
+
+        private void pictureBox2_MouseEnter(object sender, EventArgs e)
+        {
+            DrawMarkerSurface();
         }
 
 
@@ -754,7 +957,7 @@ namespace OrthoMachine.View
                 x[j] = double.Parse(item.SubItems[1].Text) - Xo;
                 y[j] = double.Parse(item.SubItems[2].Text) - Yo;
             }
-            int j = 0;
+            //int j = 0;
 
             while (iter < 20)
             {
