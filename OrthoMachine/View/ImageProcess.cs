@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace OrthoMachine.View
 {
-    public partial class ImageProcess : Form
+    public partial class ImageProcess: Form
     {
         string filename;
         private int ImageWidth, ImageHeight, ImageWidthS, ImageHeightS;
@@ -150,7 +150,7 @@ namespace OrthoMachine.View
 
                 }
                 sr.Close();
-                
+
 
             }
             catch { }
@@ -196,7 +196,7 @@ namespace OrthoMachine.View
 
         #region PictureBox_1_Events
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
-        {            
+        {
             const float scale_per_delta = 0.1f / 120;
             ImageScale += e.Delta * scale_per_delta;
 
@@ -222,7 +222,7 @@ namespace OrthoMachine.View
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
-        {            
+        {
             if (_tracking && (pictureBox1.Image.Width > this.ClientSize.Width || pictureBox1.Image.Height > this.ClientSize.Height))
             {
                 panel1.AutoScrollPosition = new Point(-panel1.AutoScrollPosition.X + (_mousePt.X - e.X), -panel1.AutoScrollPosition.Y + (_mousePt.Y - e.Y));
@@ -247,7 +247,7 @@ namespace OrthoMachine.View
             pictureBox2.Refresh();
             const float scale_per_delta = 0.1f / 120;
             ImageScaleS += e.Delta * scale_per_delta;
-            
+
 
             if (ImageScaleS < 0) ImageScaleS = 0;
             this.pictureBox2.Size = new Size((int)(ImageWidthS * ImageScaleS), (int)(ImageHeightS * ImageScaleS));
@@ -270,7 +270,7 @@ namespace OrthoMachine.View
 
 
         private void pictureBox2_MouseMove(object sender, MouseEventArgs e)
-        {            
+        {
             if (_tracking &&
              (pictureBox2.Image.Width > this.ClientSize.Width ||
              pictureBox2.Image.Height > this.ClientSize.Height))
@@ -487,7 +487,7 @@ namespace OrthoMachine.View
                 panel1.Invalidate();
                 GC.Collect();
             }
-         
+
 
         }
 
@@ -497,7 +497,7 @@ namespace OrthoMachine.View
         {
             //markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
             //markerimage = new Image<Bgra, byte>(new Size(source.Width, source.Height));
-            
+
             Image<Bgra, byte> toDraw = new Image<Bgra, byte>(photo.Bitmap);
             //Image<Bgra, byte> temp = ((toDraw).Clone());
             Image<Bgra, byte> temp = new Image<Bgra, byte>(toDraw.Bitmap);
@@ -507,7 +507,7 @@ namespace OrthoMachine.View
                 listView1.Items.CopyTo(items, 0);
                 int i = 0;
                 foreach (ListViewItem item in listView1.Items)
-                {                    
+                {
                     /*Graphics g = Graphics.FromImage(temp.Bitmap);
 
                     Pen pen = new Pen((Color)colors[i]);
@@ -518,7 +518,7 @@ namespace OrthoMachine.View
                     g.DrawEllipse(pen, X, Y, r, r);
                     i++;
                     */
-                    
+
                     markerimage = new Image<Gray, byte>(new Size(photo.Width, photo.Height));
 
                     float X = float.Parse(item.SubItems[1].Text);
@@ -538,14 +538,14 @@ namespace OrthoMachine.View
                     temp.SetValue((Bgra)colors[i], markerimage);
                     i++;
                     //GC.Collect();
-                    
+
 
                 }
-                pictureBox1.Image = temp.Bitmap;                
+                pictureBox1.Image = temp.Bitmap;
             }
             else
             {
-                pictureBox1.Image = photo.Bitmap;               
+                pictureBox1.Image = photo.Bitmap;
             }
         }
 
@@ -558,12 +558,12 @@ namespace OrthoMachine.View
             }
             else if (SSS == ShowState.rgb)
             {
-               toDraw = new Image<Bgra, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
+                toDraw = new Image<Bgra, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
             }
             else
             {
                 toDraw = new Image<Bgra, byte>(form1.sf.sc.intSurfImage.Bitmap);
-                
+
             }
             //Image<Bgra, byte> temp = ((toDraw).Clone());
             Image<Bgra, byte> temp = new Image<Bgra, byte>(toDraw.Bitmap);
@@ -664,7 +664,7 @@ namespace OrthoMachine.View
             //GC.Collect();
         }
         */
-    
+
 
         private void buttonPhotoDel_Click(object sender, EventArgs e)
         {
@@ -760,13 +760,13 @@ namespace OrthoMachine.View
                             lowerItem.Text = (i).ToString();
                         }
                     }
-                    if (index>1)
+                    if (index > 1)
                     {
                         listview.Items[(index - 1)].Selected = true;
                         listview.Refresh();
                     }
-                    
-                }                                
+
+                }
             }
             catch { MessageBox.Show("No item selected!"); }
             listview.Refresh();
@@ -800,7 +800,7 @@ namespace OrthoMachine.View
         }
 
         private ArrayList CreateColorList()
-        {          
+        {
             ArrayList colors = new ArrayList();
             /*
             colors.Add(Color.Red);
@@ -825,7 +825,7 @@ namespace OrthoMachine.View
             colors.Add((Color.Bisque));
 
             */
-            
+
             colors.Add(new Bgra(0, 0, 255, 255));
             colors.Add(new Bgra(0, 255, 0, 255));
             colors.Add(new Bgra(255, 0, 0, 255));
@@ -848,7 +848,7 @@ namespace OrthoMachine.View
             colors.Add(new Bgra(50, 50, 0, 255));
             colors.Add(new Bgra(0, 50, 50, 255));
             colors.Add(new Bgra(50, 0, 50, 255));
-            
+
             return colors;
 
         }
@@ -948,10 +948,15 @@ namespace OrthoMachine.View
             double[] x = new double[pointpaircount];
             double[] y = new double[pointpaircount];
             double[] xo = new double[pointpaircount * 2];
+            double[] lm = new double[pointpaircount];
+
+            double[] dX = new double[6];
+            double[] vec = new double[6];
+            double[,] Qxx = new double[6, 6];
 
             //int i = 0;
             //foreach (ListViewItem item in listView1.Items)
-            for (int j = 0; j < pointpaircount; j++)
+            for (int j = 0 ; j < pointpaircount ; j++)
             {
                 ListViewItem item = listView1.Items[j];
                 x[j] = double.Parse(item.SubItems[1].Text) - Xo;
@@ -970,20 +975,79 @@ namespace OrthoMachine.View
                 a31 = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
                 a32 = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
                 a33 = cos(o) * cos(p);
-                int i = 0;
-                foreach (ListViewItem item in listView2.Items)
+                //int i = 0;
+                //foreach (ListViewItem item in listView2.Items)
+                for (int i = 0 ; i < pointpaircount ; i++)
                 {
+                    ListViewItem item = listView2.Items[i];
                     DX[i] = double.Parse(item.SubItems[1].Text) - Xo;
                     DY[i] = double.Parse(item.SubItems[3].Text) - Yo;
                     DZ[i] = double.Parse(item.SubItems[2].Text) - Zo;
                     xo[2 * i] = c * (a11 * DX[i] + a21 * DY[i] + a31 * DZ[i]) / (a13 * DX[i] + a23 * DY[i] + a33 * DZ[i]);
                     xo[2 * i + 1] = c * (a12 * DX[i] + a22 * DY[i] + a32 * DZ[i]) / (a13 * DX[i] + a23 * DY[i] + a33 * DZ[i]);
-                    //lm[i] = DZ[i] / (a31 * x[i] + a32 * y[i] + a33 * c);
-                    i++;
+                    lm[i] = DZ[i] / (a31 * x[i] + a32 * y[i] + a33 * c);
                 }
+
+                //****Beobachtungsvektor,  bármi is legyen ez :)
+                double[] l = new double[pointpaircount * 2];
+                for (int i = 0 ; i < pointpaircount ; i++)
+                {
+                    l[2 * i] = x[i] - xo[2 * i];
+                    l[2 * i + 1] = y[i] - xo[2 * i + 1];
+                }
+
+                //Aufstellen der Designmatrix
+                double[,] A = new double[pointpaircount * 2, 6];
+                double[,] At = new double[6, pointpaircount * 2];
+                double[,] Ata;
+                double[] tmp = new double[pointpaircount];
+
+                for (int i = 0 ; i < pointpaircount ; i++)
+                {
+                    tmp[i] = c * lm[i];
+                    A[2 * i, 0] = (a13 * x[i] - a11 * c) / tmp[i];
+                    A[2 * i, 1] = (a23 * x[i] - a21 * c) / tmp[i];
+                    A[2 * i, 2] = (a33 * x[i] - a31 * c) / tmp[i];
+                    A[2 * i, 3] = y[i] * sin(p) + (x[i] / c * (x[i] * sin(k) + y[i] * cos(k)) + c * sin(k)) * cos(p);
+                    A[2 * i, 4] = -c * cos(k) - (x[i] / c) * (x[i] * cos(k) - y[i] * sin(k));
+                    A[2 * i, 5] = y[i];
+                    A[2 * i + 1, 0] = (a13 * y[i] - a12 * c) / tmp[i];
+                    A[2 * i + 1, 1] = (a23 * y[i] - a22 * c) / tmp[i];
+                    A[2 * i + 1, 2] = (a33 * y[i] - a32 * c) / tmp[i];
+                    A[2 * i + 1, 3] = -x[i] * sin(p) + ((y[i] / c) * (x[i] * sin(k) + y[i] * cos(k)) + c * cos(k)) * cos(p);
+                    A[2 * i + 1, 4] = c * sin(k) - (y[i] / c) * (x[i] * cos(k) - y[i] * sin(k));
+                    A[2 * i + 1, 5] = -x[i];
+                }
+
+                //Normálegyenlet megoldása
+                for (int i = 0 ; i < 6 ; i++)
+                {
+                    dX[i] = vec[i] = 0;
+                }
+
+                At = Transpose(A);
+
+                Ata = MultiplyMatrix(At, A);
+
+                for (int i = 0 ; i < 6 ; i++)   //creating Qxx 
+                {
+                    for (int j = 0 ; j < 6 ; j++)
+                    {
+                        if (i == j)
+                        {
+                            Qxx[i,j] = 1;
+                        }
+                        else
+                        {
+                            Qxx[i,j] = 0.0;
+                        }
+                    }
+                }
+
+
                 //TO DO Folytatni
 
-            }
+            }//while
 
 
 
@@ -991,8 +1055,102 @@ namespace OrthoMachine.View
 
         double cos(double deg) { return Math.Cos(deg); }
         double sin(double deg) { return Math.Sin(deg); }
+        public double[,] Transpose(double[,] matrix)
+        {
+            int w = matrix.GetLength(0);
+            int h = matrix.GetLength(1);
+
+            double[,] result = new double[h, w];
+
+            for (int i = 0 ; i < w ; i++)
+            {
+                for (int j = 0 ; j < h ; j++)
+                {
+                    result[j, i] = matrix[i, j];
+                }
+            }
+
+            return result;
+        }
+
+        public double[,] MultiplyMatrix(double[,]a, double[,]b )
+        {
+            double[,] c = new double[a.GetLength(0), b.GetLength(1)];
+            if (a.GetLength(1) == b.GetLength(0))
+            {
+                //c = new double [a.GetLength(0), b.GetLength(1)];
+                for (int i = 0 ; i < c.GetLength(0) ; i++)
+                {
+                    for (int j = 0 ; j < c.GetLength(1) ; j++)
+                    {
+                        c[i, j] = 0;
+                        for (int k = 0 ; k < a.GetLength(1) ; k++) // OR k<b.GetLength(0)
+                            c[i, j] = c[i, j] + a[i, k] * b[k, j];
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("\n Number of columns in First Matrix should be equal to Number of rows in Second Matrix.");
+                Console.WriteLine("\n Please re-enter correct dimensions.");
+                Environment.Exit(-1);
+            }
+            return c;
+        }
+
+        void dekompf4(double[,] a, double[,] e, int n, int d)
+        {
+            int i, j, k;
+            d = 1;
+            for (k = 0 ; k <= (n - 1) ; k++)
+            {
+                foelem4(a, e, n, k, d);
+                //printf("\n%d. Iteration Div: %13.4e\n\n",k,a[k][k]);
+                for (i = k + 1 ; i < n ; i++)
+                {
+                    a[i,k] = a[i,k] / a[k,k];
+                    for (j = k + 1 ; j < n ; j++)
+                    {
+                        a[i,j] = a[i,j] - a[i,k] * a[k,j];
+                    }
+                }
+                //matrixkiir4(a,n);
+            }
+        }
+        void foelem4(double[,] a, double[,] e, int n, int k, int d)
+        {
+            int i, xm;
+            double am;
+            am = a[k, k]; xm = k;
+            for (i = k ; i < n ; i++)
+            {
+                if (Math.Abs(am) < Math.Abs(a[i, k]))
+                {
+                    am = a[i, k];
+                    xm = i;
+                    sorcsere4(a, e, xm, k, n);
+                    d = d * (-1);
+                }
+            }
+        }
 
 
-    }//class
-}//namespace
+        void sorcsere4(double[,] a, double[,] e, int xm, int k, int n)
+        {
+            //int i;
+            double c;
+            for (int i = 0 ; i <= n ; i++)
+            {
+                c = a[xm,i];
+                a[xm,i] = a[k,i];
+                a[k,i] = c;
+                c = e[xm,i];
+                e[xm,i] = e[k,i];
+                e[k,i] = c;
+            }
+        }
+                // A
+
+            }//class
+    }//namespace
 
