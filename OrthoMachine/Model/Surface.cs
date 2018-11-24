@@ -54,7 +54,7 @@ namespace ortomachine.Model
             //Surface sf = new Surface("surface", float.Parse(ss[3]), float.Parse(ss[2]), obj);
             this.sc = new ScanPoints("surface", float.Parse(ss[2]), float.Parse(ss[3]), obj);
             this.sc.X0 = double.Parse(ss[0]);
-            this.sc.Z0 = double.Parse(ss[1]);
+            this.sc.Y0 = double.Parse(ss[1]);
             form1.rastersize = float.Parse(ss[2]);
             form1.offset = float.Parse(ss[3]);
             sr.Close();
@@ -284,10 +284,12 @@ namespace ortomachine.Model
             resizedSurf.Save(form1.SavePath + "\\" + "surface.png");           
             sc.image.Save(form1.SavePath + "\\" + "surface_origsize.png");
 
+
+
             try //intensity surface model resizing
             {
                 Image<Gray, byte> resizedInt = new Image<Gray, byte>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
-                Image<Bgr, byte> intsurf = new Image<Bgr, byte>(form1.SavePath + "\\surface_int.png");
+                Image<Gray, byte> intsurf = new Image<Gray, byte>(form1.SavePath + "\\surface_int.png");
 
                 for (int i = 1 ; i < resizedInt.Height - 1 ; i++)
                 {
@@ -314,6 +316,7 @@ namespace ortomachine.Model
                 }
                 resizedInt.Save(form1.SavePath + "\\" + "surface_int.png");
                 intsurf.Save(form1.SavePath + "\\" + "surface_int_origsize.png");
+                intsurf = resizedInt;
 
             }
             catch
@@ -376,7 +379,7 @@ namespace ortomachine.Model
                         }
                     }
                 }
-
+                rgbsurf = resizedRGB;
                 resizedRGB.Save(form1.SavePath + "\\" + "surface_rgb.png");
                 rgbsurf.Save(form1.SavePath + "\\" + "surface_rgb_origsize.png");
             }
@@ -395,7 +398,7 @@ namespace ortomachine.Model
                 });
             }
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\" + "surface.xyz");
-            sw.WriteLine("{0} {1} {2} {3}", sc.X0.ToString(), sc.Z0.ToString(), form1.rastersize.ToString(), offset.ToString());
+            sw.WriteLine("{0} {1} {2} {3}", (sc.X0 - offset).ToString(), (sc.Y0 - offset).ToString(), rastersize.ToString(), offset.ToString());
             sw.Close();
             sc.image = resizedSurf;
         }

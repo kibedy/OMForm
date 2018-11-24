@@ -34,7 +34,7 @@ namespace ortomachine.Model
         public int filetype;
         float offset;    //offset: black border
         float rastersize;
-        public double Xmax, Zmax, X0, Z0;
+        public double Xmax, Ymax, X0, Y0;
         public Bitmap SurfaceMap;
         string filename;
         Form1 form1;
@@ -200,7 +200,7 @@ namespace ortomachine.Model
         public void Surface(float rastersize, double offset)
         {
             xwidth = (ushort)((((Xmax - X0) + 2 * offset) / rastersize) + 1);
-            yheight = (ushort)((((Zmax - Z0) + 2 * offset) / rastersize) + 1);
+            yheight = (ushort)((((Ymax - Y0) + 2 * offset) / rastersize) + 1);
 
             surface = new UInt16[xwidth, yheight];
             if (form1.filetype == 7)
@@ -214,10 +214,10 @@ namespace ortomachine.Model
                 foreach (Points item in PointList)
                 {
                     uint i = (uint)(((item.X - X0) + offset) / rastersize);
-                    uint j = (uint)(((item.Z - Z0) + offset) / rastersize);
-                    if (surface[i, j] == 0 || surface[i, j] > item.Y * 1000)
+                    uint j = (uint)(((item.Y - Y0) + offset) / rastersize);
+                    if (surface[i, j] == 0 || surface[i, j] < item.Z * 1000)
                     {
-                        surface[i, j] = (ushort)(item.Y * 1000);  //computing in mm                
+                        surface[i, j] = (ushort)(item.Z * 1000);  //computing in mm                
                         RGBsurface[i, j, 0] = (byte)item.R;
                         RGBsurface[i, j, 1] = (byte)item.G;
                         RGBsurface[i, j, 2] = (byte)item.B;
@@ -235,10 +235,10 @@ namespace ortomachine.Model
                 foreach (Points item in PointList)
                 {
                     uint i = (uint)(((item.X - X0) + offset) / rastersize);
-                    uint j = (uint)(((item.Z - Z0) + offset) / rastersize);
-                    if (surface[i, j] == 0 || surface[i, j] > item.Y * 1000)
+                    uint j = (uint)(((item.Y - Y0) + offset) / rastersize);
+                    if (surface[i, j] == 0 || surface[i, j] < item.Z * 1000)
                     {
-                        surface[i, j] = (ushort)(item.Y * 1000);    //computing in mm     
+                        surface[i, j] = (ushort)(item.Z * 1000);    //computing in mm     
                         intSurface[i, j] = (byte)item.intensity;
                     }
 
@@ -252,10 +252,10 @@ namespace ortomachine.Model
                 foreach (Points item in PointList)
                 {
                     uint i = (uint)(((item.X - X0) + offset) / rastersize);
-                    uint j = (uint)(((item.Z - Z0) + offset) / rastersize);
-                    if (surface[i, j] == 0 || surface[i, j] > item.Y * 1000)
+                    uint j = (uint)(((item.Y - Y0) + offset) / rastersize);
+                    if (surface[i, j] == 0 || surface[i, j] < item.Z * 1000)
                     {
-                        surface[i, j] = (ushort)(item.Y * 1000);    //computing in mm                
+                        surface[i, j] = (ushort)(item.Z * 1000);    //computing in mm                
                     }
 
                 }
@@ -303,7 +303,7 @@ namespace ortomachine.Model
 
         private void BoundingBox()
         {
-            Xmax = 0; Zmax = 0; X0 = 999999999; Z0 = 999999999; //global coordinates
+            Xmax = 0; Ymax = 0; X0 = 999999999; Y0 = 999999999; //global coordinates
             foreach (Points item in PointList)
             {
                 if (item.X < X0)
@@ -314,17 +314,17 @@ namespace ortomachine.Model
                 {
                     Xmax = item.X;
                 }
-                if (item.Z < Z0)
+                if (item.Y < Y0)
                 {
-                    Z0 = item.Z;
+                    Y0 = item.Y;
                 }
-                if (item.Z > Zmax)
+                if (item.Y > Ymax)
                 {
-                    Zmax = item.Z;
+                    Ymax = item.Y;
                 }
             }
 
-
+            ;
         }
 
         public Bitmap saveSurface()
@@ -372,7 +372,7 @@ namespace ortomachine.Model
             image.Save(form1.SavePath + "\\" + "surface.png");
             image.Save(form1.SavePath + "\\" + "surface_raw.png");
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\" + "surface.xyz");
-            sw.WriteLine("{0} {1} {2} {3}", X0.ToString(), Z0.ToString(), rastersize.ToString(), offset.ToString());
+            sw.WriteLine("{0} {1} {2} {3}", (X0-offset).ToString(), (Y0-offset).ToString(), rastersize.ToString(), offset.ToString());
             sw.Close();
             return image.ToBitmap();
         }

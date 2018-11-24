@@ -187,13 +187,13 @@ namespace OM_Form.ViewModel
                     form1.progressBar1.Value = (int)(i / projthumbfilenames.Count);
                 }
                 */
-                /*StreamWriter sw = new StreamWriter(form1.SavePath + "\\imagelist.txt");
+                StreamWriter sw = new StreamWriter(form1.SavePath + "\\imagelist.txt");
                 foreach (string item in projimagefilenames)
                 {
                     sw.WriteLine(item);
                 }                
                 sw.Close();
-                */
+                
                 form1.progressBar1.Value = 100;
             }
         }

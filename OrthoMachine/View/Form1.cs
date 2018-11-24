@@ -110,6 +110,7 @@ namespace OM_Form
             this.resizeToolStripMenuItem.Enabled = true;
             this.bilinearFillHolesToolStripMenuItem.Enabled = true;
             this.addPicturesToolStripMenuItem.Enabled = true;
+            this.saveProjectToolStripMenuItem.Enabled = true;
             /*
             if (project.GetSurfParams())
             {
@@ -154,6 +155,7 @@ namespace OM_Form
             }
 
             photos.LoadPhotos(this);
+            SaveProject();
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -204,8 +206,32 @@ namespace OM_Form
             sf.SurfaceResize(this);
         }
 
+
+        private void SaveProject()
+        {
+            StreamWriter sw = new StreamWriter(SavePath + "\\project.prj");
+            sw.WriteLine(filetype);
+
+            sw.Close();
+
+            sw = new StreamWriter(SavePath + "\\imagelist.txt");
+            try
+            {
+                foreach (string item in photos.projimagefilenames)
+                {
+                    sw.WriteLine(item);
+                }
+            }
+            catch
+            {
+
+            }
+            sw.Close();
+        }
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SaveProject();
+            /*
             StreamWriter sw = new StreamWriter(SavePath+"\\project.prj");
             sw.WriteLine(filetype);
 
@@ -224,6 +250,7 @@ namespace OM_Form
 
             }
             sw.Close();
+            */
         }
 
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -239,6 +266,7 @@ namespace OM_Form
                 int index = listView1.SelectedItems[0].Index;
                 listView1.Items.RemoveAt(index);
                 photos.projimagefilenames.RemoveAt(index);
+                //Save
             }
         }
 
@@ -272,6 +300,7 @@ namespace OM_Form
                 int index = listView1.SelectedItems[0].Index;
                 listView1.Items.RemoveAt(index);
                 photos.projimagefilenames.RemoveAt(index);
+                SaveProject();
             }
         }
 
