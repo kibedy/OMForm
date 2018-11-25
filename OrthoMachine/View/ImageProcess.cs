@@ -40,7 +40,7 @@ namespace OrthoMachine.View
         Image<Bgra, byte> photo_orig;
         Image<Bgra, byte> rgbsurf;
         ArrayList colors;
-        enum ShowState { rgb, intensity, depth, photo };
+        enum ShowState { rgb, intensity, depth, photo, ortho };
         ShowState SSS;
         double[][] A;
         double[][] Qxx;
@@ -48,7 +48,16 @@ namespace OrthoMachine.View
         double[][] dX;
         double[][] ll;
         int pointpaircount;
-
+        Image<Bgr, byte> ortho;
+        Image<Gray, bool> ortho_visible;
+        double focus;
+        double pix_mm;
+        double Xo, Yo, Zo; //init pic postition
+        double o = 0;
+        double p = 0;
+        double k = 0;    //omega phi kappa
+        double a11, a12, a13, a21, a22, a23, a31, a32, a33;
+        double[][] a;
 
 
 
@@ -79,18 +88,21 @@ namespace OrthoMachine.View
                 rGBToolStripMenuItem.Visible = true;
                 intensityToolStripMenuItem.Visible = true;
                 depthToolStripMenuItem.Visible = true;
+                orthoToolStripMenuItem.Enabled = false;
             }
             else if (form1.filetype == 4)
             {
                 intensityToolStripMenuItem.Visible = true;
                 depthToolStripMenuItem.Visible = true;
                 rGBToolStripMenuItem.Visible = false;
+                orthoToolStripMenuItem.Enabled = false;
             }
             else
             {
                 intensityToolStripMenuItem.Visible = false;
                 depthToolStripMenuItem.Visible = false;
                 rGBToolStripMenuItem.Visible = false;
+                orthoToolStripMenuItem.Enabled = false;
             }
 
             //markerimage = new Image<Gray, byte>(new Size(ImageWidth, ImageHeight));
@@ -306,6 +318,13 @@ namespace OrthoMachine.View
             else if (e.ClickedItem.Name == "intensityToolStripMenuItem")
             {
                 SSS = ShowState.intensity;
+                //pictureBox2.Image = form1.sf.sc.intSurfImage.ToBitmap();
+                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                //DrawMarkerSurface();
+            }
+            else if (e.ClickedItem.Name == "orthoToolStripMenuItem")
+            {
+                SSS = ShowState.ortho;
                 //pictureBox2.Image = form1.sf.sc.intSurfImage.ToBitmap();
                 //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
                 //DrawMarkerSurface();
@@ -567,10 +586,14 @@ namespace OrthoMachine.View
             {
                 toDraw = new Image<Bgra, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
             }
-            else
+            else if (SSS == ShowState.intensity)
             {
                 toDraw = new Image<Bgra, byte>(form1.sf.sc.intSurfImage.Bitmap);
 
+            }
+            else 
+            {
+                toDraw = new Image<Bgra, byte>(ortho.Bitmap);
             }
             //Image<Bgra, byte> temp = ((toDraw).Clone());
             Image<Bgra, byte> temp = new Image<Bgra, byte>(toDraw.Bitmap);
@@ -707,6 +730,11 @@ namespace OrthoMachine.View
                     else if (SSS == ShowState.rgb)
                     {
                         //DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                        DrawMarkerSurface();
+                    } 
+                    else if (SSS== ShowState.ortho)
+                    {
+                        //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
                         DrawMarkerSurface();
                     }
                     else
@@ -931,14 +959,15 @@ namespace OrthoMachine.View
 
         private void CalculateOrientation(ListView listView1, ListView listView2)
         {
-            double Xo, Yo, Zo; //init pic postition
-            double o = 0;
-            double p = 0;
-            double k = 0;    //omega phi kappa
             double sumX = 0;
             double sumY = 0;
             double sumZ = 0;
-            double focus = -3.64/1000;
+            focus = -21;
+            //focus = -3.64;            
+            //pix_mm = 0.00156;
+            pix_mm = 0.0043;
+
+
             foreach (ListViewItem item in listView2.Items)
             {
                 sumX += double.Parse(item.SubItems[1].Text);
@@ -947,12 +976,12 @@ namespace OrthoMachine.View
             }
             Xo = sumX / listView2.Items.Count; //in meter
             Yo = sumY / listView2.Items.Count;  //start position in negative 
-            Zo = (sumZ / listView2.Items.Count + 10);
+            Zo = (sumZ / listView2.Items.Count +20);
 
             int iter = 0;
             double var2 = 0.01;
-            double var3 = 0.0001;
-            double a11, a12, a13, a21, a22, a23, a31, a32, a33;
+            double var3 = 0.000001;
+            
             pointpaircount = Math.Min(listView1.Items.Count, listView2.Items.Count);
             double[] DX = new double[pointpaircount];
             double[] DY = new double[pointpaircount];
@@ -971,23 +1000,23 @@ namespace OrthoMachine.View
             for (int j = 0 ; j < pointpaircount ; j++)
             {
                 ListViewItem item = listView1.Items[j];
-                x[j] = (double.Parse(item.SubItems[1].Text)) * 0.0015/1000;
-                y[j] = (double.Parse(item.SubItems[2].Text)) * 0.0015/1000;
+                x[j] = (double.Parse(item.SubItems[1].Text)) * pix_mm;
+                y[j] = (double.Parse(item.SubItems[2].Text)) * pix_mm;
             }
             //int j = 0;
             const int iterlimit = 1000;
-
+            a = MatrixCreate(3, 3);
             while (iter < iterlimit)
             {
-                a11 = cos(p) * cos(k);
-                a12 = -cos(p) * sin(k);
-                a13 = sin(p);
-                a21 = cos(o) * sin(k) + sin(o) * sin(p) * cos(k);
-                a22 = cos(o) * cos(k) - sin(o) * sin(p) * sin(k);
-                a23 = -sin(o) * cos(p);
-                a31 = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
-                a32 = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
-                a33 = cos(o) * cos(p);
+                a[0][0] = cos(p) * cos(k);
+                a[0][1] = -cos(p) * sin(k);
+                a[0][2] = sin(p);
+                a[1][0] = cos(o) * sin(k) + sin(o) * sin(p) * cos(k);
+                a[1][1] = cos(o) * cos(k) - sin(o) * sin(p) * sin(k);
+                a[1][2] = -sin(o) * cos(p);
+                a[2][0] = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
+                a[2][1] = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
+                a[2][2] = cos(o) * cos(p);
                 //int i = 0;
                 //foreach (ListViewItem item in listView2.Items)
                 for (int i = 0 ; i < pointpaircount ; i++)
@@ -1000,9 +1029,9 @@ namespace OrthoMachine.View
                     DY[i] = double.Parse(item.SubItems[2].Text) - Yo;
                     DZ[i] = double.Parse(item.SubItems[3].Text) - Zo;
 
-                    xo[2 * i] = focus * (a11 * DX[i] + a21 * DY[i] + a31 * DZ[i]) / (a13 * DX[i] + a23 * DY[i] + a33 * DZ[i]);
-                    xo[2 * i + 1] = focus * (a12 * DX[i] + a22 * DY[i] + a32 * DZ[i]) / (a13 * DX[i] + a23 * DY[i] + a33 * DZ[i]);
-                    lm[i] = DZ[i] / (a31 * x[i] + a32 * y[i] + a33 * focus);
+                    xo[2 * i] = focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
+                    xo[2 * i + 1] = focus * (a[0][1] * DX[i] + a[1][1] * DY[i] + a[2][1] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
+                    lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);
                 }
 
                 //****Beobachtungsvektor,  bármi is legyen ez :)
@@ -1029,15 +1058,15 @@ namespace OrthoMachine.View
                 for (int i = 0 ; i < pointpaircount ; i++)
                 {
                     tmp[i] = focus * lm[i];
-                    A[2 * i][0] = (a13 * x[i] - a11 * focus) / tmp[i];
-                    A[2 * i][1] = (a23 * x[i] - a21 * focus) / tmp[i];
-                    A[2 * i][2] = (a33 * x[i] - a31 * focus) / tmp[i];
+                    A[2 * i][0] = (a[0][2] * x[i] - a[0][0] * focus) / tmp[i];
+                    A[2 * i][1] = (a[1][2] * x[i] - a[1][0] * focus) / tmp[i];
+                    A[2 * i][2] = (a[2][2] * x[i] - a[2][0] * focus) / tmp[i];
                     A[2 * i][3] = y[i] * sin(p) + (x[i] / focus * (x[i] * sin(k) + y[i] * cos(k)) + focus * sin(k)) * cos(p);
                     A[2 * i][4] = -focus * cos(k) - (x[i] / focus) * (x[i] * cos(k) - y[i] * sin(k));
                     A[2 * i][5] = y[i];
-                    A[2 * i + 1][0] = (a13 * y[i] - a12 * focus) / tmp[i];
-                    A[2 * i + 1][1] = (a23 * y[i] - a22 * focus) / tmp[i];
-                    A[2 * i + 1][2] = (a33 * y[i] - a32 * focus) / tmp[i];
+                    A[2 * i + 1][0] = (a[0][2] * y[i] - a[0][1] * focus) / tmp[i];
+                    A[2 * i + 1][1] = (a[1][2] * y[i] - a[1][1] * focus) / tmp[i];
+                    A[2 * i + 1][2] = (a[2][2] * y[i] - a[2][1] * focus) / tmp[i];
                     A[2 * i + 1][3] = -x[i] * sin(p) + ((y[i] / focus) * (x[i] * sin(k) + y[i] * cos(k)) + focus * cos(k)) * cos(p);
                     A[2 * i + 1][4] = focus * sin(k) - (y[i] / focus) * (x[i] * cos(k) - y[i] * sin(k));
                     A[2 * i + 1][5] = -x[i];
@@ -1102,6 +1131,8 @@ namespace OrthoMachine.View
             else
             {
                 string ff = ComputeErrors() ;
+                ff += ("\nXo:"+Xo.ToString("0.000") + " Yo:" + Yo.ToString("0.000") + " Zo:" + Zo.ToString("0.000") + 
+                    "\nOmega:" + (o % Math.PI).ToString("0.000") + " Phi:" + (p % Math.PI).ToString("0.000")+ " Kappa:" + (k % Math.PI).ToString("0.000"));
                 //string hiba = ("Standard deviation: " + ff + " pixel");
                 DialogResult dr = MessageBox.Show(ff, "Exterior Orientation", MessageBoxButtons.YesNo);
                 switch (dr)
@@ -1109,17 +1140,106 @@ namespace OrthoMachine.View
                     case DialogResult.Yes:
                         //break;
                         MakeOrthoPhoto();
+                        orthoToolStripMenuItem.Enabled = true;
                         break;
                     case DialogResult.No:
+
                         break;
                 }
             }
 
         }
 
+
         private void MakeOrthoPhoto()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            ortho = new Image<Bgr, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
+            //ortho_visible = new Image<Bgra, byte>(surface.Width, surface.Height);
+            //double X0 = form1.sf.sc.X0;
+            //double Y0 = form1.sf.sc.Y0;
+
+            double[][] aa = MatrixCreate(3, 3);
+            double co = cos(o);
+            double so = sin(o);
+            double cp = cos(p);
+            double sp = sin(p);
+            double cka = cos(k);
+            double ska = sin(k);
+            aa[0][0] = cp * cka + sp * so * ska;
+            aa[0][1] = co * ska;
+            aa[0][2] = -sp * cka + cp * so * ska;
+            aa[1][0] = -cp * ska + sp * so * cka;
+            aa[1][1] = co * cka;
+            aa[1][2] = sp * ska + cp * so * cka;
+            aa[2][0] = sp * co;
+            aa[2][1] = -so;
+            aa[2][2] = cp * co;
+            double[][] a_inv = MatrixCreate(3, 3);
+            a_inv = MatrixInverse(a);
+            //Yo += 0.35;
+            //Xo += 0.1;
+            //Zo -=0.15;
+
+            int jj = 0;
+            for (int i = 0 ; i < surface.Height ; i++)
+            {
+                for (int j = 0 ; j < surface.Width ; j++)
+                {
+                    if (surface.Data[i,j,0]!=0)
+                    {
+                        //double X = (form1.sf.sc.X0 + j * form1.rastersize);
+                        double X = (form1.sf.sc.X0 + j * form1.rastersize);
+                        double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);
+                       
+                        double Z = ((double)(surface.Data[i, j, 0])) / 1000;
+                        double t1 = a_inv[0][0] * (X - Xo) + a_inv[0][1] * (Y - Yo) + a_inv[0][2] * (Z - Zo);
+                        double t2 = a_inv[1][0] * (X - Xo) + a_inv[1][1] * (Y - Yo) + a_inv[1][2] * (Z - Zo);
+                        double t3 = a_inv[2][0] * (X - Xo) + a_inv[2][1] * (Y - Yo) + a_inv[2][2] * (Z - Zo);
+                        int xb = (int)((focus * (t1 / t3) + 0.5)/pix_mm);
+                        int yb = (int)((focus * (t2 / t3) + 0.5)/pix_mm);
+                        //Console.WriteLine(xb+ " "+ yb);
+                        //int xi = a0 + a1 * xb + a2 * yb;
+                        //int yi = b0 + b1 * xb + b2 * yb;
+                        int[] xy = Image2PixCoord(xb, yb);
+                        //if (yb > -photo.Height / 2 && yb < photo.Height/2 && xb > -photo.Width / 2 && xb < photo.Width / 2)
+                            if (xy[1] >0 && xy[1] < photo.Height  && xy[0] > 0&& xy[0] < photo.Width )
+                            {                            
+                            //int[] xy = Image2PixCoord(xb, yb);
+                            //Console.WriteLine("xb: "+xb + " yb:" + yb+ "x: " + xy[0] + " y:" + xy[1]);
+                            byte b = photo.Data[xy[1], xy[0], 0];
+                            byte g = photo.Data[xy[1], xy[0], 1];
+                            byte r= photo.Data[xy[1], xy[0], 2];
+                            ortho.Data[i, j, 0] = b;
+                            ortho.Data[i, j, 1] = g;
+                            ortho.Data[i, j, 2] = r;
+                            jj++;
+                        }
+                    }
+
+
+                }
+            }
+            SSS = ShowState.ortho;
+            pictureBox2.Image = ortho.Bitmap;
+            string[] ss = filename.Split('.');
+            ortho.Save(form1.SavePath +"\\"+ ss[0]+"_ortho."+ss[1]);
+        }
+
+        private int[] Image2PixCoord(int x, int y)
+        {
+            int[] result = new int[2];
+            int xx = x + photo.Width / 2;
+            int yy = photo.Height - (photo.Height / 2 + y);
+            //result[0] = xx-100;
+            //result[1] = yy+100;
+            result[0] = xx;
+            result[1] = yy;
+
+            //var item = new ListViewItem(new[] { listView1.Items.Count.ToString(), ((pp.X / ImageScale) - photo.Width / 2).ToString("0.00"), ((-(pp.Y / ImageScale) + photo.Height / 2)).ToString("0.00") });
+
+
+            return result;
         }
 
         private string ComputeErrors()

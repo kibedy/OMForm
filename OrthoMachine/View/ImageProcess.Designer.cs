@@ -51,6 +51,7 @@ namespace OrthoMachine.View
             this.depthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.intensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orthoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -259,7 +260,8 @@ namespace OrthoMachine.View
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.depthToolStripMenuItem,
             this.intensityToolStripMenuItem,
-            this.rGBToolStripMenuItem});
+            this.rGBToolStripMenuItem,
+            this.orthoToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(120, 70);
             this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
@@ -281,6 +283,12 @@ namespace OrthoMachine.View
             this.rGBToolStripMenuItem.Name = "rGBToolStripMenuItem";
             this.rGBToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.rGBToolStripMenuItem.Text = "RGB";
+            // 
+            // orthoToolStripMenuItem
+            // 
+            this.orthoToolStripMenuItem.Name = "orthoToolStripMenuItem";
+            this.orthoToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.orthoToolStripMenuItem.Text = "ortho";
             // 
             // ImageProcess
             // 
@@ -345,6 +353,7 @@ namespace OrthoMachine.View
         public System.Windows.Forms.ToolStripMenuItem depthToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem rGBToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem orthoToolStripMenuItem;
         private ContextMenuStrip contextMenuStrip1;
 
 
