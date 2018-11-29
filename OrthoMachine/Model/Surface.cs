@@ -287,11 +287,14 @@ namespace ortomachine.Model
 
             if (form1.filetype == 4 || form1.filetype == 7)
             {
+                
                 try //intensity surface model resizing
                 {
-                    Image<Gray, byte> resizedInt = new Image<Gray, byte>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
+                    //Image<Gray, byte> resizedInt = new Image<Gray, byte>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
                     Image<Gray, byte> intsurf = new Image<Gray, byte>(form1.SavePath + "\\surface_int.png");
+                    Image<Gray, byte> resizedInt = intsurf.Resize((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize), Emgu.CV.CvEnum.Inter.Linear);
 
+                    /*
                     for (int i = 1 ; i < resizedInt.Height - 1 ; i++)
                     {
                         for (int j = 1 ; j < resizedInt.Width - 1 ; j++)
@@ -314,10 +317,11 @@ namespace ortomachine.Model
                                 }
                             }
                         }
-                    }
+                    }*/
                     resizedInt.Save(form1.SavePath + "\\" + "surface_int.png");
                     intsurf.Save(form1.SavePath + "\\" + "surface_int_origsize.png");
                     intsurf = resizedInt;
+                    sc.intSurfImage = intsurf;
 
                 }
                 catch
@@ -329,9 +333,10 @@ namespace ortomachine.Model
             {
                 try  //rgb point cloud surf image resizing
                 {
-                    Image<Bgr, byte> resizedRGB = new Image<Bgr, byte>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
+                    //Image<Bgr, byte> resizedRGB = new Image<Bgr, byte>((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize));
 
                     Image<Bgr, byte> rgbsurf = new Image<Bgr, byte>(form1.SavePath + "\\surface_rgb.png");
+                    /*
                     for (int i = 1 ; i < resizedRGB.Height - 1 ; i++)
                     {
                         for (int j = 1 ; j < resizedRGB.Width - 1 ; j++)
@@ -379,10 +384,13 @@ namespace ortomachine.Model
 
                             }
                         }
-                    }
+                    }*/
+                    Image<Bgr, byte> resizedRGB = rgbsurf.Resize((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize), Emgu.CV.CvEnum.Inter.Linear);
+
                     rgbsurf = resizedRGB;
                     resizedRGB.Save(form1.SavePath + "\\" + "surface_rgb.png");
                     rgbsurf.Save(form1.SavePath + "\\" + "surface_rgb_origsize.png");
+                    sc.RGBsurfImage = rgbsurf;
                 }
                 catch
                 {

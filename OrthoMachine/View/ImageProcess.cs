@@ -46,16 +46,16 @@ namespace OrthoMachine.View
         double[][] Qxx;
         double[][] At;
         double[][] dX;
-        double[][] ll;
+        double[][] l;
         int pointpaircount;
         Image<Bgr, byte> ortho;
         Image<Gray, bool> ortho_visible;
         double focus;
         double pix_mm;
         double Xo, Yo, Zo; //init pic postition
-        double o = 0;
-        double p = 0;
-        double k = 0;    //omega phi kappa
+        double o;
+        double p;
+        double k;    //omega phi kappa
         double a11, a12, a13, a21, a22, a23, a31, a32, a33;
         double[][] a;
 
@@ -216,7 +216,7 @@ namespace OrthoMachine.View
 
 
             if (ImageScale < 0.1) ImageScale = 0.1f;
-            Console.WriteLine(ImageScale);
+           // Console.WriteLine(ImageScale);
             this.pictureBox1.Size = new Size((int)(ImageWidth * ImageScale), (int)(ImageHeight * ImageScale));
             if ((pictureBox1.Image.Width > this.ClientSize.Width || pictureBox1.Image.Height > this.ClientSize.Height))
             {
@@ -603,24 +603,10 @@ namespace OrthoMachine.View
                 listView2.Items.CopyTo(items, 0);
                 int i = 0;
                 foreach (ListViewItem item in listView2.Items)
-                {
-                    /*Graphics g = Graphics.FromImage(temp.Bitmap);
-
-                    Pen pen = new Pen((Color)colors[i]);
-
-                    float X = float.Parse(item.SubItems[1].Text);
-                    float Y = float.Parse(item.SubItems[2].Text);
-                    float r = 10;
-                    g.DrawEllipse(pen, X, Y, r, r);
-                    i++;
-                    */
+                {                   
 
                     markerimage = new Image<Gray, byte>(new Size(surface.Width, surface.Height));
-
-                    //float xxm = (float)(xx * form1.rastersize + form1.sf.sc.X0);
-                    //float yym = (float)((surface.Height - yy) * form1.rastersize + form1.sf.sc.Y0);
                     float X = (float)(((float.Parse(item.SubItems[1].Text)) - form1.sf.sc.X0) / form1.rastersize);
-                    //float Y = (float)(((float.Parse(item.SubItems[2].Text)) - form1.sf.sc.X0) / form1.rastersize);
                     float Y = (float)(surface.Height - (float.Parse(item.SubItems[2].Text) - form1.sf.sc.Y0) / form1.rastersize);
 
 
@@ -628,11 +614,7 @@ namespace OrthoMachine.View
                     float r = 10;
                     CircleF circle1 = new CircleF(center, r);
                     CircleF circle2 = new CircleF(center, 1);
-                    markerimage.Draw(circle1, new Gray(250), 1);
-                    //markerimage.Draw(circle1, (Bgra)colors[0], i);
-                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
-                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
-                    //i++;
+                    markerimage.Draw(circle1, new Gray(250), 1);                    
                     markerimage.Draw(circle2, new Gray(250), 1);
 
                     markerimage._SmoothGaussian(3, 3, 1, 1);
@@ -948,15 +930,6 @@ namespace OrthoMachine.View
         }
 
 
-
-        /* private void pictureBox1_Click(object sender, EventArgs e)
-         {
-             ;
-         }*/
-
-        //orientation
-        //initialization
-
         private void CalculateOrientation(ListView listView1, ListView listView2)
         {
             double sumX = 0;
@@ -977,10 +950,12 @@ namespace OrthoMachine.View
             Xo = sumX / listView2.Items.Count; //in meter
             Yo = sumY / listView2.Items.Count;  //start position in negative 
             Zo = (sumZ / listView2.Items.Count +20);
+            Xo = 20;
+            Yo = 10;
 
             int iter = 0;
             double var2 = 0.01;
-            double var3 = 0.000001;
+            double var3 = 0.00000001;
             
             pointpaircount = Math.Min(listView1.Items.Count, listView2.Items.Count);
             double[] DX = new double[pointpaircount];
@@ -1011,44 +986,40 @@ namespace OrthoMachine.View
                 a[0][0] = cos(p) * cos(k);
                 a[0][1] = -cos(p) * sin(k);
                 a[0][2] = sin(p);
+
                 a[1][0] = cos(o) * sin(k) + sin(o) * sin(p) * cos(k);
                 a[1][1] = cos(o) * cos(k) - sin(o) * sin(p) * sin(k);
                 a[1][2] = -sin(o) * cos(p);
+
                 a[2][0] = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
                 a[2][1] = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
                 a[2][2] = cos(o) * cos(p);
-                //int i = 0;
-                //foreach (ListViewItem item in listView2.Items)
+                
+
                 for (int i = 0 ; i < pointpaircount ; i++)
                 {
                     ListViewItem item = listView2.Items[i];
-                    /*DX[i] = double.Parse(item.SubItems[1].Text) - Xo;
-                    DY[i] = double.Parse(item.SubItems[3].Text) - Yo;
-                    DZ[i] = double.Parse(item.SubItems[2].Text) - Zo;*/
+
                     DX[i] = double.Parse(item.SubItems[1].Text) - Xo;
                     DY[i] = double.Parse(item.SubItems[2].Text) - Yo;
                     DZ[i] = double.Parse(item.SubItems[3].Text) - Zo;
 
-                    xo[2 * i] = focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
+                    xo[2 * i] =     focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
                     xo[2 * i + 1] = focus * (a[0][1] * DX[i] + a[1][1] * DY[i] + a[2][1] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
                     lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);
                 }
 
-                //****Beobachtungsvektor,  bármi is legyen ez :)
-                //double[] l = new double[pointpaircount * 2];
-                double[][] l = MatrixCreate(pointpaircount * 2, 1);
+                //****Beobachtungsvektor               
+                //double[][] l = MatrixCreate(pointpaircount * 2, 1);
+                l= MatrixCreate(pointpaircount * 2, 1);
                 for (int i = 0 ; i < pointpaircount ; i++)
                 {
-                    /*l[2 * i] = x[i] - xo[2 * i];
-                    l[2 * i + 1] = y[i] - xo[2 * i + 1];
-                    */
                     l[2 * i][0] = x[i] - xo[2 * i];
                     l[2 * i + 1][0] = y[i] - xo[2 * i + 1];
                 }
 
-                //Aufstellen der Designmatrix
-                //double[,] A = new double[pointpaircount * 2, 6];                
-                //double[,] Ata;
+                //Designmatrix
+                
                 double[] tmp = new double[pointpaircount];
 
                 A = MatrixCreate(pointpaircount * 2, 6);
@@ -1079,7 +1050,9 @@ namespace OrthoMachine.View
                 Ata = MatrixProduct(At, A);
                 Qxx = MatrixInverse(Ata);
 
-                ll = MatrixCreate(pointpaircount * 2, 1);
+                //ll = MatrixCreate(pointpaircount * 2, 1);
+                
+                
                 /*
                 // ellenőrzés
                 double[][] teszt = MatrixCreate(6, 6);
@@ -1132,7 +1105,7 @@ namespace OrthoMachine.View
             {
                 string ff = ComputeErrors() ;
                 ff += ("\nXo:"+Xo.ToString("0.000") + " Yo:" + Yo.ToString("0.000") + " Zo:" + Zo.ToString("0.000") + 
-                    "\nOmega:" + (o % Math.PI).ToString("0.000") + " Phi:" + (p % Math.PI).ToString("0.000")+ " Kappa:" + (k % Math.PI).ToString("0.000"));
+                    "\nOmega:" + (o % Math.PI*180/Math.PI).ToString("0.000") + " Phi:" + (p % Math.PI * 180 / Math.PI).ToString("0.000")+ " Kappa:" + (k % Math.PI * 180 / Math.PI).ToString("0.000"));
                 //string hiba = ("Standard deviation: " + ff + " pixel");
                 DialogResult dr = MessageBox.Show(ff, "Exterior Orientation", MessageBoxButtons.YesNo);
                 switch (dr)
@@ -1195,9 +1168,13 @@ namespace OrthoMachine.View
                         double Z = ((double)(surface.Data[i, j, 0])) / 1000;
                         double t1 = a_inv[0][0] * (X - Xo) + a_inv[0][1] * (Y - Yo) + a_inv[0][2] * (Z - Zo);
                         double t2 = a_inv[1][0] * (X - Xo) + a_inv[1][1] * (Y - Yo) + a_inv[1][2] * (Z - Zo);
-                        double t3 = a_inv[2][0] * (X - Xo) + a_inv[2][1] * (Y - Yo) + a_inv[2][2] * (Z - Zo);
+                        double t3 = a_inv[2][0] * (X - Xo) + a_inv[2][1] * (Y - Yo) + a_inv[2][2] * (Z - Zo);                        
+                        //double t1 = a[0][0] * (X - Xo) + a[0][1] * (Y - Yo) + a[0][2] * (Z - Zo);
+                        //double t2 = a[1][0] * (X - Xo) + a[1][1] * (Y - Yo) + a[1][2] * (Z - Zo);
+                        //double t3 = a[2][0] * (X - Xo) + a[2][1] * (Y - Yo) + a[2][2] * (Z - Zo); 
                         int xb = (int)((focus * (t1 / t3) + 0.5)/pix_mm);
                         int yb = (int)((focus * (t2 / t3) + 0.5)/pix_mm);
+                        
                         //Console.WriteLine(xb+ " "+ yb);
                         //int xi = a0 + a1 * xb + a2 * yb;
                         //int yi = b0 + b1 * xb + b2 * yb;
@@ -1216,10 +1193,32 @@ namespace OrthoMachine.View
                             jj++;
                         }
                     }
-
-
                 }
             }
+
+            //*****************************************
+            double[] testX = new double[pointpaircount];
+            double[] testY = new double[pointpaircount];
+            double[] testZ = new double[pointpaircount];
+            for (int i = 0 ; i < pointpaircount ; i++)
+            {
+                ListViewItem item = listView2.Items[i];
+                 testX[i] = double.Parse(item.SubItems[1].Text);
+                 testY[i] = double.Parse(item.SubItems[2].Text);
+                 testZ[i] = double.Parse(item.SubItems[3].Text);
+            }
+            for (int i = 0 ; i < pointpaircount ; i++)
+            {
+                //double Z = ((double)(surface.Data[i, j, 0])) / 1000;
+                double t1 = a_inv[0][0] * (testX[i] - Xo) + a_inv[0][1] * (testY[i] - Yo) + a_inv[0][2] * (testZ[i] - Zo);
+                double t2 = a_inv[1][0] * (testX[i] - Xo) + a_inv[1][1] * (testY[i] - Yo) + a_inv[1][2] * (testZ[i] - Zo);
+                double t3 = a_inv[2][0] * (testX[i] - Xo) + a_inv[2][1] * (testY[i] - Yo) + a_inv[2][2] * (testZ[i] - Zo);
+                int xb = (int)((focus * (t1 / t3) + 0.5) / pix_mm);
+                int yb = (int)((focus * (t2 / t3) + 0.5) / pix_mm);
+                Console.WriteLine("xb:"+xb+" yb:"+yb);
+            }
+            //******************************************
+
             SSS = ShowState.ortho;
             pictureBox2.Image = ortho.Bitmap;
             string[] ss = filename.Split('.');
@@ -1253,7 +1252,7 @@ namespace OrthoMachine.View
             double[][] v = MatrixProduct(A, dX);
             for (int i = 0 ; i != 6 ; i++)
             {
-                v[i][0] = v[i][0] - ll[i][0];
+                v[i][0] = v[i][0] - l[i][0];
             }
             double[][] vt = Transpose(v);
 
@@ -1277,12 +1276,12 @@ namespace OrthoMachine.View
                 
             }
             result+=("\nStandard deviation:");
-            result += ("\nX: " + (s[0]*1000).ToString("0.000000") +" mm");
-            result += ("\nY: " + (s[1]*1000).ToString("0.000000") + " mm");
-            result += ("\nZ: " + (s[2]*1000).ToString("0.000000") + " mm");
-            result += ("\nomega:" + s[3].ToString("0.0000000") + " rad");
-            result += ("\nphi:" + s[4].ToString("0.0000000") + " rad");
-            result += ("\nkappa:" + s[5].ToString("0.0000000") + " rad");
+            result += ("\nX: " + (s[0]).ToString("0.000000") +" mm");
+            result += ("\nY: " + (s[1]).ToString("0.000000") + " mm");
+            result += ("\nZ: " + (s[2]).ToString("0.000000") + " mm");
+            result += ("\nomega:" + s[3].ToString("0.0000000") + " deg");
+            result += ("\nphi:" + s[4].ToString("0.0000000") + " deg");
+            result += ("\nkappa:" + s[5].ToString("0.0000000") + " deg");
 
             return result;
         }
