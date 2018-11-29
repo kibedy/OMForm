@@ -976,7 +976,7 @@ namespace OrthoMachine.View
             }
             Xo = sumX / listView2.Items.Count; //in meter
             Yo = sumY / listView2.Items.Count;  //start position in negative 
-            Zo = (sumZ / listView2.Items.Count +20);
+            Zo = (sumZ / listView2.Items.Count +40);
 
             int iter = 0;
             double var2 = 0.01;
@@ -1011,9 +1011,11 @@ namespace OrthoMachine.View
                 a[0][0] = cos(p) * cos(k);
                 a[0][1] = -cos(p) * sin(k);
                 a[0][2] = sin(p);
+
                 a[1][0] = cos(o) * sin(k) + sin(o) * sin(p) * cos(k);
                 a[1][1] = cos(o) * cos(k) - sin(o) * sin(p) * sin(k);
                 a[1][2] = -sin(o) * cos(p);
+
                 a[2][0] = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
                 a[2][1] = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
                 a[2][2] = cos(o) * cos(p);
@@ -1029,7 +1031,7 @@ namespace OrthoMachine.View
                     DY[i] = double.Parse(item.SubItems[2].Text) - Yo;
                     DZ[i] = double.Parse(item.SubItems[3].Text) - Zo;
 
-                    xo[2 * i] = focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
+                    xo[2 * i] =     focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
                     xo[2 * i + 1] = focus * (a[0][1] * DX[i] + a[1][1] * DY[i] + a[2][1] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
                     lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);
                 }
@@ -1154,7 +1156,7 @@ namespace OrthoMachine.View
         private void MakeOrthoPhoto()
         {
             //throw new NotImplementedException();
-            ortho = new Image<Bgr, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
+            ortho = new Image<Bgr, byte>(form1.sf.sc.image.Bitmap);
             //ortho_visible = new Image<Bgra, byte>(surface.Width, surface.Height);
             //double X0 = form1.sf.sc.X0;
             //double Y0 = form1.sf.sc.Y0;
