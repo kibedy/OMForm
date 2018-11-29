@@ -138,6 +138,9 @@ namespace OM_Form
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
+            listView1.Clear();
+            sf = new Surface("surface", 0, 0, this);
+            
         }
 
 
