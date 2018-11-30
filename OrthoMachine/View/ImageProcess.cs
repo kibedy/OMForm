@@ -182,7 +182,7 @@ namespace OrthoMachine.View
             SetOrientationForm();
         }
 
-        private void ImageProcess_FormClosing(object sender, FormClosingEventArgs e)
+        private void SaveMarkers()
         {
             string[] fn = filename.Split('.');
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\photos\\" + fn[0] + ".ori");
@@ -204,7 +204,12 @@ namespace OrthoMachine.View
                 }
             }
             sw.Close();
+        }
 
+        private void ImageProcess_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+            SaveMarkers();
         }
 
 
@@ -932,13 +937,15 @@ namespace OrthoMachine.View
 
         private void CalculateOrientation(ListView listView1, ListView listView2)
         {
+            SaveMarkers();
             double sumX = 0;
             double sumY = 0;
             double sumZ = 0;
             focus = -21;
             //focus = -3.64;            
-            //pix_mm = 0.00156;
-            pix_mm = 0.0043;
+            pix_mm = 0.00156;
+            //pix_mm = 0.0043;
+           // pix_mm = 0.005;
 
 
             foreach (ListViewItem item in listView2.Items)
@@ -950,8 +957,8 @@ namespace OrthoMachine.View
             Xo = sumX / listView2.Items.Count; //in meter
             Yo = sumY / listView2.Items.Count;  //start position in negative 
             Zo = (sumZ / listView2.Items.Count +20);
-            Xo = 20;
-            Yo = 10;
+            //Xo = 20;
+            //Yo = 10;
 
             int iter = 0;
             double var2 = 0.01;
@@ -1048,6 +1055,8 @@ namespace OrthoMachine.View
 
                 At = Transpose(A);
                 Ata = MatrixProduct(At, A);
+                Qxx = MatrixCreate(6, 6);
+                Qxx = MatrixIdentity(6);
                 Qxx = MatrixInverse(Ata);
 
                 //ll = MatrixCreate(pointpaircount * 2, 1);
@@ -1062,9 +1071,11 @@ namespace OrthoMachine.View
 
 
                 double[][] Atl;
-                Atl = MatrixProduct(At, l);
+                double[][] Atl_;
+                Atl_ = MatrixProduct(At, l);
+                Atl = MultiplyMatrix(At, l);
 
-                dX = MatrixProduct(Qxx, Atl);
+                dX = MatrixProduct(Qxx, Atl_);
                 Xo = Xo + dX[0][0];
                 Yo = Yo + dX[1][0];
                 Zo = Zo + dX[2][0];
@@ -1166,9 +1177,12 @@ namespace OrthoMachine.View
                         double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);
                        
                         double Z = ((double)(surface.Data[i, j, 0])) / 1000;
-                        double t1 = a_inv[0][0] * (X - Xo) + a_inv[0][1] * (Y - Yo) + a_inv[0][2] * (Z - Zo);
-                        double t2 = a_inv[1][0] * (X - Xo) + a_inv[1][1] * (Y - Yo) + a_inv[1][2] * (Z - Zo);
-                        double t3 = a_inv[2][0] * (X - Xo) + a_inv[2][1] * (Y - Yo) + a_inv[2][2] * (Z - Zo);                        
+                        //double t1 = a_inv[0][0] * (X - Xo) + a_inv[0][1] * (Y - Yo) + a_inv[0][2] * (Z - Zo);
+                        //double t2 = a_inv[1][0] * (X - Xo) + a_inv[1][1] * (Y - Yo) + a_inv[1][2] * (Z - Zo);
+                        //double t3 = a_inv[2][0] * (X - Xo) + a_inv[2][1] * (Y - Yo) + a_inv[2][2] * (Z - Zo);
+                        double t1 = aa[0][0] * (X - Xo) + aa[0][1] * (Y - Yo) + aa[0][2] * (Z - Zo);
+                        double t2 = aa[1][0] * (X - Xo) + aa[1][1] * (Y - Yo) + aa[1][2] * (Z - Zo);
+                        double t3 = aa[2][0] * (X - Xo) + aa[2][1] * (Y - Yo) + aa[2][2] * (Z - Zo);
                         //double t1 = a[0][0] * (X - Xo) + a[0][1] * (Y - Yo) + a[0][2] * (Z - Zo);
                         //double t2 = a[1][0] * (X - Xo) + a[1][1] * (Y - Yo) + a[1][2] * (Z - Zo);
                         //double t3 = a[2][0] * (X - Xo) + a[2][1] * (Y - Yo) + a[2][2] * (Z - Zo); 
@@ -1294,19 +1308,20 @@ namespace OrthoMachine.View
 
 
     #region old matrix procesures - dropped
-    /*public double[,] MultiplyMatrix(double[,]a, double[,]b )
+    public double[][] MultiplyMatrix(double[][]a, double[][]b )
     {
-        double[,] c = new double[a.GetLength(0), b.GetLength(1)];
-        if (a.GetLength(1) == b.GetLength(0))
+        //double[,] c = new double[a.GetLength(0), b.GetLength(1)];
+        double[][] c = MatrixCreate(a.Length, b[0].Length);
+        if (a[0].Length == b.Length)
         {
-            c = new double [a.GetLength(0), b.GetLength(1)];
-            for (int i = 0 ; i < c.GetLength(0) ; i++)
+            //c = new double [a.GetLength(0), b.GetLength(1)];
+            for (int i = 0 ; i < c.Length ; i++)
             {
-                for (int j = 0 ; j < c.GetLength(1) ; j++)
+                for (int j = 0 ; j < c[0].Length ; j++)
                 {
-                    c[i, j] = 0;
-                    for (int k = 0 ; k < a.GetLength(1) ; k++) // OR k<b.GetLength(0)
-                        c[i, j] = c[i, j] + a[i, k] * b[k, j];
+                    c[i][ j] = 0;
+                    for (int k = 0 ; k < a[0].Length ; k++) // OR k<b.GetLength(0)
+                        c[i][ j] = c[i][j] + a[i][k] * b[k][ j];
                 }
             }
         }
@@ -1317,7 +1332,7 @@ namespace OrthoMachine.View
             Environment.Exit(-1);
         }
         return c;
-    }*/
+    }
     /*
     void dekompf4(double[,] a, double[,] e, int n, int d)
     {
