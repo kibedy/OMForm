@@ -27,7 +27,7 @@ namespace OrthoMachine.View
         private float ImageScaleS = 1.0f;
         Point _mousePt = new Point();
         bool _tracking = false;
-        List<Marker> markers;
+        //List<Marker> markers;
         Form1 form1;
         bool EnablePickpoints;
         //bool EnablePictureBox1Functions;
@@ -38,7 +38,7 @@ namespace OrthoMachine.View
         Image<Gray, byte> markerimage;
         Image<Bgra, byte> photo;
         Image<Bgra, byte> photo_orig;
-        Image<Bgra, byte> rgbsurf;
+        //Image<Bgra, byte> rgbsurf;
         Image<Gray, byte> visible;
         ArrayList colors;
         enum ShowState { rgb, intensity, depth, photo, ortho };
@@ -57,8 +57,9 @@ namespace OrthoMachine.View
         double o;
         double p;
         double k;    //omega phi kappa
-        double a11, a12, a13, a21, a22, a23, a31, a32, a33;
+        //double a11, a12, a13, a21, a22, a23, a31, a32, a33;
         double[][] a;
+        public BackgroundWorker backgroundWorker1;
 
 
 
@@ -210,7 +211,15 @@ namespace OrthoMachine.View
 
         private void ImageProcess_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            try
+            {
+                for (int i = 0 ; i < objThread.Length ; i++)
+                {
+                    objThread[i].Abort();
+                }
+                this.backgroundWorker1.CancelAsync();
+            }
+            catch { }
             SaveMarkers();
         }
 
@@ -1122,8 +1131,13 @@ namespace OrthoMachine.View
                 {
                     case DialogResult.Yes:
                         //break;
-                        MakeOrthoPhoto();
-                        orthoToolStripMenuItem.Enabled = true;
+                        InitializeBackgroundWorker();
+                        backgroundWorker1.WorkerReportsProgress = true;
+                        backgroundWorker1.WorkerSupportsCancellation = true;
+
+                        backgroundWorker1.RunWorkerAsync();
+                        //MakeOrthoPhoto();
+                        //orthoToolStripMenuItem.Enabled = true;
                         break;
                     case DialogResult.No:
 
@@ -1132,20 +1146,74 @@ namespace OrthoMachine.View
             }
 
         }
+        Thread[] objThread;
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+    
+            int maxthreads = Environment.ProcessorCount-2;
+            maxthreads = Math.Max(2, maxthreads);
 
+            objThread = new Thread[maxthreads];
+            for (int i = 0 ; i < maxthreads ; i++)
+            {
+                int sl = surface.Width / maxthreads * i;
+                int sh = surface.Width / maxthreads * (i + 1);
+                objThread[i] = new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+                    Visibilitycheck(sl, sh, 0, surface.Height);
+                });
+                //objThread[i].Priority = ThreadPriority.AboveNormal;
+                objThread[i].Start();
+
+            }
+
+            for (int i = 0 ; i < objThread.Length ; i++)
+            {
+                // Wait until thread is finished.
+                objThread[i].Join();
+            }
+
+
+           
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            // First, handle the case where an exception was thrown.
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.Message);
+            }
+            else if (e.Cancelled)
+            {
+              
+            }
+            else
+            {
+                MakeOrthoPhoto();
+                orthoToolStripMenuItem.Enabled = true;
+            }
+
+        }
+
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //form1.progressBar1.Value = e.ProgressPercentage;
+        }
+        private void InitializeBackgroundWorker()
+        {
+            backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+            backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorker1_RunWorkerCompleted);
+            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
+        }
 
         private void MakeOrthoPhoto()
         {
-            //visible = Visibilitycheck();
 
-            new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-                Visibilitycheck();
-            }).Start();
-            //Visibilitycheck();
-            //ortho = new Image<Bgr, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
-            ortho = new Image<Bgr, byte>(surface.Width,surface.Height);
+
+            ortho = new Image<Bgr, byte>(surface.Width, surface.Height);
 
             double[][] aa = MatrixCreate(3, 3);
             double co = cos(o);
@@ -1171,7 +1239,7 @@ namespace OrthoMachine.View
             {
                 for (int j = 0 ; j < surface.Width ; j++)
                 {
-                    if (surface.Data[i, j, 0] != 0 && visible.Data[i,j,0]==255)
+                    if (surface.Data[i, j, 0] != 0 && visible.Data[i, j, 0] == 255)
                     {
                         double X = (form1.sf.sc.X0 + j * form1.rastersize);
                         double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);
@@ -1262,26 +1330,19 @@ namespace OrthoMachine.View
         }
 
 
-        private void Visibilitycheck()
-        {
-            //visible = new Image<Gray, byte>(surface.Width,surface.Height);
-            visible = new Image<Gray, byte>(surface.Width,surface.Height,new Gray(255));
 
-
-            double bg = 0.0; //if no height data
+        private void Visibilitycheck(int fromX, int toX, int fromY, int toY)
+        {            
+            visible = new Image<Gray, byte>(surface.Width, surface.Height, new Gray(255));            
             double f = 0.01; //3D step
             double sv = form1.rastersize / 2;
-/*
-            xdh = ((X0 - XD0) / RXD) + 1.0;
-            ydh = ((YD0 - Y0) / RYD) + 1.0;
-            xd = ((X - XD0) / RXD) + 1.0;
-            yd = ((YD0 - Y) / RYD) + 1.0;
-            */
-            double xh, yh, s1,s2, S, se, sh, x, y, z;
+           
+            double xh, yh, s1, s2, S, se, sh, x, y, z;
             int ix, iy, sw;
-            for (int i = 0 ; i < surface.Height ; i++)
+            //for (int i = 0 ; i < surface.Height ; i++)
+            for (int i = fromY ; i < toY ; i++)
             {
-                for (int j = 0 ; j < surface.Width ; j++)
+                for (int j = fromX ; j < toX ; j++)
                 {
                     if (surface.Data[i, j, 0] == 0)
                     {
@@ -1302,7 +1363,7 @@ namespace OrthoMachine.View
                         se = s2;
                     }
                     else se = s1;
-                    double dx = (xh *sv) / S;
+                    double dx = (xh * sv) / S;
                     double dy = (yh * sv) / S;
                     double dz = (Zo - Z) * sv / S;
                     x = X;
@@ -1311,7 +1372,7 @@ namespace OrthoMachine.View
                     sw = 0;
 
                     sh = 0;
-                    while (sh<=se)
+                    while (sh <= se)
                     {
                         sh += sv;
                         x += dx;
@@ -1320,67 +1381,24 @@ namespace OrthoMachine.View
 
                         //ix = (int)((x - X) * form1.rastersize+0.5);
                         ix = (int)((x - form1.sf.sc.X0) / form1.rastersize);
-                        iy = (int)(surface.Height-(y - form1.sf.sc.Y0) / form1.rastersize);
+                        iy = (int)(surface.Height - (y - form1.sf.sc.Y0) / form1.rastersize);
                         //iy = (int)((y - Y) * form1.rastersize + 0.5);
-                        if (iy>=0 && iy<surface.Height && ix>0 && ix<surface.Width && surface.Data[iy, ix, 0] / 1000 >= z)
+                        if (iy >= 0 && iy < surface.Height && ix > 0 && ix < surface.Width && surface.Data[iy, ix, 0] / 1000 >= z)
                         {
                             sw = 1;
-                        }                       
+                        }
                     }
                     if (sw == 1)
                     {
                         visible.Data[i, j, 0] = 0;  //invisible
                     }
-                    
+
                 }
             }
             //visible.Save(form1.SavePath + "\\visible.png");
             //return visible;
 
         }
-        /*
-            if (ZD > bg + 0.000001)
-            {      //-- Beginn Sichtbarkeitspruefung ---// 
-                hx = xdh - xd;
-                hy = ydh - yd;
-                S = sqrt((hx * hx) + (hy * hy));
-                s1 = (xe - xd) * S / hx;
-                s2 = (ye - yd) * S / hy;
-                se = s1;
-                if (s1 > s2) se = s2;
-                dx = (hx * sv) / S;        //-- Fortschreitungsintervalle dx, dy, dZ -- 
-                dy = (hy * sv) / S;
-                dZ = ((Z0 - ZD) * sv) / S;
-
-                x = xd;
-                y = yd;
-                Z = ZD;
-                sh = 0.0;
-                sw = 0;
-
-                while (sh <= se && sw == 0)
-                {
-                    sh = sh + sv;
-                    x = x + dx;
-                    y = y + dy;
-                    Z = Z + dZ;
-                    ix = floor(x - xd0 + 0.5);
-                    iy = floor(y - yd0 + 0.5);
-                    if (e[iy][ix] * f >= Z) sw = 1;
-                }                               //-- Ende Sichtbarkeitspruefung -- 
-                if (sw == 1) sicht[j - yo0][i - xo0] = '0';     //-- unsichtbar          --/ 
-            }
-            else { sicht[j - yo0][i - xo0] = '2'; }      //-- Pkte. ohne H"ohe    --/
-        }
-        else { sicht[j - yo0][i - xo0] = '2'; }      //-- Pkte. ohne H"ohe    --/
-    }
-}
-*/
-        /*-----------------------------------------------------------------------*/
-        /*     sicht[][] = '0' ---> nicht sichtbar                               */
-        /*     sicht[][] = '1' ---> sichtbar                                     */
-        /*     sicht[][] = '2' ---> keine Daten im dom2 oder                     */
-        /*-----------------------------------------------------------------------*/
 
 
 

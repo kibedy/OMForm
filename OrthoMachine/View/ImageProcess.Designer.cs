@@ -59,6 +59,7 @@ namespace OrthoMachine.View
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             // 
             // panel1
             // 
@@ -355,6 +356,7 @@ namespace OrthoMachine.View
         public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem orthoToolStripMenuItem;
         private ContextMenuStrip contextMenuStrip1;
+            
 
 
     
