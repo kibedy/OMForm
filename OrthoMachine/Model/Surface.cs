@@ -261,13 +261,13 @@ namespace ortomachine.Model
             {              
                 for (int j = 1; j < resizedSurf.Width - 1; j++)
                 {
-                    if (i * newrastersize / rastersize < (sc.image.Height - 2) && j * newrastersize / rastersize < (sc.image.Width - 2))
+                    if (i * newrastersize / form1.rastersize < (sc.image.Height - 2) && j * newrastersize / form1.rastersize < (sc.image.Width - 2))
                     {                        
-                        int surf_X = (int)Math.Ceiling(j / rastersize * newrastersize); //lower neighbor oldpixel
-                        int surf_Y = (int)Math.Ceiling(i / rastersize * newrastersize);
+                        int surf_X = (int)Math.Ceiling(j / form1.rastersize * newrastersize); //lower neighbor oldpixel
+                        int surf_Y = (int)Math.Ceiling(i / form1.rastersize * newrastersize);
 
-                        float dx = (j / rastersize * newrastersize) - surf_X;
-                        float dy = (i / rastersize * newrastersize) - surf_Y;
+                        float dx = (j / form1.rastersize * newrastersize) - surf_X;
+                        float dy = (i / form1.rastersize * newrastersize) - surf_Y;
 
                         ushort a11 = form1.sf.sc.image.Data[surf_Y, surf_X, 0];
                         ushort a12 = form1.sf.sc.image.Data[surf_Y, surf_X + 1, 0];

@@ -39,6 +39,7 @@ namespace OrthoMachine.View
         Image<Bgra, byte> photo;
         Image<Bgra, byte> photo_orig;
         Image<Bgra, byte> rgbsurf;
+        Image<Gray, byte> visible;
         ArrayList colors;
         enum ShowState { rgb, intensity, depth, photo, ortho };
         ShowState SSS;
@@ -49,7 +50,7 @@ namespace OrthoMachine.View
         double[][] l;
         int pointpaircount;
         Image<Bgr, byte> ortho;
-        Image<Gray, bool> ortho_visible;
+        //Image<Gray, byte> ortho_visible;
         double focus;
         double pix_mm;
         double Xo, Yo, Zo; //init pic postition
@@ -58,6 +59,7 @@ namespace OrthoMachine.View
         double k;    //omega phi kappa
         double a11, a12, a13, a21, a22, a23, a31, a32, a33;
         double[][] a;
+
 
 
 
@@ -221,7 +223,7 @@ namespace OrthoMachine.View
 
 
             if (ImageScale < 0.1) ImageScale = 0.1f;
-           // Console.WriteLine(ImageScale);
+            // Console.WriteLine(ImageScale);
             this.pictureBox1.Size = new Size((int)(ImageWidth * ImageScale), (int)(ImageHeight * ImageScale));
             if ((pictureBox1.Image.Width > this.ClientSize.Width || pictureBox1.Image.Height > this.ClientSize.Height))
             {
@@ -596,7 +598,7 @@ namespace OrthoMachine.View
                 toDraw = new Image<Bgra, byte>(form1.sf.sc.intSurfImage.Bitmap);
 
             }
-            else 
+            else
             {
                 toDraw = new Image<Bgra, byte>(ortho.Bitmap);
             }
@@ -608,7 +610,7 @@ namespace OrthoMachine.View
                 listView2.Items.CopyTo(items, 0);
                 int i = 0;
                 foreach (ListViewItem item in listView2.Items)
-                {                   
+                {
 
                     markerimage = new Image<Gray, byte>(new Size(surface.Width, surface.Height));
                     float X = (float)(((float.Parse(item.SubItems[1].Text)) - form1.sf.sc.X0) / form1.rastersize);
@@ -619,7 +621,7 @@ namespace OrthoMachine.View
                     float r = 10;
                     CircleF circle1 = new CircleF(center, r);
                     CircleF circle2 = new CircleF(center, 1);
-                    markerimage.Draw(circle1, new Gray(250), 1);                    
+                    markerimage.Draw(circle1, new Gray(250), 1);
                     markerimage.Draw(circle2, new Gray(250), 1);
 
                     markerimage._SmoothGaussian(3, 3, 1, 1);
@@ -718,8 +720,8 @@ namespace OrthoMachine.View
                     {
                         //DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
                         DrawMarkerSurface();
-                    } 
-                    else if (SSS== ShowState.ortho)
+                    }
+                    else if (SSS == ShowState.ortho)
                     {
                         //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
                         DrawMarkerSurface();
@@ -941,11 +943,11 @@ namespace OrthoMachine.View
             double sumX = 0;
             double sumY = 0;
             double sumZ = 0;
-            //focus = -21;
-            focus = -16;            
-            pix_mm = 0.00156;
-            //pix_mm = 0.0043;
-           // pix_mm = 0.005;
+            focus = -21;  //fake focus 
+            //focus = -16;
+            //pix_mm = 0.00156;
+            pix_mm = 0.0067515;
+            // pix_mm = 0.005;
 
 
             foreach (ListViewItem item in listView2.Items)
@@ -956,14 +958,14 @@ namespace OrthoMachine.View
             }
             Xo = sumX / listView2.Items.Count; //in meter
             Yo = sumY / listView2.Items.Count;  //start position in negative 
-            Zo = (sumZ / listView2.Items.Count +20);
+            Zo = (sumZ / listView2.Items.Count + 20);
             //Xo = 20;
             //Yo = 10;
 
             int iter = 0;
             double var2 = 0.01;
             double var3 = 0.00000001;
-            
+
             pointpaircount = Math.Min(listView1.Items.Count, listView2.Items.Count);
             double[] DX = new double[pointpaircount];
             double[] DY = new double[pointpaircount];
@@ -988,7 +990,7 @@ namespace OrthoMachine.View
             //int j = 0;
             const int iterlimit = 1000;
             a = MatrixCreate(3, 3);
- 
+
             while (iter < iterlimit)
             {
                 a[0][0] = cos(p) * cos(k);
@@ -1015,14 +1017,14 @@ namespace OrthoMachine.View
 
                     xo[2 * i] = focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
                     xo[2 * i + 1] = focus * (a[0][1] * DX[i] + a[1][1] * DY[i] + a[2][1] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
-                    lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);                    
-                    Console.WriteLine("X[i]:"+ item.SubItems[1].Text + " Y[i]:" + item.SubItems[2].Text + " Z[i]:" + item.SubItems[3].Text + " xo: " +xo[2*i]/pix_mm+" yo:"+xo[2*i+1]/pix_mm);
+                    lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);
+                    Console.WriteLine("X[i]:" + item.SubItems[1].Text + " Y[i]:" + item.SubItems[2].Text + " Z[i]:" + item.SubItems[3].Text + " xo: " + xo[2 * i] / pix_mm + " yo:" + xo[2 * i + 1] / pix_mm);
 
                 }
 
                 //****Beobachtungsvektor               
                 //double[][] l = MatrixCreate(pointpaircount * 2, 1);
-                l= MatrixCreate(pointpaircount * 2, 1);
+                l = MatrixCreate(pointpaircount * 2, 1);
                 for (int i = 0 ; i < pointpaircount ; i++)
                 {
                     l[2 * i][0] = x[i] - xo[2 * i];
@@ -1030,7 +1032,7 @@ namespace OrthoMachine.View
                 }
 
                 //Designmatrix
-                
+
                 double[] tmp = new double[pointpaircount];
 
                 A = MatrixCreate(pointpaircount * 2, 6);
@@ -1065,17 +1067,6 @@ namespace OrthoMachine.View
                 Qxx = MatrixCreate(6, 6);
                 Qxx = MatrixIdentity(6);
                 Qxx = MatrixInverse(Ata);
-
-                //ll = MatrixCreate(pointpaircount * 2, 1);
-                
-                
-                /*
-                // ellenőrzés
-                double[][] teszt = MatrixCreate(6, 6);
-                teszt = MatrixProduct(Qxx, Ata);
-                //teszt = MultiplyMatrix(Qxx, Ata);
-                */
-
 
                 double[][] Atl;
                 double[][] Atl_;
@@ -1121,10 +1112,10 @@ namespace OrthoMachine.View
             }
             else
             {
-                string ff = ComputeErrors() ;
-                ff = ("Xo:"+Xo.ToString("0.000") + "\nYo:" + Yo.ToString("0.000") + " \nZo:" + Zo.ToString("0.000") + 
-                    "\nOmega:" + (o % Math.PI*180/Math.PI).ToString("0.000") + " deg\nPhi:" + (p % Math.PI * 180 / Math.PI).ToString("0.000")+ 
-                    " deg\nKappa:" + (k % Math.PI * 180 / Math.PI).ToString("0.000")+" deg\n\n") + ff;
+                string ff = ComputeErrors();
+                ff = ("Xo:" + Xo.ToString("0.000") + "\nYo:" + Yo.ToString("0.000") + " \nZo:" + Zo.ToString("0.000") +
+                    "\nOmega:" + (o % Math.PI * 180 / Math.PI).ToString("0.000") + " deg\nPhi:" + (p % Math.PI * 180 / Math.PI).ToString("0.000") +
+                    " deg\nKappa:" + (k % Math.PI * 180 / Math.PI).ToString("0.000") + " deg\n\n") + ff;
                 //string hiba = ("Standard deviation: " + ff + " pixel");
                 DialogResult dr = MessageBox.Show(ff, "Exterior Orientation", MessageBoxButtons.YesNo);
                 switch (dr)
@@ -1145,11 +1136,16 @@ namespace OrthoMachine.View
 
         private void MakeOrthoPhoto()
         {
-            //throw new NotImplementedException();
-            ortho = new Image<Bgr, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
-            //ortho_visible = new Image<Bgra, byte>(surface.Width, surface.Height);
-            //double X0 = form1.sf.sc.X0;
-            //double Y0 = form1.sf.sc.Y0;
+            //visible = Visibilitycheck();
+
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                Visibilitycheck();
+            }).Start();
+            //Visibilitycheck();
+            //ortho = new Image<Bgr, byte>(form1.sf.sc.RGBsurfImage.Bitmap);
+            ortho = new Image<Bgr, byte>(surface.Width,surface.Height);
 
             double[][] aa = MatrixCreate(3, 3);
             double co = cos(o);
@@ -1169,42 +1165,44 @@ namespace OrthoMachine.View
             aa[2][2] = cp * co;
             double[][] a_inv = MatrixCreate(3, 3);
             a_inv = MatrixInverse(a);
-            //Yo += 0.35;
-            //Xo += 0.1;
-            //Zo -=0.15;
 
             int jj = 0;
             for (int i = 0 ; i < surface.Height ; i++)
             {
                 for (int j = 0 ; j < surface.Width ; j++)
                 {
-                    if (surface.Data[i,j,0]!=0)
+                    if (surface.Data[i, j, 0] != 0 && visible.Data[i,j,0]==255)
                     {
-                        //double X = (form1.sf.sc.X0 + j * form1.rastersize);
                         double X = (form1.sf.sc.X0 + j * form1.rastersize);
-                        double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);                       
-                        double Z = ((double)(surface.Data[i, j, 0])) / 1000;                       
+                        double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);
+                        double Z = ((double)(surface.Data[i, j, 0])) / 1000;
                         double DX = X - Xo;
                         double DY = Y - Yo;
                         double DZ = Z - Zo;
-                        int xb = (int)((focus * (a[0][0] * DX + a[1][0] * DY + a[2][0] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ) ) / pix_mm);
-                        int yb = (int)((focus * (a[0][1] * DX + a[1][1] * DY + a[2][1] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ) ) / pix_mm);
+                        int xb = (int)((focus * (a[0][0] * DX + a[1][0] * DY + a[2][0] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ)) / pix_mm);
+                        int yb = (int)((focus * (a[0][1] * DX + a[1][1] * DY + a[2][1] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ)) / pix_mm);
                         int[] xy = Image2PixCoord(xb, yb);
-                                               
-                        if (xy[1] >0 && xy[1] < photo.Height  && xy[0] > 0&& xy[0] < photo.Width )
-                            {                                                    
+
+                        if (xy[1] > 0 && xy[1] < photo.Height && xy[0] > 0 && xy[0] < photo.Width && visible.Data[i, j, 0] == 255)
+                        {
                             byte b = photo.Data[xy[1], xy[0], 0];
                             byte g = photo.Data[xy[1], xy[0], 1];
-                            byte r= photo.Data[xy[1], xy[0], 2];
+                            byte r = photo.Data[xy[1], xy[0], 2];
                             ortho.Data[i, j, 0] = b;
                             ortho.Data[i, j, 1] = g;
                             ortho.Data[i, j, 2] = r;
                             jj++;
                         }
+                        else
+                        {
+                            ortho.Data[i, j, 0] = 0;
+                            ortho.Data[i, j, 1] = 0;
+                            ortho.Data[i, j, 2] = 0;
+                        }
                     }
                 }
             }
-          
+
             SSS = ShowState.ortho;
             pictureBox2.Image = ortho.Bitmap;
             string[] ss = filename.Split('.');
@@ -1213,21 +1211,21 @@ namespace OrthoMachine.View
                 DirectoryInfo di = Directory.CreateDirectory(form1.SavePath + "\\ortho\\");
             }
 
-            ortho.Save(form1.SavePath +"\\ortho\\"+ ss[0]+"_ortho."+ss[1]);
+            ortho.Save(form1.SavePath + "\\ortho\\" + ss[0] + "_ortho." + ss[1]);
         }
 
         private int[] Image2PixCoord(int x, int y)
         {
             int[] result = new int[2];
             int xx = x + photo.Width / 2;
-            int yy = photo.Height - (photo.Height / 2 + y);          
+            int yy = photo.Height - (photo.Height / 2 + y);
             result[0] = xx;
             result[1] = yy;
             return result;
         }
 
         private string ComputeErrors()
-        {            
+        {
             double[][] AQxx = MatrixCreate(6, 6);
             AQxx = MatrixProduct(A, Qxx);
 
@@ -1244,16 +1242,16 @@ namespace OrthoMachine.View
             double mo = Math.Sqrt(vtv[0][0] / (pointpaircount * 2 - 6));
             double[] sx = new double[pointpaircount];
             double[] sy = new double[pointpaircount];
-            string result ="";   //= ("Standard deviation: " + (mo/0.0015).ToString("0.0") + " px\n\n");           
+            string result = "";   //= ("Standard deviation: " + (mo/0.0015).ToString("0.0") + " px\n\n");           
             double[] s = new double[6];
             for (int i = 0 ; i < 3 ; i++)
             {
                 s[i] = mo * Math.Sqrt(Qxx[i][i]);
-                s[i + 3] = mo * Math.Sqrt(Qxx[i + 3][i + 3]) / Math.PI*180;
-                
+                s[i + 3] = mo * Math.Sqrt(Qxx[i + 3][i + 3]) / Math.PI * 180;
+
             }
-            result+=("\nStandard deviation:");
-            result += ("\nX: " + (s[0]).ToString("0.000000") +" mm");
+            result += ("\nStandard deviation:");
+            result += ("\nX: " + (s[0]).ToString("0.000000") + " mm");
             result += ("\nY: " + (s[1]).ToString("0.000000") + " mm");
             result += ("\nZ: " + (s[2]).ToString("0.000000") + " mm");
             result += ("\nomega:" + s[3].ToString("0.0000000") + " deg");
@@ -1264,387 +1262,509 @@ namespace OrthoMachine.View
         }
 
 
-
-    double cos(double deg) { return Math.Cos(deg); }
-    double sin(double deg) { return Math.Sin(deg); }
-
-
-
-    #region old matrix procesures - dropped
-    public double[][] MultiplyMatrix(double[][]a, double[][]b )
-    {
-        //double[,] c = new double[a.GetLength(0), b.GetLength(1)];
-        double[][] c = MatrixCreate(a.Length, b[0].Length);
-        if (a[0].Length == b.Length)
+        private void Visibilitycheck()
         {
-            //c = new double [a.GetLength(0), b.GetLength(1)];
-            for (int i = 0 ; i < c.Length ; i++)
+            //visible = new Image<Gray, byte>(surface.Width,surface.Height);
+            visible = new Image<Gray, byte>(surface.Width,surface.Height,new Gray(255));
+
+
+            double bg = 0.0; //if no height data
+            double f = 0.01; //3D step
+            double sv = form1.rastersize / 2;
+/*
+            xdh = ((X0 - XD0) / RXD) + 1.0;
+            ydh = ((YD0 - Y0) / RYD) + 1.0;
+            xd = ((X - XD0) / RXD) + 1.0;
+            yd = ((YD0 - Y) / RYD) + 1.0;
+            */
+            double xh, yh, s1,s2, S, se, sh, x, y, z;
+            int ix, iy, sw;
+            for (int i = 0 ; i < surface.Height ; i++)
             {
-                for (int j = 0 ; j < c[0].Length ; j++)
+                for (int j = 0 ; j < surface.Width ; j++)
                 {
-                    c[i][ j] = 0;
-                    for (int k = 0 ; k < a[0].Length ; k++) // OR k<b.GetLength(0)
-                        c[i][ j] = c[i][j] + a[i][k] * b[k][ j];
+                    if (surface.Data[i, j, 0] == 0)
+                    {
+                        visible.Data[i, j, 0] = 0;
+                        continue;
+                    }
+                    double X = (form1.sf.sc.X0 + j * form1.rastersize);
+                    double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);
+                    double Z = ((double)(surface.Data[i, j, 0])) / 1000;
+
+                    xh = Xo - X;
+                    yh = Yo - Y;
+                    S = Math.Sqrt(xh * xh + yh * yh);
+                    s1 = (Xo - X) * S / xh;
+                    s2 = (Yo - Y) * S / yh;
+                    if (s1 > s2)
+                    {
+                        se = s2;
+                    }
+                    else se = s1;
+                    double dx = (xh *sv) / S;
+                    double dy = (yh * sv) / S;
+                    double dz = (Zo - Z) * sv / S;
+                    x = X;
+                    y = Y;
+                    z = Z;
+                    sw = 0;
+
+                    sh = 0;
+                    while (sh<=se)
+                    {
+                        sh += sv;
+                        x += dx;
+                        y += dy;
+                        z += dz;
+
+                        //ix = (int)((x - X) * form1.rastersize+0.5);
+                        ix = (int)((x - form1.sf.sc.X0) / form1.rastersize);
+                        iy = (int)(surface.Height-(y - form1.sf.sc.Y0) / form1.rastersize);
+                        //iy = (int)((y - Y) * form1.rastersize + 0.5);
+                        if (iy>=0 && iy<surface.Height && ix>0 && ix<surface.Width && surface.Data[iy, ix, 0] / 1000 >= z)
+                        {
+                            sw = 1;
+                        }                       
+                    }
+                    if (sw == 1)
+                    {
+                        visible.Data[i, j, 0] = 0;  //invisible
+                    }
+                    
                 }
             }
+            //visible.Save(form1.SavePath + "\\visible.png");
+            //return visible;
+
         }
-        else
-        {
-            Console.WriteLine("\n Number of columns in First Matrix should be equal to Number of rows in Second Matrix.");
-            Console.WriteLine("\n Please re-enter correct dimensions.");
-            Environment.Exit(-1);
-        }
-        return c;
-    }
-    /*
-    void dekompf4(double[,] a, double[,] e, int n, int d)
-    {
-        int i, j, k;
-        d = 1;
-        for (k = 0 ; k <= (n - 1) ; k++)
-        {
-            foelem4(a, e, n, k, d);
-            //printf("\n%d. Iteration Div: %13.4e\n\n",k,a[k][k]);
-            for (i = k + 1 ; i < n ; i++)
-            {
-                a[i,k] = a[i,k] / a[k,k];
-                for (j = k + 1 ; j < n ; j++)
+        /*
+            if (ZD > bg + 0.000001)
+            {      //-- Beginn Sichtbarkeitspruefung ---// 
+                hx = xdh - xd;
+                hy = ydh - yd;
+                S = sqrt((hx * hx) + (hy * hy));
+                s1 = (xe - xd) * S / hx;
+                s2 = (ye - yd) * S / hy;
+                se = s1;
+                if (s1 > s2) se = s2;
+                dx = (hx * sv) / S;        //-- Fortschreitungsintervalle dx, dy, dZ -- 
+                dy = (hy * sv) / S;
+                dZ = ((Z0 - ZD) * sv) / S;
+
+                x = xd;
+                y = yd;
+                Z = ZD;
+                sh = 0.0;
+                sw = 0;
+
+                while (sh <= se && sw == 0)
                 {
-                    a[i,j] = a[i,j] - a[i,k] * a[k,j];
-                }
+                    sh = sh + sv;
+                    x = x + dx;
+                    y = y + dy;
+                    Z = Z + dZ;
+                    ix = floor(x - xd0 + 0.5);
+                    iy = floor(y - yd0 + 0.5);
+                    if (e[iy][ix] * f >= Z) sw = 1;
+                }                               //-- Ende Sichtbarkeitspruefung -- 
+                if (sw == 1) sicht[j - yo0][i - xo0] = '0';     //-- unsichtbar          --/ 
             }
-            //matrixkiir4(a,n);
+            else { sicht[j - yo0][i - xo0] = '2'; }      //-- Pkte. ohne H"ohe    --/
         }
+        else { sicht[j - yo0][i - xo0] = '2'; }      //-- Pkte. ohne H"ohe    --/
     }
-    void foelem4(double[,] a, double[,] e, int n, int k, int d)
-    {
-        int i, xm;
-        double am;
-        am = a[k, k]; xm = k;
-        for (i = k ; i < n ; i++)
-        {
-            if (Math.Abs(am) < Math.Abs(a[i, k]))
-            {
-                am = a[i, k];
-                xm = i;
-                ChangeLines4(a, e, xm, k, n);
-                d = d * (-1);
-            }
-        }
-    }
-
-
-    void ChangeLines4(double[,] a, double[,] e, int xm, int k, int n)
-    {
-        //int i;
-        double c;
-        for (int i = 0 ; i < n ; i++)
-        {
-            c = a[xm,i];
-            a[xm,i] = a[k,i];
-            a[k,i] = c;
-            c = e[xm,i];
-            e[xm,i] = e[k,i];
-            e[k,i] = c;
-        }
-    }
-
-    void invert(double[,] a, double[,] e, int n)
-    {
-        int d = 1;
-        // printf("\nA matrix \n\nM);
-        // matrixkiir4(a,n);
-        dekompf4(a, e, n, d);
-        //eredmeny4(a, e, d, n);
-        //getch();
-    }
-
-    void oszlvekt(double[] be, double[,] ki, int n)
-    {
-        for (int i = 0 ; i != n ; i++)
-        {
-            ki[i,0] = be[i];
-        }
-    }
-    */
-    #endregion
-
-    #region Matrix procedures
-
-    public double[][] Transpose(double[][] matrix)
-    {
-        int w = matrix.Length;
-        int h = matrix[0].Length;
-
-        double[][] result = MatrixCreate(h, w);
-
-        for (int i = 0 ; i < w ; i++)
-        {
-            for (int j = 0 ; j < h ; j++)
-            {
-                result[j][i] = matrix[i][j];
-            }
-        }
-
-        return result;
-    }
-    static double[][] MatrixCreate(int rows, int cols)
-    {
-        double[][] result = new double[rows][];
-        for (int i = 0 ; i < rows ; ++i)
-            result[i] = new double[cols];
-        return result;
-    }
-
-    static double[][] MatrixIdentity(int n)
-    {
-        // return an n x n Identity matrix
-        double[][] result = MatrixCreate(n, n);
-        for (int i = 0 ; i < n ; ++i)
-            result[i][i] = 1.0;
-
-        return result;
-    }
-
-    static double[][] MatrixProduct(double[][] matrixA, double[][] matrixB)
-    {
-        int aRows = matrixA.Length; int aCols = matrixA[0].Length;
-        int bRows = matrixB.Length; int bCols = matrixB[0].Length;
-        if (aCols != bRows)
-            throw new Exception("Non-conformable matrices in MatrixProduct");
-
-        double[][] result = MatrixCreate(aRows, bCols);
-
-        for (int i = 0 ; i < aRows ; ++i) // each row of A
-            for (int j = 0 ; j < bCols ; ++j) // each col of B
-                for (int k = 0 ; k < aCols ; ++k) // could use k less-than bRows
-                    result[i][j] += matrixA[i][k] * matrixB[k][j];
-
-        return result;
-    }
-
-    static double[][] MatrixInverse(double[][] matrix)
-    {
-        int n = matrix.Length;
-        double[][] result = MatrixDuplicate(matrix);
-
-        int[] perm;
-        int toggle;
-        double[][] lum = MatrixDecompose(matrix, out perm,
-          out toggle);
-        if (lum == null)
-            throw new Exception("Unable to compute inverse");
-
-        double[] b = new double[n];
-        for (int i = 0 ; i < n ; ++i)
-        {
-            for (int j = 0 ; j < n ; ++j)
-            {
-                if (i == perm[j])
-                    b[j] = 1.0;
-                else
-                    b[j] = 0.0;
-            }
-
-            double[] x = HelperSolve(lum, b);
-
-            for (int j = 0 ; j < n ; ++j)
-                result[j][i] = x[j];
-        }
-        return result;
-    }
-
-    static double[][] MatrixDuplicate(double[][] matrix)
-    {
-        // allocates/creates a duplicate of a matrix.
-        double[][] result = MatrixCreate(matrix.Length, matrix[0].Length);
-        for (int i = 0 ; i < matrix.Length ; ++i) // copy the values
-            for (int j = 0 ; j < matrix[i].Length ; ++j)
-                result[i][j] = matrix[i][j];
-        return result;
-    }
-
-    static double[] HelperSolve(double[][] luMatrix, double[] b)
-    {
-        // before calling this helper, permute b using the perm array
-        // from MatrixDecompose that generated luMatrix
-        int n = luMatrix.Length;
-        double[] x = new double[n];
-        b.CopyTo(x, 0);
-
-        for (int i = 1 ; i < n ; ++i)
-        {
-            double sum = x[i];
-            for (int j = 0 ; j < i ; ++j)
-                sum -= luMatrix[i][j] * x[j];
-            x[i] = sum;
-        }
-
-        x[n - 1] /= luMatrix[n - 1][n - 1];
-        for (int i = n - 2 ; i >= 0 ; --i)
-        {
-            double sum = x[i];
-            for (int j = i + 1 ; j < n ; ++j)
-                sum -= luMatrix[i][j] * x[j];
-            x[i] = sum / luMatrix[i][i];
-        }
-
-        return x;
-    }
-
-    static double[][] MatrixDecompose(double[][] matrix, out int[] perm, out int toggle)
-    {
-        // Doolittle LUP decomposition with partial pivoting.
-        // rerturns: result is L (with 1s on diagonal) and U;
-        // perm holds row permutations; toggle is +1 or -1 (even or odd)
-        int rows = matrix.Length;
-        int cols = matrix[0].Length; // assume square
-        if (rows != cols)
-            throw new Exception("Attempt to decompose a non-square m");
-
-        int n = rows; // convenience
-
-        double[][] result = MatrixDuplicate(matrix);
-
-        perm = new int[n]; // set up row permutation result
-        for (int i = 0 ; i < n ; ++i) { perm[i] = i; }
-
-        toggle = 1; // toggle tracks row swaps.
-                    // +1 -greater-than even, -1 -greater-than odd. used by MatrixDeterminant
-
-        for (int j = 0 ; j < n - 1 ; ++j) // each column
-        {
-            double colMax = Math.Abs(result[j][j]); // find largest val in col
-            int pRow = j;
-            //for (int i = j + 1; i less-than n; ++i)
-            //{
-            //  if (result[i][j] greater-than colMax)
-            //  {
-            //    colMax = result[i][j];
-            //    pRow = i;
-            //  }
-            //}
-
-            // reader Matt V needed this:
-            for (int i = j + 1 ; i < n ; ++i)
-            {
-                if (Math.Abs(result[i][j]) > colMax)
-                {
-                    colMax = Math.Abs(result[i][j]);
-                    pRow = i;
-                }
-            }
-            // Not sure if this approach is needed always, or not.
-
-            if (pRow != j) // if largest value not on pivot, swap rows
-            {
-                double[] rowPtr = result[pRow];
-                result[pRow] = result[j];
-                result[j] = rowPtr;
-
-                int tmp = perm[pRow]; // and swap perm info
-                perm[pRow] = perm[j];
-                perm[j] = tmp;
-
-                toggle = -toggle; // adjust the row-swap toggle
-            }
-
-            // --------------------------------------------------
-            // This part added later (not in original)
-            // and replaces the 'return null' below.
-            // if there is a 0 on the diagonal, find a good row
-            // from i = j+1 down that doesn't have
-            // a 0 in column j, and swap that good row with row j
-            // --------------------------------------------------
-
-            if (result[j][j] == 0.0)
-            {
-                // find a good row to swap
-                int goodRow = -1;
-                for (int row = j + 1 ; row < n ; ++row)
-                {
-                    if (result[row][j] != 0.0)
-                        goodRow = row;
-                }
-
-                if (goodRow == -1)
-                    throw new Exception("Cannot use Doolittle's method");
-
-                // swap rows so 0.0 no longer on diagonal
-                double[] rowPtr = result[goodRow];
-                result[goodRow] = result[j];
-                result[j] = rowPtr;
-
-                int tmp = perm[goodRow]; // and swap perm info
-                perm[goodRow] = perm[j];
-                perm[j] = tmp;
-
-                toggle = -toggle; // adjust the row-swap toggle
-            }
-            // --------------------------------------------------
-            // if diagonal after swap is zero . .
-            //if (Math.Abs(result[j][j]) less-than 1.0E-20) 
-            //  return null; // consider a throw
-
-            for (int i = j + 1 ; i < n ; ++i)
-            {
-                result[i][j] /= result[j][j];
-                for (int k = j + 1 ; k < n ; ++k)
-                {
-                    result[i][k] -= result[i][j] * result[j][k];
-                }
-            }
-
-
-        } // main j column loop
-
-        return result;
-    }
-
-    /*
-    static double[][] Make2DMatrix(double[,] input)
-    {            
-        int x = input.GetLength(0);
-        int y = input.GetLength(1);
-        double[][] result = MatrixCreate(x, y);
-        for (int i = 0 ; i < x ; i++)
-        {
-            for (int j = 0 ; j < y ; j++)
-            {
-                result[i][j] = input[i, j];
-            }
-        }
-
-        return result;
-    }
-
-    static double[,] Matrix2Array(double[][] input)
-    {
-        int x = input.Length;
-        int y = input[0].Length;
-        double[,] result = new double[x, y];
-        for (int i = 0 ; i < x ; i++)
-        {
-            for (int j = 0 ; j < y ; j++)
-            {
-                result[i,j] = input[i][j];
-            }
-        }
-
-        return result;
-    }
-
+}
 */
+        /*-----------------------------------------------------------------------*/
+        /*     sicht[][] = '0' ---> nicht sichtbar                               */
+        /*     sicht[][] = '1' ---> sichtbar                                     */
+        /*     sicht[][] = '2' ---> keine Daten im dom2 oder                     */
+        /*-----------------------------------------------------------------------*/
 
 
 
-    #endregion
+
+        double cos(double deg) { return Math.Cos(deg); }
+        double sin(double deg) { return Math.Sin(deg); }
+
+
+
+        #region old matrix procesures - dropped
+        public double[][] MultiplyMatrix(double[][] a, double[][] b)
+        {
+            //double[,] c = new double[a.GetLength(0), b.GetLength(1)];
+            double[][] c = MatrixCreate(a.Length, b[0].Length);
+            if (a[0].Length == b.Length)
+            {
+                //c = new double [a.GetLength(0), b.GetLength(1)];
+                for (int i = 0 ; i < c.Length ; i++)
+                {
+                    for (int j = 0 ; j < c[0].Length ; j++)
+                    {
+                        c[i][j] = 0;
+                        for (int k = 0 ; k < a[0].Length ; k++) // OR k<b.GetLength(0)
+                            c[i][j] = c[i][j] + a[i][k] * b[k][j];
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("\n Number of columns in First Matrix should be equal to Number of rows in Second Matrix.");
+                Console.WriteLine("\n Please re-enter correct dimensions.");
+                Environment.Exit(-1);
+            }
+            return c;
+        }
+        /*
+        void dekompf4(double[,] a, double[,] e, int n, int d)
+        {
+            int i, j, k;
+            d = 1;
+            for (k = 0 ; k <= (n - 1) ; k++)
+            {
+                foelem4(a, e, n, k, d);
+                //printf("\n%d. Iteration Div: %13.4e\n\n",k,a[k][k]);
+                for (i = k + 1 ; i < n ; i++)
+                {
+                    a[i,k] = a[i,k] / a[k,k];
+                    for (j = k + 1 ; j < n ; j++)
+                    {
+                        a[i,j] = a[i,j] - a[i,k] * a[k,j];
+                    }
+                }
+                //matrixkiir4(a,n);
+            }
+        }
+        void foelem4(double[,] a, double[,] e, int n, int k, int d)
+        {
+            int i, xm;
+            double am;
+            am = a[k, k]; xm = k;
+            for (i = k ; i < n ; i++)
+            {
+                if (Math.Abs(am) < Math.Abs(a[i, k]))
+                {
+                    am = a[i, k];
+                    xm = i;
+                    ChangeLines4(a, e, xm, k, n);
+                    d = d * (-1);
+                }
+            }
+        }
+
+
+        void ChangeLines4(double[,] a, double[,] e, int xm, int k, int n)
+        {
+            //int i;
+            double c;
+            for (int i = 0 ; i < n ; i++)
+            {
+                c = a[xm,i];
+                a[xm,i] = a[k,i];
+                a[k,i] = c;
+                c = e[xm,i];
+                e[xm,i] = e[k,i];
+                e[k,i] = c;
+            }
+        }
+
+        void invert(double[,] a, double[,] e, int n)
+        {
+            int d = 1;
+            // printf("\nA matrix \n\nM);
+            // matrixkiir4(a,n);
+            dekompf4(a, e, n, d);
+            //eredmeny4(a, e, d, n);
+            //getch();
+        }
+
+        void oszlvekt(double[] be, double[,] ki, int n)
+        {
+            for (int i = 0 ; i != n ; i++)
+            {
+                ki[i,0] = be[i];
+            }
+        }
+        */
+        #endregion
+
+        #region Matrix procedures
+
+        public double[][] Transpose(double[][] matrix)
+        {
+            int w = matrix.Length;
+            int h = matrix[0].Length;
+
+            double[][] result = MatrixCreate(h, w);
+
+            for (int i = 0 ; i < w ; i++)
+            {
+                for (int j = 0 ; j < h ; j++)
+                {
+                    result[j][i] = matrix[i][j];
+                }
+            }
+
+            return result;
+        }
+        static double[][] MatrixCreate(int rows, int cols)
+        {
+            double[][] result = new double[rows][];
+            for (int i = 0 ; i < rows ; ++i)
+                result[i] = new double[cols];
+            return result;
+        }
+
+        static double[][] MatrixIdentity(int n)
+        {
+            // return an n x n Identity matrix
+            double[][] result = MatrixCreate(n, n);
+            for (int i = 0 ; i < n ; ++i)
+                result[i][i] = 1.0;
+
+            return result;
+        }
+
+        static double[][] MatrixProduct(double[][] matrixA, double[][] matrixB)
+        {
+            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
+            int bRows = matrixB.Length; int bCols = matrixB[0].Length;
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+
+            double[][] result = MatrixCreate(aRows, bCols);
+
+            for (int i = 0 ; i < aRows ; ++i) // each row of A
+                for (int j = 0 ; j < bCols ; ++j) // each col of B
+                    for (int k = 0 ; k < aCols ; ++k) // could use k less-than bRows
+                        result[i][j] += matrixA[i][k] * matrixB[k][j];
+
+            return result;
+        }
+
+        static double[][] MatrixInverse(double[][] matrix)
+        {
+            int n = matrix.Length;
+            double[][] result = MatrixDuplicate(matrix);
+
+            int[] perm;
+            int toggle;
+            double[][] lum = MatrixDecompose(matrix, out perm,
+              out toggle);
+            if (lum == null)
+                throw new Exception("Unable to compute inverse");
+
+            double[] b = new double[n];
+            for (int i = 0 ; i < n ; ++i)
+            {
+                for (int j = 0 ; j < n ; ++j)
+                {
+                    if (i == perm[j])
+                        b[j] = 1.0;
+                    else
+                        b[j] = 0.0;
+                }
+
+                double[] x = HelperSolve(lum, b);
+
+                for (int j = 0 ; j < n ; ++j)
+                    result[j][i] = x[j];
+            }
+            return result;
+        }
+
+        static double[][] MatrixDuplicate(double[][] matrix)
+        {
+            // allocates/creates a duplicate of a matrix.
+            double[][] result = MatrixCreate(matrix.Length, matrix[0].Length);
+            for (int i = 0 ; i < matrix.Length ; ++i) // copy the values
+                for (int j = 0 ; j < matrix[i].Length ; ++j)
+                    result[i][j] = matrix[i][j];
+            return result;
+        }
+
+        static double[] HelperSolve(double[][] luMatrix, double[] b)
+        {
+            // before calling this helper, permute b using the perm array
+            // from MatrixDecompose that generated luMatrix
+            int n = luMatrix.Length;
+            double[] x = new double[n];
+            b.CopyTo(x, 0);
+
+            for (int i = 1 ; i < n ; ++i)
+            {
+                double sum = x[i];
+                for (int j = 0 ; j < i ; ++j)
+                    sum -= luMatrix[i][j] * x[j];
+                x[i] = sum;
+            }
+
+            x[n - 1] /= luMatrix[n - 1][n - 1];
+            for (int i = n - 2 ; i >= 0 ; --i)
+            {
+                double sum = x[i];
+                for (int j = i + 1 ; j < n ; ++j)
+                    sum -= luMatrix[i][j] * x[j];
+                x[i] = sum / luMatrix[i][i];
+            }
+
+            return x;
+        }
+
+        static double[][] MatrixDecompose(double[][] matrix, out int[] perm, out int toggle)
+        {
+            // Doolittle LUP decomposition with partial pivoting.
+            // rerturns: result is L (with 1s on diagonal) and U;
+            // perm holds row permutations; toggle is +1 or -1 (even or odd)
+            int rows = matrix.Length;
+            int cols = matrix[0].Length; // assume square
+            if (rows != cols)
+                throw new Exception("Attempt to decompose a non-square m");
+
+            int n = rows; // convenience
+
+            double[][] result = MatrixDuplicate(matrix);
+
+            perm = new int[n]; // set up row permutation result
+            for (int i = 0 ; i < n ; ++i) { perm[i] = i; }
+
+            toggle = 1; // toggle tracks row swaps.
+                        // +1 -greater-than even, -1 -greater-than odd. used by MatrixDeterminant
+
+            for (int j = 0 ; j < n - 1 ; ++j) // each column
+            {
+                double colMax = Math.Abs(result[j][j]); // find largest val in col
+                int pRow = j;
+                //for (int i = j + 1; i less-than n; ++i)
+                //{
+                //  if (result[i][j] greater-than colMax)
+                //  {
+                //    colMax = result[i][j];
+                //    pRow = i;
+                //  }
+                //}
+
+                // reader Matt V needed this:
+                for (int i = j + 1 ; i < n ; ++i)
+                {
+                    if (Math.Abs(result[i][j]) > colMax)
+                    {
+                        colMax = Math.Abs(result[i][j]);
+                        pRow = i;
+                    }
+                }
+                // Not sure if this approach is needed always, or not.
+
+                if (pRow != j) // if largest value not on pivot, swap rows
+                {
+                    double[] rowPtr = result[pRow];
+                    result[pRow] = result[j];
+                    result[j] = rowPtr;
+
+                    int tmp = perm[pRow]; // and swap perm info
+                    perm[pRow] = perm[j];
+                    perm[j] = tmp;
+
+                    toggle = -toggle; // adjust the row-swap toggle
+                }
+
+                // --------------------------------------------------
+                // This part added later (not in original)
+                // and replaces the 'return null' below.
+                // if there is a 0 on the diagonal, find a good row
+                // from i = j+1 down that doesn't have
+                // a 0 in column j, and swap that good row with row j
+                // --------------------------------------------------
+
+                if (result[j][j] == 0.0)
+                {
+                    // find a good row to swap
+                    int goodRow = -1;
+                    for (int row = j + 1 ; row < n ; ++row)
+                    {
+                        if (result[row][j] != 0.0)
+                            goodRow = row;
+                    }
+
+                    if (goodRow == -1)
+                        throw new Exception("Cannot use Doolittle's method");
+
+                    // swap rows so 0.0 no longer on diagonal
+                    double[] rowPtr = result[goodRow];
+                    result[goodRow] = result[j];
+                    result[j] = rowPtr;
+
+                    int tmp = perm[goodRow]; // and swap perm info
+                    perm[goodRow] = perm[j];
+                    perm[j] = tmp;
+
+                    toggle = -toggle; // adjust the row-swap toggle
+                }
+                // --------------------------------------------------
+                // if diagonal after swap is zero . .
+                //if (Math.Abs(result[j][j]) less-than 1.0E-20) 
+                //  return null; // consider a throw
+
+                for (int i = j + 1 ; i < n ; ++i)
+                {
+                    result[i][j] /= result[j][j];
+                    for (int k = j + 1 ; k < n ; ++k)
+                    {
+                        result[i][k] -= result[i][j] * result[j][k];
+                    }
+                }
+
+
+            } // main j column loop
+
+            return result;
+        }
+
+        /*
+        static double[][] Make2DMatrix(double[,] input)
+        {            
+            int x = input.GetLength(0);
+            int y = input.GetLength(1);
+            double[][] result = MatrixCreate(x, y);
+            for (int i = 0 ; i < x ; i++)
+            {
+                for (int j = 0 ; j < y ; j++)
+                {
+                    result[i][j] = input[i, j];
+                }
+            }
+
+            return result;
+        }
+
+        static double[,] Matrix2Array(double[][] input)
+        {
+            int x = input.Length;
+            int y = input[0].Length;
+            double[,] result = new double[x, y];
+            for (int i = 0 ; i < x ; i++)
+            {
+                for (int j = 0 ; j < y ; j++)
+                {
+                    result[i,j] = input[i][j];
+                }
+            }
+
+            return result;
+        }
+
+    */
+
+
+
+        #endregion
 
 
 
 
 
 
-}//class
+    }//class
 }//namespace
 
