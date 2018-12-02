@@ -941,8 +941,8 @@ namespace OrthoMachine.View
             double sumX = 0;
             double sumY = 0;
             double sumZ = 0;
-            focus = -21;
-            //focus = -3.64;            
+            //focus = -21;
+            focus = -16;            
             pix_mm = 0.00156;
             //pix_mm = 0.0043;
            // pix_mm = 0.005;
@@ -988,6 +988,7 @@ namespace OrthoMachine.View
             //int j = 0;
             const int iterlimit = 1000;
             a = MatrixCreate(3, 3);
+ 
             while (iter < iterlimit)
             {
                 a[0][0] = cos(p) * cos(k);
@@ -1001,7 +1002,8 @@ namespace OrthoMachine.View
                 a[2][0] = sin(o) * sin(k) - cos(o) * sin(p) * cos(k);
                 a[2][1] = sin(o) * cos(k) + cos(o) * sin(p) * sin(k);
                 a[2][2] = cos(o) * cos(p);
-                
+
+
 
                 for (int i = 0 ; i < pointpaircount ; i++)
                 {
@@ -1011,9 +1013,11 @@ namespace OrthoMachine.View
                     DY[i] = double.Parse(item.SubItems[2].Text) - Yo;
                     DZ[i] = double.Parse(item.SubItems[3].Text) - Zo;
 
-                    xo[2 * i] =     focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
+                    xo[2 * i] = focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
                     xo[2 * i + 1] = focus * (a[0][1] * DX[i] + a[1][1] * DY[i] + a[2][1] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
-                    lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);
+                    lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);                    
+                    Console.WriteLine("X[i]:"+ item.SubItems[1].Text + " Y[i]:" + item.SubItems[2].Text + " Z[i]:" + item.SubItems[3].Text + " xo: " +xo[2*i]/pix_mm+" yo:"+xo[2*i+1]/pix_mm);
+
                 }
 
                 //****Beobachtungsvektor               
@@ -1048,6 +1052,9 @@ namespace OrthoMachine.View
                     A[2 * i + 1][3] = -x[i] * sin(p) + ((y[i] / focus) * (x[i] * sin(k) + y[i] * cos(k)) + focus * cos(k)) * cos(p);
                     A[2 * i + 1][4] = focus * sin(k) - (y[i] / focus) * (x[i] * cos(k) - y[i] * sin(k));
                     A[2 * i + 1][5] = -x[i];
+
+
+
                 }
 
                 //Normálegyenlet megoldása
@@ -1115,8 +1122,9 @@ namespace OrthoMachine.View
             else
             {
                 string ff = ComputeErrors() ;
-                ff += ("\nXo:"+Xo.ToString("0.000") + " Yo:" + Yo.ToString("0.000") + " Zo:" + Zo.ToString("0.000") + 
-                    "\nOmega:" + (o % Math.PI*180/Math.PI).ToString("0.000") + " Phi:" + (p % Math.PI * 180 / Math.PI).ToString("0.000")+ " Kappa:" + (k % Math.PI * 180 / Math.PI).ToString("0.000"));
+                ff = ("Xo:"+Xo.ToString("0.000") + "\nYo:" + Yo.ToString("0.000") + " \nZo:" + Zo.ToString("0.000") + 
+                    "\nOmega:" + (o % Math.PI*180/Math.PI).ToString("0.000") + " deg\nPhi:" + (p % Math.PI * 180 / Math.PI).ToString("0.000")+ 
+                    " deg\nKappa:" + (k % Math.PI * 180 / Math.PI).ToString("0.000")+" deg\n\n") + ff;
                 //string hiba = ("Standard deviation: " + ff + " pixel");
                 DialogResult dr = MessageBox.Show(ff, "Exterior Orientation", MessageBoxButtons.YesNo);
                 switch (dr)
@@ -1174,30 +1182,17 @@ namespace OrthoMachine.View
                     {
                         //double X = (form1.sf.sc.X0 + j * form1.rastersize);
                         double X = (form1.sf.sc.X0 + j * form1.rastersize);
-                        double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);
-                       
-                        double Z = ((double)(surface.Data[i, j, 0])) / 1000;
-                        //double t1 = a_inv[0][0] * (X - Xo) + a_inv[0][1] * (Y - Yo) + a_inv[0][2] * (Z - Zo);
-                        //double t2 = a_inv[1][0] * (X - Xo) + a_inv[1][1] * (Y - Yo) + a_inv[1][2] * (Z - Zo);
-                        //double t3 = a_inv[2][0] * (X - Xo) + a_inv[2][1] * (Y - Yo) + a_inv[2][2] * (Z - Zo);
-                        double t1 = aa[0][0] * (X - Xo) + aa[0][1] * (Y - Yo) + aa[0][2] * (Z - Zo);
-                        double t2 = aa[1][0] * (X - Xo) + aa[1][1] * (Y - Yo) + aa[1][2] * (Z - Zo);
-                        double t3 = aa[2][0] * (X - Xo) + aa[2][1] * (Y - Yo) + aa[2][2] * (Z - Zo);
-                        //double t1 = a[0][0] * (X - Xo) + a[0][1] * (Y - Yo) + a[0][2] * (Z - Zo);
-                        //double t2 = a[1][0] * (X - Xo) + a[1][1] * (Y - Yo) + a[1][2] * (Z - Zo);
-                        //double t3 = a[2][0] * (X - Xo) + a[2][1] * (Y - Yo) + a[2][2] * (Z - Zo); 
-                        int xb = (int)((focus * (t1 / t3) + 0.5)/pix_mm);
-                        int yb = (int)((focus * (t2 / t3) + 0.5)/pix_mm);
-                        
-                        //Console.WriteLine(xb+ " "+ yb);
-                        //int xi = a0 + a1 * xb + a2 * yb;
-                        //int yi = b0 + b1 * xb + b2 * yb;
+                        double Y = (form1.sf.sc.Y0 + (surface.Height - i) * form1.rastersize);                       
+                        double Z = ((double)(surface.Data[i, j, 0])) / 1000;                       
+                        double DX = X - Xo;
+                        double DY = Y - Yo;
+                        double DZ = Z - Zo;
+                        int xb = (int)((focus * (a[0][0] * DX + a[1][0] * DY + a[2][0] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ) ) / pix_mm);
+                        int yb = (int)((focus * (a[0][1] * DX + a[1][1] * DY + a[2][1] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ) ) / pix_mm);
                         int[] xy = Image2PixCoord(xb, yb);
-                        //if (yb > -photo.Height / 2 && yb < photo.Height/2 && xb > -photo.Width / 2 && xb < photo.Width / 2)
-                            if (xy[1] >0 && xy[1] < photo.Height  && xy[0] > 0&& xy[0] < photo.Width )
-                            {                            
-                            //int[] xy = Image2PixCoord(xb, yb);
-                            //Console.WriteLine("xb: "+xb + " yb:" + yb+ "x: " + xy[0] + " y:" + xy[1]);
+                                               
+                        if (xy[1] >0 && xy[1] < photo.Height  && xy[0] > 0&& xy[0] < photo.Width )
+                            {                                                    
                             byte b = photo.Data[xy[1], xy[0], 0];
                             byte g = photo.Data[xy[1], xy[0], 1];
                             byte r= photo.Data[xy[1], xy[0], 2];
@@ -1209,55 +1204,30 @@ namespace OrthoMachine.View
                     }
                 }
             }
-
-            //*****************************************
-            double[] testX = new double[pointpaircount];
-            double[] testY = new double[pointpaircount];
-            double[] testZ = new double[pointpaircount];
-            for (int i = 0 ; i < pointpaircount ; i++)
-            {
-                ListViewItem item = listView2.Items[i];
-                 testX[i] = double.Parse(item.SubItems[1].Text);
-                 testY[i] = double.Parse(item.SubItems[2].Text);
-                 testZ[i] = double.Parse(item.SubItems[3].Text);
-            }
-            for (int i = 0 ; i < pointpaircount ; i++)
-            {
-                //double Z = ((double)(surface.Data[i, j, 0])) / 1000;
-                double t1 = a_inv[0][0] * (testX[i] - Xo) + a_inv[0][1] * (testY[i] - Yo) + a_inv[0][2] * (testZ[i] - Zo);
-                double t2 = a_inv[1][0] * (testX[i] - Xo) + a_inv[1][1] * (testY[i] - Yo) + a_inv[1][2] * (testZ[i] - Zo);
-                double t3 = a_inv[2][0] * (testX[i] - Xo) + a_inv[2][1] * (testY[i] - Yo) + a_inv[2][2] * (testZ[i] - Zo);
-                int xb = (int)((focus * (t1 / t3) + 0.5) / pix_mm);
-                int yb = (int)((focus * (t2 / t3) + 0.5) / pix_mm);
-                Console.WriteLine("xb:"+xb+" yb:"+yb);
-            }
-            //******************************************
-
+          
             SSS = ShowState.ortho;
             pictureBox2.Image = ortho.Bitmap;
             string[] ss = filename.Split('.');
-            ortho.Save(form1.SavePath +"\\"+ ss[0]+"_ortho."+ss[1]);
+            if (!Directory.Exists(form1.SavePath + "\\ortho\\")) ;
+            {
+                DirectoryInfo di = Directory.CreateDirectory(form1.SavePath + "\\ortho\\");
+            }
+
+            ortho.Save(form1.SavePath +"\\ortho\\"+ ss[0]+"_ortho."+ss[1]);
         }
 
         private int[] Image2PixCoord(int x, int y)
         {
             int[] result = new int[2];
             int xx = x + photo.Width / 2;
-            int yy = photo.Height - (photo.Height / 2 + y);
-            //result[0] = xx-100;
-            //result[1] = yy+100;
+            int yy = photo.Height - (photo.Height / 2 + y);          
             result[0] = xx;
             result[1] = yy;
-
-            //var item = new ListViewItem(new[] { listView1.Items.Count.ToString(), ((pp.X / ImageScale) - photo.Width / 2).ToString("0.00"), ((-(pp.Y / ImageScale) + photo.Height / 2)).ToString("0.00") });
-
-
             return result;
         }
 
         private string ComputeErrors()
-        {
-            //throw new NotImplementedException();
+        {            
             double[][] AQxx = MatrixCreate(6, 6);
             AQxx = MatrixProduct(A, Qxx);
 
@@ -1274,14 +1244,7 @@ namespace OrthoMachine.View
             double mo = Math.Sqrt(vtv[0][0] / (pointpaircount * 2 - 6));
             double[] sx = new double[pointpaircount];
             double[] sy = new double[pointpaircount];
-            string result ="";   //= ("Standard deviation: " + (mo/0.0015).ToString("0.0") + " px\n\n");
-            /*for (int i = 0 ; i < pointpaircount ; i++)
-            {
-                sx[i] = mo * Math.Sqrt(Qll_k[2 * i][2 * i]);
-                sy[i] = mo * Math.Sqrt(Qll_k[2 * i + 1][2 * i + 1]);
-                result+=("Point"+ i.ToString()+ " x: " + (sx[i]/0.0015).ToString("0.0") + "px\n");
-                result += ("Point" + i.ToString() + " y: "+ (sy[i]/0.0015).ToString("0.0") + "px\n\n");
-            }*/
+            string result ="";   //= ("Standard deviation: " + (mo/0.0015).ToString("0.0") + " px\n\n");           
             double[] s = new double[6];
             for (int i = 0 ; i < 3 ; i++)
             {
