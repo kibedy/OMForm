@@ -1279,7 +1279,8 @@ namespace OrthoMachine.View
                 DirectoryInfo di = Directory.CreateDirectory(form1.SavePath + "\\ortho\\");
             }
 
-            ortho.Save(form1.SavePath + "\\ortho\\" + ss[0] + "_ortho." + ss[1]);
+            //ortho.Save(form1.SavePath + "\\ortho\\" + ss[0] + "_ortho." + ss[1]);
+            ortho.Save(form1.SavePath + "\\ortho\\" + ss[0] + "_ortho.png");
         }
 
         private int[] Image2PixCoord(int x, int y)

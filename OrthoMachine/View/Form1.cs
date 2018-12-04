@@ -15,6 +15,8 @@ using OM_Form.ViewModel;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using System.IO;
+using OrthoMachine.ViewModel;
+using OrthoMachine.View;
 
 namespace OM_Form
 {
@@ -293,6 +295,13 @@ namespace OM_Form
             {                
                 pictureBox1.Image = sf.sc.image.ToBitmap();                
             }
+        }
+
+        private void overlapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Ortho ortho = new Ortho(this);
+            ortho.ShowDialog();
+            //ortho.Overlap();
         }
 
         private void contextMenuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
