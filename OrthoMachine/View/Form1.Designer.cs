@@ -302,6 +302,7 @@ namespace OM_Form
             this.overlapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.overlapToolStripMenuItem.Text = "Color matching";
             this.overlapToolStripMenuItem.Click += new System.EventHandler(this.overlapToolStripMenuItem_Click);
+            this.overlapToolStripMenuItem.Enabled = false;
             // 
             // Form1
             // 
@@ -361,7 +362,7 @@ namespace OM_Form
         public System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeSelectedPictureToolStripMenuItem;
         private ToolStripMenuItem orthoToolStripMenuItem;
-        private ToolStripMenuItem overlapToolStripMenuItem;
+        public ToolStripMenuItem overlapToolStripMenuItem;
         //public BackgroundWorker backgroundWorker1;
     }
 }

@@ -47,6 +47,17 @@ namespace OM_Form
             project = new NewProject(this);
         }
 
+        public void DisableAllMenus()
+        {
+            this.overlapToolStripMenuItem.Enabled = false;
+            this.fillHolesToolStripMenuItem.Enabled = false;
+            this.resizeToolStripMenuItem.Enabled = false;
+            this.bilinearFillHolesToolStripMenuItem.Enabled = false;
+            this.addPicturesToolStripMenuItem.Enabled = false;
+            this.saveProjectToolStripMenuItem.Enabled = false;
+            this.addPicturesToolStripMenuItem.Enabled = false;            
+            this.removeSelectedPictureToolStripMenuItem.Enabled = false;
+        }
 
         #region Backgroundworker for PC loading
         private void InitializeBackgroundWorker()
@@ -140,6 +151,7 @@ namespace OM_Form
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
+            this.overlapToolStripMenuItem.Enabled = false;
             listView1.Clear();
             sf = new Surface("surface", 0, 0, this);
             

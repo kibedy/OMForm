@@ -31,6 +31,8 @@ namespace OM_Form.ViewModel
             ofd.Filter = "Point cloud (*.txt)|*.txt|ASCII file (*.asc)|*.asc";
             this.form1 = form1;
             //SavePath = form1.SavePath;
+            form1.DisableAllMenus();
+            
         }
 
         public void GetProjectDir()

@@ -1194,6 +1194,7 @@ namespace OrthoMachine.View
             {
                 MakeOrthoPhoto();
                 orthoToolStripMenuItem.Enabled = true;
+                form1.overlapToolStripMenuItem.Enabled = false;
             }
 
         }
