@@ -158,7 +158,8 @@ namespace OM_Form.ViewModel
 
                 }
                 catch { }
-
+                form1.EnalbleAllMenus();
+                
             }
             catch { MessageBox.Show("Can't open project"); }
             }

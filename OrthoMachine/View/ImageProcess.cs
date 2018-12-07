@@ -1281,7 +1281,11 @@ namespace OrthoMachine.View
             }
 
             //ortho.Save(form1.SavePath + "\\ortho\\" + ss[0] + "_ortho." + ss[1]);
-            ortho.Save(form1.SavePath + "\\ortho\\" + ss[0] + "_ortho.png");
+            string o_path = form1.SavePath + "\\ortho\\" + ss[0] + "_ortho.png";
+            ortho.Save(o_path);
+            StreamWriter sw = new StreamWriter(form1.SavePath + "\\ortholist.txt", true);          
+            sw.WriteLine(o_path);            
+            sw.Close();
         }
 
         private int[] Image2PixCoord(int x, int y)

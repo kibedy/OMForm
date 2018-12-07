@@ -40,8 +40,8 @@ namespace OM_Form.ViewModel
             }
 
 
-            //try
-            //{
+            try
+            {
                 imgs = new ImageList();
 
                 form1.listView1.View = System.Windows.Forms.View.LargeIcon;
@@ -62,9 +62,9 @@ namespace OM_Form.ViewModel
                     form1.progressBar1.Value = (int)(i / projthumbfilenames.Count);
 
                 }
-            //}
+            }
 
-            //catch { MessageBox.Show("Missing file(s)"); }
+            catch { MessageBox.Show("Missing file(s)"); }
         }
 
 

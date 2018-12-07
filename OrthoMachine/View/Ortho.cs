@@ -20,6 +20,10 @@ namespace OrthoMachine.View
         private int ImageWidth, ImageHeight;
         Point _mousePt = new Point();
         bool _tracking = false;
+        Form1 form1;
+        List<string> orthofilenames;
+        List<string> orthothumbfilenames;
+
         public Ortho(Form1 form1)
         {
             InitializeComponent();
@@ -28,14 +32,18 @@ namespace OrthoMachine.View
             orthophoto.SilentLoadOrthothumbs();
             ImageWidth = 1;
             ImageHeight = 1;
+            this.form1 = form1;
 
 
         }
 
         private void Ortho_Load(object sender, EventArgs e)
         {
-            
+         
         }
+
+       
+
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {

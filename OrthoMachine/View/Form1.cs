@@ -116,7 +116,7 @@ namespace OM_Form
 
             
             project.LoadProjectParams(this, SavePath);
-            ;
+            /*
             createToolStripMenuItem.Enabled = true;
             loadSurfaceToolStripMenuItem.Enabled = true;
             this.fillHolesToolStripMenuItem.Enabled = true;
@@ -124,22 +124,24 @@ namespace OM_Form
             this.bilinearFillHolesToolStripMenuItem.Enabled = true;
             this.addPicturesToolStripMenuItem.Enabled = true;
             this.saveProjectToolStripMenuItem.Enabled = true;
-            /*
-            if (project.GetSurfParams())
-            {
-                createToolStripMenuItem.Enabled = true;
-                loadSurfaceToolStripMenuItem.Enabled = true;
-                this.fillHolesToolStripMenuItem.Enabled = false;
-                this.resizeToolStripMenuItem.Enabled = false;
-                this.bilinearFillHolesToolStripMenuItem.Enabled = false;
-                sf = new Surface(project.Filename, project.offset, project.rastersize, this);
-                //sf.LoadSurface(SavePath, this);
-                sf.sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");
-                pictureBox1.Image = sf.sc.image.ToBitmap();
-
-            }     
+            this.orthoToolStripMenuItem.Enabled = true;
+            this.overlapToolStripMenuItem.Enabled = true;
+            this.removeSpikesToolStripMenuItem.Enabled = true;
             */
 
+        }
+        public void EnalbleAllMenus()
+        {
+            createToolStripMenuItem.Enabled = true;
+            loadSurfaceToolStripMenuItem.Enabled = true;
+            this.fillHolesToolStripMenuItem.Enabled = true;
+            this.resizeToolStripMenuItem.Enabled = true;
+            this.bilinearFillHolesToolStripMenuItem.Enabled = true;
+            this.addPicturesToolStripMenuItem.Enabled = true;
+            this.saveProjectToolStripMenuItem.Enabled = true;
+            this.orthoToolStripMenuItem.Enabled = true;
+            this.overlapToolStripMenuItem.Enabled = true;
+            this.removeSpikesToolStripMenuItem.Enabled = true;
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -151,10 +153,11 @@ namespace OM_Form
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
-            this.overlapToolStripMenuItem.Enabled = false;
+            this.overlapToolStripMenuItem.Enabled = false;            
             listView1.Clear();
             sf = new Surface("surface", 0, 0, this);
             
+
         }
 
 
@@ -314,6 +317,12 @@ namespace OM_Form
             Ortho ortho = new Ortho(this);
             ortho.ShowDialog();
             //ortho.Overlap();
+        }
+
+        private void removeSpikesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //sf.sc.image=sf.sc.image.SmoothMedian(3);
+            sf.MedianFilter(this);
         }
 
         private void contextMenuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

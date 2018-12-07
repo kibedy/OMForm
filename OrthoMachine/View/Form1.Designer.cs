@@ -50,24 +50,25 @@ namespace OM_Form
             this.picturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeSelectedPictureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orthoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.overlapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.depthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.intensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.listView1 = new System.Windows.Forms.ListView();
-            this.orthoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.overlapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeSpikesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -121,6 +122,7 @@ namespace OM_Form
             // 
             this.surfaceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createToolStripMenuItem,
+            this.removeSpikesToolStripMenuItem,
             this.loadSurfaceToolStripMenuItem,
             this.fillHolesToolStripMenuItem,
             this.bilinearFillHolesToolStripMenuItem,
@@ -132,7 +134,7 @@ namespace OM_Form
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.createToolStripMenuItem.Text = "Create...";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
@@ -140,7 +142,7 @@ namespace OM_Form
             // 
             this.loadSurfaceToolStripMenuItem.Enabled = false;
             this.loadSurfaceToolStripMenuItem.Name = "loadSurfaceToolStripMenuItem";
-            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadSurfaceToolStripMenuItem.Text = "Load surface";
             this.loadSurfaceToolStripMenuItem.Click += new System.EventHandler(this.loadSurfaceToolStripMenuItem_Click);
             // 
@@ -148,7 +150,7 @@ namespace OM_Form
             // 
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.fillHolesToolStripMenuItem.Name = "fillHolesToolStripMenuItem";
-            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fillHolesToolStripMenuItem.Text = "Fill larger holes";
             this.fillHolesToolStripMenuItem.Click += new System.EventHandler(this.fillHolesToolStripMenuItem_Click);
             // 
@@ -156,7 +158,7 @@ namespace OM_Form
             // 
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Name = "bilinearFillHolesToolStripMenuItem";
-            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.bilinearFillHolesToolStripMenuItem.Text = "Bilinear fill holes";
             this.bilinearFillHolesToolStripMenuItem.Click += new System.EventHandler(this.bilinearFillHolesToolStripMenuItem_Click);
             // 
@@ -164,7 +166,7 @@ namespace OM_Form
             // 
             this.resizeToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Name = "resizeToolStripMenuItem";
-            this.resizeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.resizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resizeToolStripMenuItem.Text = "Resize";
             this.resizeToolStripMenuItem.Click += new System.EventHandler(this.resizeToolStripMenuItem_Click);
             // 
@@ -181,16 +183,32 @@ namespace OM_Form
             // 
             this.addPicturesToolStripMenuItem.Enabled = false;
             this.addPicturesToolStripMenuItem.Name = "addPicturesToolStripMenuItem";
-            this.addPicturesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addPicturesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.addPicturesToolStripMenuItem.Text = "Add pictures...";
             this.addPicturesToolStripMenuItem.Click += new System.EventHandler(this.addPicturesToolStripMenuItem_Click);
             // 
             // removeSelectedPictureToolStripMenuItem
             // 
             this.removeSelectedPictureToolStripMenuItem.Name = "removeSelectedPictureToolStripMenuItem";
-            this.removeSelectedPictureToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeSelectedPictureToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.removeSelectedPictureToolStripMenuItem.Text = "Remove";
             this.removeSelectedPictureToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedPictureToolStripMenuItem_Click);
+            // 
+            // orthoToolStripMenuItem
+            // 
+            this.orthoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.overlapToolStripMenuItem});
+            this.orthoToolStripMenuItem.Name = "orthoToolStripMenuItem";
+            this.orthoToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.orthoToolStripMenuItem.Text = "Ortho";
+            // 
+            // overlapToolStripMenuItem
+            // 
+            this.overlapToolStripMenuItem.Enabled = false;
+            this.overlapToolStripMenuItem.Name = "overlapToolStripMenuItem";
+            this.overlapToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.overlapToolStripMenuItem.Text = "Color matching";
+            this.overlapToolStripMenuItem.Click += new System.EventHandler(this.overlapToolStripMenuItem_Click);
             // 
             // panel1
             // 
@@ -204,15 +222,6 @@ namespace OM_Form
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(809, 523);
             this.panel1.TabIndex = 3;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // contextMenuStrip1
             // 
@@ -244,6 +253,15 @@ namespace OM_Form
             this.intensityToolStripMenuItem.Name = "intensityToolStripMenuItem";
             this.intensityToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.intensityToolStripMenuItem.Text = "Intensity";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // contextMenuStrip2
             // 
@@ -288,21 +306,13 @@ namespace OM_Form
             this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
             this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
             // 
-            // orthoToolStripMenuItem
+            // removeSpikesToolStripMenuItem
             // 
-            this.orthoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.overlapToolStripMenuItem});
-            this.orthoToolStripMenuItem.Name = "orthoToolStripMenuItem";
-            this.orthoToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
-            this.orthoToolStripMenuItem.Text = "Ortho";
-            // 
-            // overlapToolStripMenuItem
-            // 
-            this.overlapToolStripMenuItem.Name = "overlapToolStripMenuItem";
-            this.overlapToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.overlapToolStripMenuItem.Text = "Color matching";
-            this.overlapToolStripMenuItem.Click += new System.EventHandler(this.overlapToolStripMenuItem_Click);
-            this.overlapToolStripMenuItem.Enabled = false;
+            this.removeSpikesToolStripMenuItem.Name = "removeSpikesToolStripMenuItem";
+            this.removeSpikesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeSpikesToolStripMenuItem.Text = "Remove spikes";
+            this.removeSpikesToolStripMenuItem.Click += new System.EventHandler(this.removeSpikesToolStripMenuItem_Click);
+            this.removeSpikesToolStripMenuItem.Enabled = false;
             // 
             // Form1
             // 
@@ -322,8 +332,8 @@ namespace OM_Form
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -363,6 +373,7 @@ namespace OM_Form
         private System.Windows.Forms.ToolStripMenuItem removeSelectedPictureToolStripMenuItem;
         private ToolStripMenuItem orthoToolStripMenuItem;
         public ToolStripMenuItem overlapToolStripMenuItem;
+        private ToolStripMenuItem removeSpikesToolStripMenuItem;
         //public BackgroundWorker backgroundWorker1;
     }
 }
