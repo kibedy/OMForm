@@ -44,6 +44,11 @@ namespace OM_Form.View
                 MessageBox.Show("Invalid input data!");
             }
         }
-        
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            form1.Show();
+        }
     }//class
 }//namespace

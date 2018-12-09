@@ -52,6 +52,7 @@ namespace OrthoMachine.View
             this.intensityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orthoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -59,7 +60,6 @@ namespace OrthoMachine.View
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             // 
             // panel1
             // 
@@ -148,8 +148,8 @@ namespace OrthoMachine.View
             // orientateToolStripMenuItem
             // 
             this.orientateToolStripMenuItem.Name = "orientateToolStripMenuItem";
-            this.orientateToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.orientateToolStripMenuItem.Text = "Orientate";
+            this.orientateToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
+            this.orientateToolStripMenuItem.Text = "Save markers";
             this.orientateToolStripMenuItem.Click += new System.EventHandler(this.orientateToolStripMenuItem_Click);
             // 
             // listView2
@@ -264,7 +264,7 @@ namespace OrthoMachine.View
             this.rGBToolStripMenuItem,
             this.orthoToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(120, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(120, 92);
             this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
             // 
             // depthToolStripMenuItem

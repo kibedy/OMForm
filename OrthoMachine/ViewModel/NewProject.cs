@@ -153,7 +153,7 @@ namespace OM_Form.ViewModel
                     //form1.photos.projimagefilenames = photolist;
                     form1.photos.SilentLoadPhotos(form1, photolist);
                     form1.saveProjectToolStripMenuItem.Enabled = true;
-                    form1.removeSelectedToolStripMenuItem.Enabled = true;
+                    form1.removeSelectedToolStripMenuItem.Enabled = true;                    
                     sr.Close();
 
                 }

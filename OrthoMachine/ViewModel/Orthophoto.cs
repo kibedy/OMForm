@@ -51,7 +51,7 @@ namespace OrthoMachine.ViewModel
         internal void SilentLoadOrthothumbs()
         {
             DirectoryInfo d = new DirectoryInfo(form1.SavePath + "\\ortho");
-            FileInfo[] Files = d.GetFiles("*.jpg");
+            FileInfo[] Files = d.GetFiles("*_ortho.png");
             orthofilenames = new List<string>();
             orthothumbfilenames = new List<string>();
             foreach (FileInfo item in Files)
@@ -197,10 +197,10 @@ namespace OrthoMachine.ViewModel
                         {
                             orthoLab[0].Data[i, j, 0] = (byte)(orthoLab[0].Data[i, j, 0] * l0_mul);
                             orthoLab[1].Data[i, j, 0] = (byte)(orthoLab[1].Data[i, j, 0] * l1_mul);
-                            orthoLab[0].Data[i, j, 1] = (byte)(orthoLab[0].Data[i, j, 1] * a0_mul);
-                            orthoLab[1].Data[i, j, 1] = (byte)(orthoLab[1].Data[i, j, 1] * a1_mul);
-                            orthoLab[0].Data[i, j, 2] = (byte)(orthoLab[0].Data[i, j, 2] * b0_mul);
-                            orthoLab[1].Data[i, j, 2] = (byte)(orthoLab[1].Data[i, j, 2] * b1_mul);
+                            //orthoLab[0].Data[i, j, 1] = (byte)(orthoLab[0].Data[i, j, 1] * a0_mul);
+                            //orthoLab[1].Data[i, j, 1] = (byte)(orthoLab[1].Data[i, j, 1] * a1_mul);
+                            //orthoLab[0].Data[i, j, 2] = (byte)(orthoLab[0].Data[i, j, 2] * b0_mul);
+                            //orthoLab[1].Data[i, j, 2] = (byte)(orthoLab[1].Data[i, j, 2] * b1_mul);
 
                         }
                     }
@@ -210,8 +210,9 @@ namespace OrthoMachine.ViewModel
                 Bitmap img2_lab = orthoLab[1].Bitmap;
                 Merge merge_lab = new Merge(img1_lab);
                 Bitmap resultImage_lab = merge_lab.Apply(img2_lab);
-                resultImage_lab.Save(form1.SavePath + "\\ortho\\" + Files[0] + "_" + Files[1]);
+                resultImage_lab.Save(form1.SavePath + "\\ortho\\" + Files[0] + "_" + Files[1], ImageFormat.Png);
                 orthoform.pictureBox1.Image = resultImage_lab;
+                SilentLoadOrthothumbs();
 
             }
 

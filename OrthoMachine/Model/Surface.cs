@@ -146,7 +146,7 @@ namespace ortomachine.Model
                         continue;
                     }
                     //Console.WriteLine(sumframe+"  " + suminner +" " + count);
-                    if (Math.Abs(suminner / count - sumframe / 24) > 1)
+                    if (Math.Abs(suminner / count - sumframe / 24) < 100)
                     {
                         for (int k = -2; k <= 2; k++)
                         {
@@ -288,11 +288,11 @@ namespace ortomachine.Model
             if (form1.filetype == 4 || form1.filetype == 7)
             {
                 
-                try //intensity surface model resizing
-                {
+                //try //intensity surface model resizing
+                //{
                    
                     Image<Gray, byte> intsurf = new Image<Gray, byte>(form1.SavePath + "\\surface_int.png");
-                    Image<Gray, byte> resizedInt = intsurf.Resize((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize), Emgu.CV.CvEnum.Inter.Linear);
+                    Image<Gray, byte> resizedInt = intsurf.Resize((int)(sc.image.Width / newrastersize * form1.rastersize), (int)(sc.image.Height / newrastersize * form1.rastersize), Emgu.CV.CvEnum.Inter.Linear);
 
                
                     resizedInt.Save(form1.SavePath + "\\" + "surface_int.png");
@@ -300,31 +300,31 @@ namespace ortomachine.Model
                     intsurf = resizedInt;
                     sc.intSurfImage = intsurf;
 
-                }
-                catch
-                {
-                }
+                //}
+                //catch
+                //{
+                //}
             }
 
             if (form1.filetype == 7)
             {
-                try  //rgb point cloud surf image resizing
-                {
+                //try  //rgb point cloud surf image resizing
+                //{
                     
 
                     Image<Bgr, byte> rgbsurf = new Image<Bgr, byte>(form1.SavePath + "\\surface_rgb.png");
                     
-                    Image<Bgr, byte> resizedRGB = rgbsurf.Resize((int)(sc.image.Width / newrastersize * rastersize), (int)(sc.image.Height / newrastersize * rastersize), Emgu.CV.CvEnum.Inter.Linear);
+                    Image<Bgr, byte> resizedRGB = rgbsurf.Resize((int)(sc.image.Width / newrastersize * form1.rastersize), (int)(sc.image.Height / newrastersize * form1.rastersize), Emgu.CV.CvEnum.Inter.Linear);
 
                     rgbsurf = resizedRGB;
                     resizedRGB.Save(form1.SavePath + "\\" + "surface_rgb.png");
                     rgbsurf.Save(form1.SavePath + "\\" + "surface_rgb_origsize.png");
                     sc.RGBsurfImage = rgbsurf;
-                }
-                catch
-                {
-                    Console.WriteLine("No color in Cloud");
-                }
+                //}
+                //catch
+                //{
+                //    Console.WriteLine("No color in Cloud");
+                //}
             }
 
             form1.rastersize = newrastersize;
@@ -353,7 +353,8 @@ namespace ortomachine.Model
                 {
                     if (sc.image.Data[i,j,0]!=0)
                     {
-                        convfilt.Clear();
+                        //convfilt.Clear();
+                        convfilt = new List<ushort>();
                         for (int k = -1 ; k < 1 ; k++)
                         {
                             for (int l = -1 ; l < 1 ; l++)

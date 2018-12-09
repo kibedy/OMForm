@@ -406,7 +406,9 @@ namespace OrthoMachine.View
 
         private void orientateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SetOrientationForm();
+           // SetOrientationForm();
+            SaveMarkers();
+
             /*
             EnablePickpoints = true;
             buttonCalculate.Visible = true;
@@ -1079,8 +1081,7 @@ namespace OrthoMachine.View
 
                 double[][] Atl;
                 double[][] Atl_;
-                Atl_ = MatrixProduct(At, l);
-                Atl = MultiplyMatrix(At, l);
+                Atl_ = MatrixProduct(At, l);             
 
                 dX = MatrixProduct(Qxx, Atl_);
                 Xo = Xo + dX[0][0];
@@ -1130,14 +1131,13 @@ namespace OrthoMachine.View
                 switch (dr)
                 {
                     case DialogResult.Yes:
-                        //break;
+                      
                         InitializeBackgroundWorker();
                         backgroundWorker1.WorkerReportsProgress = true;
                         backgroundWorker1.WorkerSupportsCancellation = true;
 
                         backgroundWorker1.RunWorkerAsync();
-                        //MakeOrthoPhoto();
-                        //orthoToolStripMenuItem.Enabled = true;
+                       
                         break;
                     case DialogResult.No:
 
@@ -1194,7 +1194,7 @@ namespace OrthoMachine.View
             {
                 MakeOrthoPhoto();
                 orthoToolStripMenuItem.Enabled = true;
-                form1.overlapToolStripMenuItem.Enabled = false;
+                form1.overlapToolStripMenuItem.Enabled = true;
             }
 
         }
@@ -1215,6 +1215,7 @@ namespace OrthoMachine.View
 
 
             ortho = new Image<Bgr, byte>(surface.Width, surface.Height);
+            visible.Save(form1.SavePath + "//ortho//visible.png");
 
             double[][] aa = MatrixCreate(3, 3);
             double co = cos(o);
@@ -1248,8 +1249,8 @@ namespace OrthoMachine.View
                         double DX = X - Xo;
                         double DY = Y - Yo;
                         double DZ = Z - Zo;
-                        int xb = (int)((focus * (a[0][0] * DX + a[1][0] * DY + a[2][0] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ)) / pix_mm);
-                        int yb = (int)((focus * (a[0][1] * DX + a[1][1] * DY + a[2][1] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ)) / pix_mm);
+                        int xb = (int)((focus * (a[0][0] * DX + a[1][0] * DY + a[2][0] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ)) / pix_mm + 0.5);
+                        int yb = (int)((focus * (a[0][1] * DX + a[1][1] * DY + a[2][1] * DZ) / (a[0][2] * DX + a[1][2] * DY + a[2][2] * DZ)) / pix_mm + 0.5);
                         int[] xy = Image2PixCoord(xb, yb);
 
                         if (xy[1] > 0 && xy[1] < photo.Height && xy[0] > 0 && xy[0] < photo.Width && visible.Data[i, j, 0] == 255)
@@ -1414,105 +1415,7 @@ namespace OrthoMachine.View
 
 
 
-        #region old matrix procesures - dropped
-        public double[][] MultiplyMatrix(double[][] a, double[][] b)
-        {
-            //double[,] c = new double[a.GetLength(0), b.GetLength(1)];
-            double[][] c = MatrixCreate(a.Length, b[0].Length);
-            if (a[0].Length == b.Length)
-            {
-                //c = new double [a.GetLength(0), b.GetLength(1)];
-                for (int i = 0 ; i < c.Length ; i++)
-                {
-                    for (int j = 0 ; j < c[0].Length ; j++)
-                    {
-                        c[i][j] = 0;
-                        for (int k = 0 ; k < a[0].Length ; k++) // OR k<b.GetLength(0)
-                            c[i][j] = c[i][j] + a[i][k] * b[k][j];
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("\n Number of columns in First Matrix should be equal to Number of rows in Second Matrix.");
-                Console.WriteLine("\n Please re-enter correct dimensions.");
-                Environment.Exit(-1);
-            }
-            return c;
-        }
-        /*
-        void dekompf4(double[,] a, double[,] e, int n, int d)
-        {
-            int i, j, k;
-            d = 1;
-            for (k = 0 ; k <= (n - 1) ; k++)
-            {
-                foelem4(a, e, n, k, d);
-                //printf("\n%d. Iteration Div: %13.4e\n\n",k,a[k][k]);
-                for (i = k + 1 ; i < n ; i++)
-                {
-                    a[i,k] = a[i,k] / a[k,k];
-                    for (j = k + 1 ; j < n ; j++)
-                    {
-                        a[i,j] = a[i,j] - a[i,k] * a[k,j];
-                    }
-                }
-                //matrixkiir4(a,n);
-            }
-        }
-        void foelem4(double[,] a, double[,] e, int n, int k, int d)
-        {
-            int i, xm;
-            double am;
-            am = a[k, k]; xm = k;
-            for (i = k ; i < n ; i++)
-            {
-                if (Math.Abs(am) < Math.Abs(a[i, k]))
-                {
-                    am = a[i, k];
-                    xm = i;
-                    ChangeLines4(a, e, xm, k, n);
-                    d = d * (-1);
-                }
-            }
-        }
-
-
-        void ChangeLines4(double[,] a, double[,] e, int xm, int k, int n)
-        {
-            //int i;
-            double c;
-            for (int i = 0 ; i < n ; i++)
-            {
-                c = a[xm,i];
-                a[xm,i] = a[k,i];
-                a[k,i] = c;
-                c = e[xm,i];
-                e[xm,i] = e[k,i];
-                e[k,i] = c;
-            }
-        }
-
-        void invert(double[,] a, double[,] e, int n)
-        {
-            int d = 1;
-            // printf("\nA matrix \n\nM);
-            // matrixkiir4(a,n);
-            dekompf4(a, e, n, d);
-            //eredmeny4(a, e, d, n);
-            //getch();
-        }
-
-        void oszlvekt(double[] be, double[,] ki, int n)
-        {
-            for (int i = 0 ; i != n ; i++)
-            {
-                ki[i,0] = be[i];
-            }
-        }
-        */
-        #endregion
-
+      
         #region Matrix procedures
 
         public double[][] Transpose(double[][] matrix)

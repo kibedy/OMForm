@@ -56,7 +56,7 @@ namespace OM_Form
             this.addPicturesToolStripMenuItem.Enabled = false;
             this.saveProjectToolStripMenuItem.Enabled = false;
             this.addPicturesToolStripMenuItem.Enabled = false;            
-            this.removeSelectedPictureToolStripMenuItem.Enabled = false;
+            //this.removeSelectedPictureToolStripMenuItem.Enabled = false;
         }
 
         #region Backgroundworker for PC loading

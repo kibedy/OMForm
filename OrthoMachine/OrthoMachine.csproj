@@ -151,6 +151,9 @@
     <EmbeddedResource Include="View\Ortho.resx">
       <DependentUpon>Ortho.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Surfaceimportparams.resx">
+      <DependentUpon>Surfaceimportparams.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Surfaceresize.resx">
       <DependentUpon>Surfaceresize.cs</DependentUpon>
     </EmbeddedResource>

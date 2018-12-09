@@ -60,7 +60,11 @@ namespace OM_Form.ViewModel
                     form1.listView1.Items.Add(item);
                     i++;
                     form1.progressBar1.Value = (int)(i / projthumbfilenames.Count);
-
+                    
+                }
+                if (projimagefilenames.Count>0)
+                {
+                    form1.removeSelectedToolStripMenuItem.Enabled = true;
                 }
             }
 
@@ -195,6 +199,10 @@ namespace OM_Form.ViewModel
                 sw.Close();
                 
                 form1.progressBar1.Value = 100;
+                if (projimagefilenames.Count > 0)
+                {
+                    form1.removeSelectedToolStripMenuItem.Enabled = true;
+                }
             }
         }
 
