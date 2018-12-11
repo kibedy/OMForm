@@ -60,17 +60,11 @@ namespace OrthoMachine.View
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             const float scale_per_delta = 0.1f / 120;
             ImageScale += e.Delta * scale_per_delta;
-
-
             if (ImageScale < 0.1) ImageScale = 0.1f;            
-            this.pictureBox1.Size = new Size((int)(ImageWidth * ImageScale), (int)(ImageHeight * ImageScale));
-            if ((pictureBox1.Image.Width > this.ClientSize.Width || pictureBox1.Image.Height > this.ClientSize.Height))
-            {
-                //panel1.AutoScrollPosition = new Point(-panel1.AutoScrollPosition.X + (e.X), -panel1.AutoScrollPosition.Y + (e.Y));
-            }
-
+            this.pictureBox1.Size = new Size((int)(form1.sf.sc.image.Width * ImageScale), (int)(form1.sf.sc.image.Height * ImageScale));           
         }
 
 
