@@ -377,6 +377,49 @@ namespace ortomachine.Model
             form1.pictureBox1.Image = filtered.Bitmap;
         }
 
+        public void BlurFilter(Form1 form1)
+        {
+            Emgu.CV.Image<Gray, ushort> filtered = new Image<Gray, ushort>(sc.image.Width, sc.image.Height);            
+
+            for (int i = 1; i < filtered.Height - 1; i++)
+            {
+                for (int j = 1; j < filtered.Width - 1; j++)
+                {
+                    int count = 0;
+                    int sum = 0;
+                    if (sc.image.Data[i, j, 0] != 0)
+                    {
+
+                        for (int k = -1; k < 1; k++)
+                        {
+                            for (int l = -1; l < 1; l++)
+                            {
+                                if (Math.Abs(sc.image.Data[i + k, j + l, 0]- sc.image.Data[i, j, 0])<3000)
+                                {
+                                    if (sc.image.Data[i + k, j + l, 0] != 0)
+                                    {
+                                        sum += sc.image.Data[i + k, j + l, 0];
+                                        count++;
+                                    }
+                                }
+                            }
+                        }                       
+                    }
+                    if (count!=0)
+                    {                 
+                        ushort value = (ushort)(sum / count);
+                        filtered.Data[i, j, 0] = value;
+                    }
+                }
+            }
+
+            filtered.Save(form1.SavePath + "\\" + "surface.png");
+            sc.image.Save(form1.SavePath + "\\" + "surface_smooth.png");
+            sc.image = filtered;
+            form1.pictureBox1.Image = filtered.Bitmap;
+        }
+
+
 
     } //class
 } //namespace

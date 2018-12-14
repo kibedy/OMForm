@@ -27,18 +27,14 @@ namespace OrthoMachine.View
         private float ImageScaleS = 1.0f;
         Point _mousePt = new Point();
         bool _tracking = false;
-        //List<Marker> markers;
         Form1 form1;
         bool EnablePickpoints;
-        //bool EnablePictureBox1Functions;
         Image<Gray, ushort> surface;
         Orientation orientation;
         Point pp;
-        //Image<Bgra, byte> markerimage;
         Image<Gray, byte> markerimage;
         Image<Bgra, byte> photo;
         Image<Bgra, byte> photo_orig;
-        //Image<Bgra, byte> rgbsurf;
         Image<Gray, byte> visible;
         ArrayList colors;
         enum ShowState { rgb, intensity, depth, photo, ortho };
@@ -50,16 +46,16 @@ namespace OrthoMachine.View
         double[][] l;
         int pointpaircount;
         Image<Bgr, byte> ortho;
-        //Image<Gray, byte> ortho_visible;
         double focus;
         double pix_mm;
         double Xo, Yo, Zo; //init pic postition
         double o;
         double p;
         double k;    //omega phi kappa
-        //double a11, a12, a13, a21, a22, a23, a31, a32, a33;
         double[][] a;
         public BackgroundWorker backgroundWorker1;
+        int maxthreads;
+        int procbarvalue;
 
 
 
@@ -77,11 +73,9 @@ namespace OrthoMachine.View
             this.pictureBox1.Image = photo.ToBitmap();
             ImageWidth = pictureBox1.Image.Width;
             ImageHeight = pictureBox1.Image.Height;
-            //this.pictureBox1.BackgroundImage = photo.ToBitmap();
-            //ImageWidth = pictureBox1.BackgroundImage.Width;
-            //ImageHeight = pictureBox1.BackgroundImage.Height;
+
             colors = CreateColorList();
-            //this.FormClosing + = ImageProcess_Closing;
+
             this.FormClosing += ImageProcess_FormClosing;
             SSS = ShowState.depth;
 
@@ -108,24 +102,12 @@ namespace OrthoMachine.View
                 orthoToolStripMenuItem.Enabled = false;
             }
 
-            //markerimage = new Image<Gray, byte>(new Size(ImageWidth, ImageHeight));
-            ;
-            //markerimage.ro
-            //photo.Mul()
-
-            //this.pictureBox1.Cursor = Cursors.Hand;
-
-            //EnablePictureBox1Functions = true;
 
 
             this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             this.pictureBox1.Size = new Size(ImageWidth, ImageHeight);
             EnablePickpoints = false;
-            /*PictureBox pictureBoxOverlay = new PictureBox();
-            pictureBoxOverlay.BackColor = Color.Transparent;
-            pictureBoxOverlay.Location = new Point(0, 0);
-            pictureBoxOverlay.Parent = pictureBox1;
-            */
+
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.Columns.Add("Point Id", 80, HorizontalAlignment.Left);
             this.listView1.Columns.Add("Image X", 80, HorizontalAlignment.Left);
@@ -188,8 +170,7 @@ namespace OrthoMachine.View
         private void SaveMarkers()
         {
             string[] fn = filename.Split('.');
-            StreamWriter sw = new StreamWriter(form1.SavePath + "\\photos\\" + fn[0] + ".ori");
-            //throw new NotImplementedException();
+            StreamWriter sw = new StreamWriter(form1.SavePath + "\\photos\\" + fn[0] + ".ori");           
             if (listView1.Items.Count > 0)
             {
                 foreach (ListViewItem item in listView1.Items)
@@ -232,13 +213,8 @@ namespace OrthoMachine.View
 
 
             if (ImageScale < 0.1) ImageScale = 0.1f;
-            // Console.WriteLine(ImageScale);
-            this.pictureBox1.Size = new Size((int)(ImageWidth * ImageScale), (int)(ImageHeight * ImageScale));
-            if ((pictureBox1.Image.Width > this.ClientSize.Width || pictureBox1.Image.Height > this.ClientSize.Height))
-            {
-                //panel1.AutoScrollPosition = new Point(-panel1.AutoScrollPosition.X + (e.X), -panel1.AutoScrollPosition.Y + (e.Y));
-            }
-
+            
+            this.pictureBox1.Size = new Size((int)(ImageWidth * ImageScale), (int)(ImageHeight * ImageScale));            
         }
 
 
@@ -281,11 +257,7 @@ namespace OrthoMachine.View
 
             if (ImageScaleS < 0.1) ImageScaleS = 0.1f;
             this.pictureBox2.Size = new Size((int)(ImageWidthS * ImageScaleS), (int)(ImageHeightS * ImageScaleS));
-            if ((pictureBox2.Image.Width > this.ClientSize.Width || pictureBox2.Image.Height > this.ClientSize.Height))
-            {
-                //panel2.AutoScrollPosition = new Point(-panel2.AutoScrollPosition.X + (e.X), -panel2.AutoScrollPosition.Y + (e.Y));
-            }
-
+          
         }
 
         private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
@@ -322,35 +294,19 @@ namespace OrthoMachine.View
             ToolStripItem item = e.ClickedItem;
             if (e.ClickedItem.Name == "rGBToolStripMenuItem")
             {
-
-                //rgbsurf= new Image<Bgra, byte>(form1.SavePath +"\\surface_rgb.png)");
-                //pictureBox2.Image = form1.sf.sc.RGBsurfImage.ToBitmap();
-                SSS = ShowState.rgb;
-                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
-                //DrawMarkerSurface();
-
-                //this.pictureBox2.Image=
+                SSS = ShowState.rgb;                
             }
             else if (e.ClickedItem.Name == "intensityToolStripMenuItem")
             {
                 SSS = ShowState.intensity;
-                //pictureBox2.Image = form1.sf.sc.intSurfImage.ToBitmap();
-                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
-                //DrawMarkerSurface();
             }
             else if (e.ClickedItem.Name == "orthoToolStripMenuItem")
             {
-                SSS = ShowState.ortho;
-                //pictureBox2.Image = form1.sf.sc.intSurfImage.ToBitmap();
-                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
-                //DrawMarkerSurface();
+                SSS = ShowState.ortho;                
             }
             else
             {
-                SSS = ShowState.depth;
-                //pictureBox2.Image = form1.sf.sc.image.ToBitmap();
-                //DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
-                //DrawMarkerSurface();
+                SSS = ShowState.depth;                
             }
             DrawMarkerSurface();
         }
@@ -364,10 +320,10 @@ namespace OrthoMachine.View
         {
             EnablePickpoints = true;
             buttonCalculate.Visible = true;
-            //panel1.Height -= 140;
+         
             panel1.Height = this.Height - 200;
             panel1.Size = new Size(this.Width / 2 - 2, panel1.Height);
-            //panel2.Size = new Size(this.Width / 2, panel1.Height);
+         
             this.listView1.Visible = true;
             this.listView2.Visible = true;
             panel2.Location = new Point(panel1.Location.X + panel1.Width + 2, panel1.Location.Y);
@@ -375,15 +331,15 @@ namespace OrthoMachine.View
             panel2.Height = panel1.Height;
 
 
-            //surface = new Image<Gray, ushort>(form1.SavePath + "\\" + "surface.png");
+           
             surface = form1.sf.sc.image;
             SSS = ShowState.depth;
             this.pictureBox2.Visible = true;
             this.panel2.Visible = true;
-            //this.pictureBox2.Image = surface.ToBitmap();
+           
             this.pictureBox2.Cursor = Cursors.Hand;
             ImageWidthS = surface.Bitmap.Width;
-            //ImageHeightS = pictureBox2.Image.Height;
+           
             ImageHeightS = surface.Bitmap.Height;
             this.pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             this.pictureBox2.Size = new Size(ImageWidthS, ImageHeightS);
@@ -394,54 +350,15 @@ namespace OrthoMachine.View
             this.buttonSurfaceDel.Visible = true;
             this.buttonSurfaceUp.Visible = true;
             this.buttonSurfaceDown.Visible = true;
-            //listView1.Refresh();
-
-            //DrawMarkers(listView2, pictureBox2, surface.Bitmap);
-            //DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
-
-
-
+            this.progressBar1.Visible = true;
+           
 
         }
 
         private void orientateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           // SetOrientationForm();
+
             SaveMarkers();
-
-            /*
-            EnablePickpoints = true;
-            buttonCalculate.Visible = true;
-            //panel1.Height -= 140;
-            panel1.Height = this.Height - 200;
-            panel1.Size = new Size(this.Width / 2 - 2, panel1.Height);
-            //panel2.Size = new Size(this.Width / 2, panel1.Height);
-            this.listView1.Visible = true;
-            this.listView2.Visible = true;
-            panel2.Location = new Point(panel1.Location.X + panel1.Width + 2, panel1.Location.Y);
-            panel2.Width = panel1.Width - 4;
-            panel2.Height = panel1.Height;
-
-
-            //surface = new Image<Gray, ushort>(form1.SavePath + "\\" + "surface.png");
-            surface = form1.sf.sc.image;
-            SSS = ShowState.depth;
-            this.pictureBox2.Visible = true;
-            this.panel2.Visible = true;
-            this.pictureBox2.Image = surface.ToBitmap();
-            this.pictureBox2.Cursor = Cursors.Hand;
-            ImageWidthS = pictureBox2.Image.Width;
-            ImageHeightS = pictureBox2.Image.Height;
-            this.pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            this.pictureBox2.Size = new Size(ImageWidthS, ImageHeightS);
-            this.SizeChanged += new System.EventHandler(this.ImageProcess_SizeChanged);
-            this.buttonPhotoUp.Visible = true;
-            this.buttonPhotoDown.Visible = true;
-            this.buttonPhotoDel.Visible = true;
-            this.buttonSurfaceDel.Visible = true;
-            this.buttonSurfaceUp.Visible = true;
-            this.buttonSurfaceDown.Visible = true;
-            */
 
         }
 
@@ -456,22 +373,7 @@ namespace OrthoMachine.View
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            /*PictureBox photomarker = new PictureBox();           
-            photomarker.Location = new System.Drawing.Point(0, 0);
-            photomarker.Name = "pictureBox1";
-            photomarker.Size = new System.Drawing.Size(123, 71);
-            photomarker.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            photomarker.TabIndex = 0;
-            photomarker.BackColor = Color.Transparent;
-            this.panel1.Controls.Add(photomarker);
-            Graphics g = panel1.CreateGraphics();
-            Pen p = new Pen(Color.Red);
-            SolidBrush sb = new SolidBrush(Color.Red);
-            g.DrawEllipse(p, pp.X, pp.X, 30, 30);
-            //g.FillEllipse(sb,pp.X, pp.Y, 6, 6);
-            //pictureBox1.SendToBack();
-            //pictureBox1.Refresh();
-            */
+           
 
         }
 
@@ -511,8 +413,7 @@ namespace OrthoMachine.View
         {
             if (EnablePickpoints)
             {
-                pp = e.Location;
-                //var item = new ListViewItem(new[] { listView1.Items.Count.ToString(), (pp.X / ImageScale).ToString("0.00"), (pp.Y / ImageScale).ToString("0.00") });
+                pp = e.Location;              
                 var item = new ListViewItem(new[] { listView1.Items.Count.ToString(), ((pp.X / ImageScale) - photo.Width / 2).ToString("0.00"), ((-(pp.Y / ImageScale) + photo.Height / 2)).ToString("0.00") });
 
                 if (listView1.Items.Count < 20)
@@ -523,11 +424,8 @@ namespace OrthoMachine.View
                 {
                     MessageBox.Show("Too many markers!");
                 }
-
-                //DrawMarkers(listView1, pictureBox1, new Bitmap(pictureBox1.Image));
-                DrawMarkersPhoto();
-
-                //DrawMarkers(listView1, pictureBox1, new Bitmap(pictureBox1.BackgroundImage));
+               
+                DrawMarkersPhoto();               
                 panel1.Invalidate();
                 GC.Collect();
             }
@@ -539,11 +437,10 @@ namespace OrthoMachine.View
 
         private void DrawMarkersPhoto()
         {
-            //markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
-            //markerimage = new Image<Bgra, byte>(new Size(source.Width, source.Height));
+           
 
             Image<Bgra, byte> toDraw = new Image<Bgra, byte>(photo.Bitmap);
-            //Image<Bgra, byte> temp = ((toDraw).Clone());
+           
             Image<Bgra, byte> temp = new Image<Bgra, byte>(toDraw.Bitmap);
             if (listView1.Items.Count != 0)
             {
@@ -552,17 +449,7 @@ namespace OrthoMachine.View
                 int i = 0;
                 foreach (ListViewItem item in listView1.Items)
                 {
-                    /*Graphics g = Graphics.FromImage(temp.Bitmap);
-
-                    Pen pen = new Pen((Color)colors[i]);
-
-                    float X = float.Parse(item.SubItems[1].Text);
-                    float Y = float.Parse(item.SubItems[2].Text);
-                    float r = 10;
-                    g.DrawEllipse(pen, X, Y, r, r);
-                    i++;
-                    */
-
+           
                     markerimage = new Image<Gray, byte>(new Size(photo.Width, photo.Height));
 
                     float X = float.Parse(item.SubItems[1].Text) + photo.Width / 2;
@@ -572,16 +459,13 @@ namespace OrthoMachine.View
                     CircleF circle1 = new CircleF(center, r);
                     CircleF circle2 = new CircleF(center, 1);
                     markerimage.Draw(circle1, new Gray(250), 1);
-                    //markerimage.Draw(circle1, (Bgra)colors[0], i);
-                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
-                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
-                    //i++;
+                
                     markerimage.Draw(circle2, new Gray(250), 1);
 
                     markerimage._SmoothGaussian(3, 3, 1, 1);
                     temp.SetValue((Bgra)colors[i], markerimage);
                     i++;
-                    //GC.Collect();
+                   
 
 
                 }
@@ -650,55 +534,6 @@ namespace OrthoMachine.View
             }
         }
 
-        /*  original
-        private void DrawMarker(ListView list, PictureBox pbox, Image source)
-        {
-            //markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
-            //markerimage = new Image<Bgra, byte>(new Size(source.Width, source.Height));
-
-            Image<Bgra, byte> toDraw = new Image<Bgra, byte>((Bitmap)source);
-            Image<Bgra, byte> temp = ((toDraw).Clone());
-            if (list.Items.Count != 0)
-            {
-                ListViewItem[] items = new ListViewItem[list.Items.Count];
-                list.Items.CopyTo(items, 0);
-                int i = 0;
-                foreach (ListViewItem item in list.Items)
-                {
-
-                    markerimage = new Image<Gray, byte>(new Size(source.Width, source.Height));
-
-                    float X = float.Parse(item.SubItems[1].Text);
-                    float Y = float.Parse(item.SubItems[2].Text);
-                    PointF center = new PointF(X, Y);
-                    float r = 10;
-                    CircleF circle1 = new CircleF(center, r);
-                    CircleF circle2 = new CircleF(center, 1);
-                    markerimage.Draw(circle1, new Gray(250), 1);
-                    //markerimage.Draw(circle1, (Bgra)colors[0], i);
-                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
-                    //markerimage.Draw(circle2, (Bgra)colors[0], i);
-                    //i++;
-                    markerimage.Draw(circle2, new Gray(250), 1);
-
-                    markerimage._SmoothGaussian(3, 3, 1, 1);
-                    temp.SetValue((Bgra)colors[i], markerimage);
-                    i++;
-                    //GC.Collect();
-
-
-                }
-                pbox.Image = temp.Bitmap;
-            }
-            else
-            {
-                pbox.Image = source;
-            }
-            //GCHandle gch1 = GCHandle.Alloc(form1.sf.sc.image,GCHandleType.Pinned);
-            //GCHandle gch2 = GCHandle.Alloc(pictureBox2.Image, GCHandleType.Pinned);
-            //GC.Collect();
-        }
-        */
 
 
         private void buttonPhotoDel_Click(object sender, EventArgs e)
@@ -1151,8 +986,10 @@ namespace OrthoMachine.View
         {
             BackgroundWorker worker = sender as BackgroundWorker;
     
-            int maxthreads = Environment.ProcessorCount-2;
+            maxthreads = Environment.ProcessorCount-2;
             maxthreads = Math.Max(2, maxthreads);
+            progressBar1.Invoke(new MethodInvoker(delegate { progressBar1.Value = 0; }));
+            procbarvalue = 0;
 
             objThread = new Thread[maxthreads];
             for (int i = 0 ; i < maxthreads ; i++)
@@ -1161,8 +998,17 @@ namespace OrthoMachine.View
                 int sh = surface.Width / maxthreads * (i + 1);
                 objThread[i] = new Thread(() =>
                 {
-                    Thread.CurrentThread.IsBackground = true;
-                    Visibilitycheck(sl, sh, 0, surface.Height);
+                    try
+                    {
+                        Thread.CurrentThread.IsBackground = true;
+                        Visibilitycheck(sl, sh, 0, surface.Height);
+                    }
+                    finally
+                    {
+                        //onThreadfinished((int)(maxthreads/100));
+                        progressBar1.Invoke(new MethodInvoker(delegate { progressBar1.Value += 100 / maxthreads; }));
+                    }
+                    
                 });
                 //objThread[i].Priority = ThreadPriority.AboveNormal;
                 objThread[i].Start();
@@ -1174,10 +1020,18 @@ namespace OrthoMachine.View
                 // Wait until thread is finished.
                 objThread[i].Join();
             }
-
-
-           
         }
+
+       /*public void onThreadfinished(int percent)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<int>(onThreadfinished), new object[] { percent });
+                return;
+            }
+            progressBar1.Value += percent;
+        }
+        */
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1195,6 +1049,7 @@ namespace OrthoMachine.View
                 MakeOrthoPhoto();
                 orthoToolStripMenuItem.Enabled = true;
                 form1.overlapToolStripMenuItem.Enabled = true;
+                progressBar1.Value = 100;
             }
 
         }
@@ -1404,7 +1259,8 @@ namespace OrthoMachine.View
             }
             //visible.Save(form1.SavePath + "\\visible.png");
             //return visible;
-
+            procbarvalue += (int)(100 / maxthreads);
+            //form1.backgroundWorker1.ReportProgress(procbarvalue);
         }
 
 

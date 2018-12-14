@@ -53,6 +53,7 @@ namespace OrthoMachine.View
             this.rGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orthoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -291,6 +292,16 @@ namespace OrthoMachine.View
             this.orthoToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.orthoToolStripMenuItem.Text = "ortho";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(412, 473);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(113, 23);
+            this.progressBar1.TabIndex = 13;
+            this.progressBar1.Visible = false;
+            // 
             // ImageProcess
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,6 +309,7 @@ namespace OrthoMachine.View
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(940, 503);
             this.ContextMenuStrip = this.contextMenuStrip1;
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.buttonCalculate);
             this.Controls.Add(this.buttonPhotoDel);
@@ -356,9 +368,6 @@ namespace OrthoMachine.View
         public System.Windows.Forms.ToolStripMenuItem intensityToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem orthoToolStripMenuItem;
         private ContextMenuStrip contextMenuStrip1;
-            
-
-
-    
+        private ProgressBar progressBar1;
     }
 }

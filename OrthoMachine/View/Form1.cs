@@ -118,12 +118,7 @@ namespace OM_Form
 
             if (ImageScale < 0.1) ImageScale = 0.1f;
             // Console.WriteLine(ImageScale);
-            this.pictureBox1.Size = new Size((int)(sf.sc.image.Width * ImageScale), (int)(sf.sc.image.Height * ImageScale));
-            /*if ((pictureBox1.Image.Width > this.ClientSize.Width || pictureBox1.Image.Height > this.ClientSize.Height))
-            {
-                //panel1.AutoScrollPosition = new Point(-panel1.AutoScrollPosition.X + (e.X), -panel1.AutoScrollPosition.Y + (e.Y));
-            }*/
-
+            this.pictureBox1.Size = new Size((int)(sf.sc.image.Width * ImageScale), (int)(sf.sc.image.Height * ImageScale));           
         }
 
 
@@ -369,6 +364,11 @@ namespace OM_Form
         {
             //sf.sc.image=sf.sc.image.SmoothMedian(3);
             sf.MedianFilter(this);
+        }
+
+        private void smoothSurfaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            sf.BlurFilter(this);
         }
 
         private void contextMenuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

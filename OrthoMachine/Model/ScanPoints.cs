@@ -272,34 +272,7 @@ namespace ortomachine.Model
                 form1.backgroundWorker1.ReportProgress(procbarvalue);
             }
         }
-
-        /*private void CountLines(int lineCount)
-        {
-            actline++;
-            if (actline-2>lineCount/10)
-            {
-                procbarvalue += 10;
-                actline = 0;
-                form1.backgroundWorker1.ReportProgress(procbarvalue);
-                if (form1.progressBar1.InvokeRequired)
-                {
-                    form1.progressBar1.BeginInvoke((MethodInvoker)delegate ()
-                    {
-                        form1.progressBar1.Value = procbarvalue;
-                        Application.DoEvents();
-                    });
-                }
-                form1.progressBar1.Value = procbarvalue;
-                //form1.progressBar1.Value = procbarvalue;
-                
-                ;
-            }
-            
-            //int ddd= (int)((actline*100) / lineCount) ;
-            //return ddd;
-            
-            ;
-        }*/
+      
 
         private void BoundingBox()
         {

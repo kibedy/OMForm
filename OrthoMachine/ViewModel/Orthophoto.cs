@@ -150,70 +150,75 @@ namespace OrthoMachine.ViewModel
                 Bitmap resultImage = merge.Apply(img2);
                 resultImage.Save(form1.SavePath + "\\ortho\\result_.png");
                 */
-
-                double[,] avgvalues = new double[2, 3];
-                int count = 0;
-                for (int i = 0 ; i < ortholist[0].Height ; i++)
+                try
                 {
-                    for (int j = 0 ; j < ortholist[0].Width ; j++)
+                    double[,] avgvalues = new double[2, 3];
+                    int count = 0;
+                    for (int i = 0; i < ortholist[0].Height; i++)
                     {
-                        if (ortholist[0].Data[i, j, 0] != 0 && ortholist[0].Data[i, j, 1] != 0 && ortholist[0].Data[i, j, 2] != 0 &&
-                            ortholist[1].Data[i, j, 0] != 0 && ortholist[1].Data[i, j, 1] != 0 && ortholist[1].Data[i, j, 2] != 0)
+                        for (int j = 0; j < ortholist[0].Width; j++)
                         {
-                            avgvalues[0, 0] += orthoLab[0].Data[i, j, 0];
-                            avgvalues[1, 0] += orthoLab[1].Data[i, j, 0];
-                            avgvalues[0, 1] += orthoLab[0].Data[i, j, 1];
-                            avgvalues[1, 1] += orthoLab[1].Data[i, j, 1];
-                            avgvalues[0, 2] += orthoLab[0].Data[i, j, 2];
-                            avgvalues[1, 2] += orthoLab[1].Data[i, j, 2];
-                            count++;
-                        }
-
-                    }
-                }
-
-                float l0 = (int)(avgvalues[0, 0] / count);
-                float a0 = (int)(avgvalues[0, 1] / count);
-                float b0 = (int)(avgvalues[0, 2] / count);
-                float l1 = (int)(avgvalues[1, 0] / count);
-                float a1 = (int)(avgvalues[1, 1] / count);
-                float b1 = (int)(avgvalues[1, 2] / count);
-                float l_avg = (l0 + l1) / 2;
-                float a_avg = (a0 + a1) / 2;
-                float b_avg = (b0 + b1) / 2;
-                float l0_mul = l_avg / l0;
-                float l1_mul = l_avg / l1;
-                float a0_mul = a_avg / a0;
-                float a1_mul = a_avg / a1;
-                float b0_mul = b_avg / b0;
-                float b1_mul = b_avg / b1;
-
-                for (int i = 0 ; i < ortholist[0].Height ; i++)
-                {
-                    for (int j = 0 ; j < ortholist[0].Width ; j++)
-                    {
-                        if (ortholist[0].Data[i, j, 0] != 0 && ortholist[0].Data[i, j, 1] != 0 && ortholist[0].Data[i, j, 2] != 0 &&
-                           ortholist[1].Data[i, j, 0] != 0 && ortholist[1].Data[i, j, 1] != 0 && ortholist[1].Data[i, j, 2] != 0)
-                        {
-                            orthoLab[0].Data[i, j, 0] = (byte)(orthoLab[0].Data[i, j, 0] * l0_mul);
-                            orthoLab[1].Data[i, j, 0] = (byte)(orthoLab[1].Data[i, j, 0] * l1_mul);
-                            //orthoLab[0].Data[i, j, 1] = (byte)(orthoLab[0].Data[i, j, 1] * a0_mul);
-                            //orthoLab[1].Data[i, j, 1] = (byte)(orthoLab[1].Data[i, j, 1] * a1_mul);
-                            //orthoLab[0].Data[i, j, 2] = (byte)(orthoLab[0].Data[i, j, 2] * b0_mul);
-                            //orthoLab[1].Data[i, j, 2] = (byte)(orthoLab[1].Data[i, j, 2] * b1_mul);
+                            if (ortholist[0].Data[i, j, 0] != 0 && ortholist[0].Data[i, j, 1] != 0 && ortholist[0].Data[i, j, 2] != 0 &&
+                                ortholist[1].Data[i, j, 0] != 0 && ortholist[1].Data[i, j, 1] != 0 && ortholist[1].Data[i, j, 2] != 0)
+                            {
+                                avgvalues[0, 0] += orthoLab[0].Data[i, j, 0];
+                                avgvalues[1, 0] += orthoLab[1].Data[i, j, 0];
+                                avgvalues[0, 1] += orthoLab[0].Data[i, j, 1];
+                                avgvalues[1, 1] += orthoLab[1].Data[i, j, 1];
+                                avgvalues[0, 2] += orthoLab[0].Data[i, j, 2];
+                                avgvalues[1, 2] += orthoLab[1].Data[i, j, 2];
+                                count++;
+                            }
 
                         }
                     }
+
+                    float l0 = (int)(avgvalues[0, 0] / count);
+                    float a0 = (int)(avgvalues[0, 1] / count);
+                    float b0 = (int)(avgvalues[0, 2] / count);
+                    float l1 = (int)(avgvalues[1, 0] / count);
+                    float a1 = (int)(avgvalues[1, 1] / count);
+                    float b1 = (int)(avgvalues[1, 2] / count);
+                    float l_avg = (l0 + l1) / 2;
+                    float a_avg = (a0 + a1) / 2;
+                    float b_avg = (b0 + b1) / 2;
+                    float l0_mul = l_avg / l0;
+                    float l1_mul = l_avg / l1;
+                    float a0_mul = a_avg / a0;
+                    float a1_mul = a_avg / a1;
+                    float b0_mul = b_avg / b0;
+                    float b1_mul = b_avg / b1;
+
+                    for (int i = 0; i < ortholist[0].Height; i++)
+                    {
+                        for (int j = 0; j < ortholist[0].Width; j++)
+                        {
+                            if (ortholist[0].Data[i, j, 0] != 0 && ortholist[0].Data[i, j, 1] != 0 && ortholist[0].Data[i, j, 2] != 0 &&
+                               ortholist[1].Data[i, j, 0] != 0 && ortholist[1].Data[i, j, 1] != 0 && ortholist[1].Data[i, j, 2] != 0)
+                            {
+                                orthoLab[0].Data[i, j, 0] = (byte)(orthoLab[0].Data[i, j, 0] * l0_mul);
+                                orthoLab[1].Data[i, j, 0] = (byte)(orthoLab[1].Data[i, j, 0] * l1_mul);
+                                //orthoLab[0].Data[i, j, 1] = (byte)(orthoLab[0].Data[i, j, 1] * a0_mul);
+                                //orthoLab[1].Data[i, j, 1] = (byte)(orthoLab[1].Data[i, j, 1] * a1_mul);
+                                //orthoLab[0].Data[i, j, 2] = (byte)(orthoLab[0].Data[i, j, 2] * b0_mul);
+                                //orthoLab[1].Data[i, j, 2] = (byte)(orthoLab[1].Data[i, j, 2] * b1_mul);
+
+                            }
+                        }
+                    }
+
+                    Bitmap img1_lab = orthoLab[0].Bitmap;
+                    Bitmap img2_lab = orthoLab[1].Bitmap;
+                    Merge merge_lab = new Merge(img1_lab);
+                    Bitmap resultImage_lab = merge_lab.Apply(img2_lab);
+                    resultImage_lab.Save(form1.SavePath + "\\ortho\\" + Files[0] + "_" + Files[1], ImageFormat.Png);
+                    orthoform.pictureBox1.Image = resultImage_lab;
+                    SilentLoadOrthothumbs();
                 }
-
-                Bitmap img1_lab = orthoLab[0].Bitmap;
-                Bitmap img2_lab = orthoLab[1].Bitmap;
-                Merge merge_lab = new Merge(img1_lab);
-                Bitmap resultImage_lab = merge_lab.Apply(img2_lab);
-                resultImage_lab.Save(form1.SavePath + "\\ortho\\" + Files[0] + "_" + Files[1], ImageFormat.Png);
-                orthoform.pictureBox1.Image = resultImage_lab;
-                SilentLoadOrthothumbs();
-
+                catch
+                {
+                    MessageBox.Show("No overlapping or missing images");
+                }
             }
 
         }

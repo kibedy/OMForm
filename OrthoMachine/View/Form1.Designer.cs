@@ -65,6 +65,7 @@ namespace OM_Form
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.listView1 = new System.Windows.Forms.ListView();
+            this.smoothSurfaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -122,8 +123,9 @@ namespace OM_Form
             // 
             this.surfaceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createToolStripMenuItem,
-            this.removeSpikesToolStripMenuItem,
             this.loadSurfaceToolStripMenuItem,
+            this.removeSpikesToolStripMenuItem,
+            this.smoothSurfaceToolStripMenuItem,
             this.fillHolesToolStripMenuItem,
             this.bilinearFillHolesToolStripMenuItem,
             this.resizeToolStripMenuItem});
@@ -134,7 +136,7 @@ namespace OM_Form
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.createToolStripMenuItem.Text = "Create...";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
@@ -142,7 +144,7 @@ namespace OM_Form
             // 
             this.removeSpikesToolStripMenuItem.Enabled = false;
             this.removeSpikesToolStripMenuItem.Name = "removeSpikesToolStripMenuItem";
-            this.removeSpikesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.removeSpikesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.removeSpikesToolStripMenuItem.Text = "Remove spikes";
             this.removeSpikesToolStripMenuItem.Click += new System.EventHandler(this.removeSpikesToolStripMenuItem_Click);
             // 
@@ -150,7 +152,7 @@ namespace OM_Form
             // 
             this.loadSurfaceToolStripMenuItem.Enabled = false;
             this.loadSurfaceToolStripMenuItem.Name = "loadSurfaceToolStripMenuItem";
-            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.loadSurfaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadSurfaceToolStripMenuItem.Text = "Load surface";
             this.loadSurfaceToolStripMenuItem.Click += new System.EventHandler(this.loadSurfaceToolStripMenuItem_Click);
             // 
@@ -158,7 +160,7 @@ namespace OM_Form
             // 
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.fillHolesToolStripMenuItem.Name = "fillHolesToolStripMenuItem";
-            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.fillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fillHolesToolStripMenuItem.Text = "Fill larger holes";
             this.fillHolesToolStripMenuItem.Click += new System.EventHandler(this.fillHolesToolStripMenuItem_Click);
             // 
@@ -166,7 +168,7 @@ namespace OM_Form
             // 
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Name = "bilinearFillHolesToolStripMenuItem";
-            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.bilinearFillHolesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.bilinearFillHolesToolStripMenuItem.Text = "Bilinear fill holes";
             this.bilinearFillHolesToolStripMenuItem.Click += new System.EventHandler(this.bilinearFillHolesToolStripMenuItem_Click);
             // 
@@ -174,7 +176,7 @@ namespace OM_Form
             // 
             this.resizeToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Name = "resizeToolStripMenuItem";
-            this.resizeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.resizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resizeToolStripMenuItem.Text = "Resize";
             this.resizeToolStripMenuItem.Click += new System.EventHandler(this.resizeToolStripMenuItem_Click);
             // 
@@ -270,13 +272,12 @@ namespace OM_Form
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(100, 50);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;            
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
             this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
-
             // 
             // contextMenuStrip2
             // 
@@ -320,6 +321,13 @@ namespace OM_Form
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
             this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
+            // 
+            // smoothSurfaceToolStripMenuItem
+            // 
+            this.smoothSurfaceToolStripMenuItem.Name = "smoothSurfaceToolStripMenuItem";
+            this.smoothSurfaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.smoothSurfaceToolStripMenuItem.Text = "Smooth surface";
+            this.smoothSurfaceToolStripMenuItem.Click += new System.EventHandler(this.smoothSurfaceToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -381,6 +389,7 @@ namespace OM_Form
         private ToolStripMenuItem orthoToolStripMenuItem;
         public ToolStripMenuItem overlapToolStripMenuItem;
         private ToolStripMenuItem removeSpikesToolStripMenuItem;
+        private ToolStripMenuItem smoothSurfaceToolStripMenuItem;
         //public BackgroundWorker backgroundWorker1;
     }
 }
