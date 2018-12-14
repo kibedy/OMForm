@@ -28,7 +28,6 @@ namespace OrthoMachine.View
         {
             InitializeComponent();
             orthophoto = new Orthophoto(form1, this);
-            //this.orthophoto = orthophoto;
             orthophoto.SilentLoadOrthothumbs();
             ImageWidth = 1;
             ImageHeight = 1;

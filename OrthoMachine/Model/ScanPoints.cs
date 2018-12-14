@@ -73,7 +73,7 @@ namespace ortomachine.Model
             {
                 preprocess(filename);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Invalid file");
             }

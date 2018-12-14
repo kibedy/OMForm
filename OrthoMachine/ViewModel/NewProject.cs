@@ -30,9 +30,9 @@ namespace OM_Form.ViewModel
             ofd.DefaultExt = ".asc";
             ofd.Filter = "Point cloud (*.txt)|*.txt|ASCII file (*.asc)|*.asc";
             this.form1 = form1;
-            //SavePath = form1.SavePath;
             form1.DisableAllMenus();
-            
+            form1.pictureBox1.Image= global::OrthoMachine.Properties.Resources.nullimage;
+
         }
 
         public void GetProjectDir()
@@ -79,7 +79,6 @@ namespace OM_Form.ViewModel
                     form2.ShowDialog();
                     if (form2.DialogResult == DialogResult.OK)
                     {
-                        //sf = new Surface(Filename, Offset, Rastersize, this);
                         rastersize = float.Parse(form2.rasterbox.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
                         offset = float.Parse(form2.offsetbox.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
                         return true;
@@ -111,11 +110,8 @@ namespace OM_Form.ViewModel
 
                 if (form1.filetype == 7)
                 {
-                    //form1.pictureBox1.Image = form1.sf.LoadSurface(SavePath, form1);
                     form1.sf.sc.RGBsurfImage = new Image<Bgr, byte>(SavePath + "\\surface_rgb.png");
                     form1.sf.sc.intSurfImage = new Image<Gray, byte>(SavePath + "\\surface_int.png");
-                    //GCHandle gchrgb = GCHandle.Alloc(form1.sf.sc.RGBsurfImage);
-                    //GCHandle gchint = GCHandle.Alloc(form1.sf.sc.intSurfImage);
                     form1.intensityToolStripMenuItem.Enabled = true;
                     form1.depthToolStripMenuItem.Enabled = true;                    
                     form1.rGBToolStripMenuItem.Enabled = true;
@@ -123,15 +119,12 @@ namespace OM_Form.ViewModel
                 else if (form1.filetype == 4)
                 {
                     form1.sf.sc.intSurfImage = new Image<Gray, byte>(SavePath + "\\surface_int.png");
-                    //GCHandle gchint = GCHandle.Alloc(form1.sf.sc.intSurfImage);
                     form1.intensityToolStripMenuItem.Enabled = true;
                     form1.depthToolStripMenuItem.Enabled = true;
                     form1.rGBToolStripMenuItem.Enabled = false;
                 }
                 else
                 {
-                    //form1.pictureBox1.Image = form1.sf.LoadSurface(SavePath, form1);
-                    
                     form1.intensityToolStripMenuItem.Enabled = false;
                     form1.depthToolStripMenuItem.Enabled = false;
                     form1.rGBToolStripMenuItem.Enabled = false;
@@ -150,7 +143,6 @@ namespace OM_Form.ViewModel
                     {
                         photolist.Add(sr.ReadLine());
                     }
-                    //form1.photos.projimagefilenames = photolist;
                     form1.photos.SilentLoadPhotos(form1, photolist);
                     form1.saveProjectToolStripMenuItem.Enabled = true;
                     form1.removeSelectedToolStripMenuItem.Enabled = true;                    

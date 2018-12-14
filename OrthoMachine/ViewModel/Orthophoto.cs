@@ -40,13 +40,7 @@ namespace OrthoMachine.ViewModel
             this.orthoform = orthoform;
         }
 
-        /*internal void ShowOrtho()
-        {
 
-          
-            orthoform.ShowDialog();
-
-        }*/
 
         internal void SilentLoadOrthothumbs()
         {
@@ -75,7 +69,7 @@ namespace OrthoMachine.ViewModel
                     DirectoryInfo dith = Directory.CreateDirectory(imagesavepath + "\\thumb");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Can't make Directory");
             }
@@ -118,9 +112,7 @@ namespace OrthoMachine.ViewModel
 
         internal void Overlap()
         {
-            //throw new NotImplementedException();
-            /*DirectoryInfo d = new DirectoryInfo(form1.SavePath + "\\ortho");
-            FileInfo[] Files = d.GetFiles("*.jpg");*/
+
             List<string> Files = new List<string>();
             foreach (ListViewItem item in orthoform.listView1.SelectedItems)
             {
@@ -144,12 +136,7 @@ namespace OrthoMachine.ViewModel
                     ;
                 }
 
-                /*Bitmap img1 = ortholist[0].Bitmap;
-                Bitmap img2 = ortholist[1].Bitmap;
-                Merge merge = new Merge(img1);
-                Bitmap resultImage = merge.Apply(img2);
-                resultImage.Save(form1.SavePath + "\\ortho\\result_.png");
-                */
+
                 try
                 {
                     double[,] avgvalues = new double[2, 3];

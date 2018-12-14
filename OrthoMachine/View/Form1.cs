@@ -22,8 +22,7 @@ namespace OM_Form
 {
     public partial class Form1 : Form
     {
-        public string filename;
-        //Thread thread;
+        public string filename;        
         public float offset, rastersize;
         public string SavePath;
         public Surface sf;
@@ -48,6 +47,7 @@ namespace OM_Form
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
             project = new NewProject(this);
+            this.pictureBox1.Image = global::OrthoMachine.Properties.Resources.nullimage;
         }
 
         public void DisableAllMenus()
@@ -58,8 +58,7 @@ namespace OM_Form
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
             this.addPicturesToolStripMenuItem.Enabled = false;
             this.saveProjectToolStripMenuItem.Enabled = false;
-            this.addPicturesToolStripMenuItem.Enabled = false;            
-            //this.removeSelectedPictureToolStripMenuItem.Enabled = false;
+            this.addPicturesToolStripMenuItem.Enabled = false;                        
         }
 
         #region Backgroundworker for PC loading
@@ -78,8 +77,7 @@ namespace OM_Form
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // First, handle the case where an exception was thrown.
+        {            
             if (e.Error != null)
             {
                 MessageBox.Show(e.Error.Message);
@@ -99,6 +97,7 @@ namespace OM_Form
             bilinearFillHolesToolStripMenuItem.Enabled = true;
             resizeToolStripMenuItem.Enabled = true;
             saveProjectToolStripMenuItem.Enabled = true;
+            SaveProject();
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -111,14 +110,15 @@ namespace OM_Form
         #region PictureBox_1_Events
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            const float scale_per_delta = 0.1f / 120;
-            ImageScale += e.Delta * scale_per_delta;
-
-
-            if (ImageScale < 0.1) ImageScale = 0.1f;
-            // Console.WriteLine(ImageScale);
-            this.pictureBox1.Size = new Size((int)(sf.sc.image.Width * ImageScale), (int)(sf.sc.image.Height * ImageScale));           
+            if (ImageScale>0)
+            {
+                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                const float scale_per_delta = 0.1f / 120;
+                ImageScale += e.Delta * scale_per_delta;
+                if (ImageScale < 0.1) ImageScale = 0.1f;
+                this.pictureBox1.Size = new Size((int)(sf.sc.image.Width * ImageScale), (int)(sf.sc.image.Height * ImageScale));
+            }
+                
         }
 
 
@@ -141,35 +141,14 @@ namespace OM_Form
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-
             _tracking = false;
-
-
         }
         #endregion
 
         private void openToolStripMenuItem_Click(System.Object sender, System.EventArgs e)
-        {
-            //project = new NewProject(this);
-            project.GetProjectDir();
-            //sf = new Surface(project.Filename, project.offset, project.rastersize, this);
-            //pictureBox1.Image = sf.LoadSurface(SavePath,this);            
-
-            
-            project.LoadProjectParams(this, SavePath);
-            /*
-            createToolStripMenuItem.Enabled = true;
-            loadSurfaceToolStripMenuItem.Enabled = true;
-            this.fillHolesToolStripMenuItem.Enabled = true;
-            this.resizeToolStripMenuItem.Enabled = true;
-            this.bilinearFillHolesToolStripMenuItem.Enabled = true;
-            this.addPicturesToolStripMenuItem.Enabled = true;
-            this.saveProjectToolStripMenuItem.Enabled = true;
-            this.orthoToolStripMenuItem.Enabled = true;
-            this.overlapToolStripMenuItem.Enabled = true;
-            this.removeSpikesToolStripMenuItem.Enabled = true;
-            */
-
+        {        
+            project.GetProjectDir();                   
+            project.LoadProjectParams(this, SavePath);          
         }
         public void EnalbleAllMenus()
         {
@@ -183,22 +162,21 @@ namespace OM_Form
             this.orthoToolStripMenuItem.Enabled = true;
             this.overlapToolStripMenuItem.Enabled = true;
             this.removeSpikesToolStripMenuItem.Enabled = true;
+            this.smoothSurfaceToolStripMenuItem.Enabled = true;
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //project = new NewProject(this);
+        {            
             project.GetProjectDir();
             createToolStripMenuItem.Enabled = true;
             loadSurfaceToolStripMenuItem.Enabled = false;
             this.fillHolesToolStripMenuItem.Enabled = false;
             this.resizeToolStripMenuItem.Enabled = false;
             this.bilinearFillHolesToolStripMenuItem.Enabled = false;
-            this.overlapToolStripMenuItem.Enabled = false;            
+            this.overlapToolStripMenuItem.Enabled = false;
+            this.smoothSurfaceToolStripMenuItem.Enabled = false;
             listView1.Clear();
-            sf = new Surface("surface", 0, 0, this);
-            
-
+            sf = new Surface("surface", 0, 0, this);            
         }
 
 
@@ -235,10 +213,8 @@ namespace OM_Form
         }
 
         private void fillHolesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //uint[,] surface = new uint[sf.image.Width,sf.image.Height];
+        {            
             sf.fillHoles(this);
-
         }
 
         private void loadSurfaceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -291,27 +267,7 @@ namespace OM_Form
         }
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveProject();
-            /*
-            StreamWriter sw = new StreamWriter(SavePath+"\\project.prj");
-            sw.WriteLine(filetype);
-
-            sw.Close();
-
-            sw = new StreamWriter(SavePath + "\\imagelist.txt");
-            try
-            {               
-                foreach (string item in photos.projimagefilenames)
-                {
-                    sw.WriteLine(item);
-                }               
-            }            
-            catch
-            {
-
-            }
-            sw.Close();
-            */
+            SaveProject();          
         }
 
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -357,12 +313,10 @@ namespace OM_Form
         {
             Ortho ortho = new Ortho(this);
             ortho.ShowDialog();
-            //ortho.Overlap();
         }
 
         private void removeSpikesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //sf.sc.image=sf.sc.image.SmoothMedian(3);
+        {            
             sf.MedianFilter(this);
         }
 

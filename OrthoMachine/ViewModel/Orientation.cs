@@ -1,4 +1,4 @@
-﻿using OrthoMachine.Model;
+﻿//using OrthoMachine.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,11 @@ namespace OrthoMachine.ViewModel
 {
     public class Orientation
     {
-        List<Marker> markers;
+        //List<Marker> markers;
 
         public Orientation()
         {
-            markers = new List<Marker>();
+           // markers = new List<Marker>();
         }
     }
 }

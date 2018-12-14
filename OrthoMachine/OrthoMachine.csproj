@@ -108,7 +108,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Marker.cs" />
     <Compile Include="ViewModel\Orientation.cs" />
     <Compile Include="ViewModel\NewProject.cs" />
     <Compile Include="ViewModel\Orthophoto.cs" />
@@ -189,6 +188,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
+    <None Include="Properties\nullimage.jpg" />
+    <None Include="Resources\nullimage.bmp" />
     <EmbeddedResource Include="Properties\down_arrow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

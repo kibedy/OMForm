@@ -1,7 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using OM_Form;
-using OrthoMachine.Model;
+//using OrthoMachine.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -914,7 +914,7 @@ namespace OrthoMachine.View
                 Qxx = MatrixIdentity(6);
                 Qxx = MatrixInverse(Ata);
 
-                double[][] Atl;
+                //double[][] Atl;
                 double[][] Atl_;
                 Atl_ = MatrixProduct(At, l);             
 
@@ -1131,7 +1131,7 @@ namespace OrthoMachine.View
             SSS = ShowState.ortho;
             pictureBox2.Image = ortho.Bitmap;
             string[] ss = filename.Split('.');
-            if (!Directory.Exists(form1.SavePath + "\\ortho\\")) ;
+            if (!Directory.Exists(form1.SavePath + "\\ortho\\"));
             {
                 DirectoryInfo di = Directory.CreateDirectory(form1.SavePath + "\\ortho\\");
             }
@@ -1172,7 +1172,7 @@ namespace OrthoMachine.View
             double mo = Math.Sqrt(vtv[0][0] / (pointpaircount * 2 - 6));
             double[] sx = new double[pointpaircount];
             double[] sy = new double[pointpaircount];
-            string result = "";   //= ("Standard deviation: " + (mo/0.0015).ToString("0.0") + " px\n\n");           
+            string result = "";      
             double[] s = new double[6];
             for (int i = 0 ; i < 3 ; i++)
             {
@@ -1196,12 +1196,11 @@ namespace OrthoMachine.View
         private void Visibilitycheck(int fromX, int toX, int fromY, int toY)
         {            
             visible = new Image<Gray, byte>(surface.Width, surface.Height, new Gray(255));            
-            double f = 0.01; //3D step
+            //double f = 0.01; //3D step
             double sv = form1.rastersize / 2;
            
             double xh, yh, s1, s2, S, se, sh, x, y, z;
-            int ix, iy, sw;
-            //for (int i = 0 ; i < surface.Height ; i++)
+            int ix, iy, sw;            
             for (int i = fromY ; i < toY ; i++)
             {
                 for (int j = fromX ; j < toX ; j++)
@@ -1241,10 +1240,9 @@ namespace OrthoMachine.View
                         y += dy;
                         z += dz;
 
-                        //ix = (int)((x - X) * form1.rastersize+0.5);
+                        
                         ix = (int)((x - form1.sf.sc.X0) / form1.rastersize);
-                        iy = (int)(surface.Height - (y - form1.sf.sc.Y0) / form1.rastersize);
-                        //iy = (int)((y - Y) * form1.rastersize + 0.5);
+                        iy = (int)(surface.Height - (y - form1.sf.sc.Y0) / form1.rastersize);                        
                         if (iy >= 0 && iy < surface.Height && ix > 0 && ix < surface.Width && surface.Data[iy, ix, 0] / 1000 >= z)
                         {
                             sw = 1;
@@ -1256,11 +1254,8 @@ namespace OrthoMachine.View
                     }
 
                 }
-            }
-            //visible.Save(form1.SavePath + "\\visible.png");
-            //return visible;
-            procbarvalue += (int)(100 / maxthreads);
-            //form1.backgroundWorker1.ReportProgress(procbarvalue);
+            }           
+            procbarvalue += (int)(100 / maxthreads);           
         }
 
 
@@ -1419,14 +1414,7 @@ namespace OrthoMachine.View
             {
                 double colMax = Math.Abs(result[j][j]); // find largest val in col
                 int pRow = j;
-                //for (int i = j + 1; i less-than n; ++i)
-                //{
-                //  if (result[i][j] greater-than colMax)
-                //  {
-                //    colMax = result[i][j];
-                //    pRow = i;
-                //  }
-                //}
+              
 
                 // reader Matt V needed this:
                 for (int i = j + 1 ; i < n ; ++i)
@@ -1452,13 +1440,7 @@ namespace OrthoMachine.View
                     toggle = -toggle; // adjust the row-swap toggle
                 }
 
-                // --------------------------------------------------
-                // This part added later (not in original)
-                // and replaces the 'return null' below.
-                // if there is a 0 on the diagonal, find a good row
-                // from i = j+1 down that doesn't have
-                // a 0 in column j, and swap that good row with row j
-                // --------------------------------------------------
+            
 
                 if (result[j][j] == 0.0)
                 {
@@ -1484,10 +1466,7 @@ namespace OrthoMachine.View
 
                     toggle = -toggle; // adjust the row-swap toggle
                 }
-                // --------------------------------------------------
-                // if diagonal after swap is zero . .
-                //if (Math.Abs(result[j][j]) less-than 1.0E-20) 
-                //  return null; // consider a throw
+            
 
                 for (int i = j + 1 ; i < n ; ++i)
                 {
@@ -1504,43 +1483,7 @@ namespace OrthoMachine.View
             return result;
         }
 
-        /*
-        static double[][] Make2DMatrix(double[,] input)
-        {            
-            int x = input.GetLength(0);
-            int y = input.GetLength(1);
-            double[][] result = MatrixCreate(x, y);
-            for (int i = 0 ; i < x ; i++)
-            {
-                for (int j = 0 ; j < y ; j++)
-                {
-                    result[i][j] = input[i, j];
-                }
-            }
-
-            return result;
-        }
-
-        static double[,] Matrix2Array(double[][] input)
-        {
-            int x = input.Length;
-            int y = input[0].Length;
-            double[,] result = new double[x, y];
-            for (int i = 0 ; i < x ; i++)
-            {
-                for (int j = 0 ; j < y ; j++)
-                {
-                    result[i,j] = input[i][j];
-                }
-            }
-
-            return result;
-        }
-
-    */
-
-
-
+    
         #endregion
 
 

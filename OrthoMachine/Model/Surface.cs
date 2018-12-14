@@ -46,34 +46,23 @@ namespace ortomachine.Model
         }
 
         public Bitmap LoadSurface(string SavePath, Form1 form1)
-        {
-            //Bitmap bitmap = new Bitmap("surface.png");
+        {            
             StreamReader sr = new StreamReader(SavePath + "\\" + "surface.xyz");
             string s = sr.ReadLine();
-            string[] ss = s.Split(' ');
-            //Surface sf = new Surface("surface", float.Parse(ss[3]), float.Parse(ss[2]), obj);
+            string[] ss = s.Split(' ');           
             this.sc = new ScanPoints("surface", float.Parse(ss[2]), float.Parse(ss[3]), obj);
             this.sc.X0 = double.Parse(ss[0]);
             this.sc.Y0 = double.Parse(ss[1]);
             form1.rastersize = float.Parse(ss[2]);
             form1.offset = float.Parse(ss[3]);
-            sr.Close();
-
-            //image = new Bitmap("surface.png");
-            sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");
-            //GCHandle gch = GCHandle.Alloc(sc.image);
-            /*for (int i = 0; i < 10; i++)
-            {
-                Console.WriteLine("pixelérték: " + sc.image.Data[500 + i, 500 + i, 0]);
-            }*/
+            sr.Close();           
+            sc.image = new Image<Gray, ushort>(SavePath + "\\surface.png");            
             return sc.image.ToBitmap();
             
         }
 
         public void fillHoles(Form1 form1)
         {
-            //Emgu.CV.Image<Bgr, Byte> surface = new Emgu.CV.Image<Bgr, Byte>(image);
-            ;
             Emgu.CV.Image<Gray, ushort> filledsurface = sc.image;
            
             for (int i = 3; i < filledsurface.Height - 4; i++)
@@ -144,8 +133,7 @@ namespace ortomachine.Model
                     if (count == 0 || count == 25)
                     {
                         continue;
-                    }
-                    //Console.WriteLine(sumframe+"  " + suminner +" " + count);
+                    }                    
                     if (Math.Abs(suminner / count - sumframe / 24) < 100)
                     {
                         for (int k = -2; k <= 2; k++)
@@ -155,8 +143,6 @@ namespace ortomachine.Model
                                 if (filledsurface.Data[i + k, j + l, 0] == 0)
                                 {
                                     filledsurface.Data[i + k, j + l, 0] = (ushort)(suminner / count);
-                                    //filledsurface.Data[i + k, j + l, 0] = 65000;
-                                    ;
                                 }
                             }
                         }
@@ -175,11 +161,7 @@ namespace ortomachine.Model
 
         public void bilinearfillHoles(Form1 form1)
         {
-            //Emgu.CV.Image<Bgr, Byte> surface = new Emgu.CV.Image<Bgr, Byte>(image);
-            ;
             Emgu.CV.Image<Gray, ushort> filledsurface = sc.image;
-
-
 
             for (int i = 1; i < sc.image.Height - 1; i++)
             {
@@ -238,7 +220,6 @@ namespace ortomachine.Model
                 {
 
                     float newRastersize = float.Parse(surfaceresize.rasterbox.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
-                    //Bilinresize(newRastersize, form1);
                     new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
@@ -252,10 +233,8 @@ namespace ortomachine.Model
         }
 
         private void Bilinresize(float newrastersize, Form1 form1)
-        {
-            //throw new NotImplementedException();
+        {            
             Emgu.CV.Image<Gray, ushort> resizedSurf = new Image<Gray, ushort>((int)(sc.image.Width / newrastersize * form1.rastersize), (int)(sc.image.Height / newrastersize * form1.rastersize));
-
 
             for (int i = 1; i < resizedSurf.Height - 1; i++)
             {              
@@ -288,29 +267,18 @@ namespace ortomachine.Model
             if (form1.filetype == 4 || form1.filetype == 7)
             {
                 
-                //try //intensity surface model resizing
-                //{
-                   
                     Image<Gray, byte> intsurf = new Image<Gray, byte>(form1.SavePath + "\\surface_int.png");
                     Image<Gray, byte> resizedInt = intsurf.Resize((int)(sc.image.Width / newrastersize * form1.rastersize), (int)(sc.image.Height / newrastersize * form1.rastersize), Emgu.CV.CvEnum.Inter.Linear);
-
                
                     resizedInt.Save(form1.SavePath + "\\" + "surface_int.png");
                     intsurf.Save(form1.SavePath + "\\" + "surface_int_origsize.png");
                     intsurf = resizedInt;
                     sc.intSurfImage = intsurf;
 
-                //}
-                //catch
-                //{
-                //}
             }
 
             if (form1.filetype == 7)
             {
-                //try  //rgb point cloud surf image resizing
-                //{
-                    
 
                     Image<Bgr, byte> rgbsurf = new Image<Bgr, byte>(form1.SavePath + "\\surface_rgb.png");
                     
@@ -320,11 +288,7 @@ namespace ortomachine.Model
                     resizedRGB.Save(form1.SavePath + "\\" + "surface_rgb.png");
                     rgbsurf.Save(form1.SavePath + "\\" + "surface_rgb_origsize.png");
                     sc.RGBsurfImage = rgbsurf;
-                //}
-                //catch
-                //{
-                //    Console.WriteLine("No color in Cloud");
-                //}
+
             }
 
             form1.rastersize = newrastersize;

@@ -12,10 +12,6 @@ namespace OM_Form.View
 {
     public partial class Form2 : Form
     {
-        //float offset;
-        //float raster;
-        
-
         public Form1 form1;
 
         public Form2(Form1 form1)
