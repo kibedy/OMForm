@@ -110,7 +110,7 @@ namespace OM_Form
         #region PictureBox_1_Events
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (ImageScale>0)
+            if (ImageScale>0 && pictureBox1.Image!=null)
             {
                 pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
                 const float scale_per_delta = 0.1f / 120;

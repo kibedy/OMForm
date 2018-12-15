@@ -40,7 +40,6 @@ namespace OM_Form.ViewModel
             var folderBrowserDialog1 = new FolderBrowserDialog();
 
 
-            //string initpath = "g:\\_Magán\\_Óbudai Egyetem\\Szakdolgozat 1\\OM_projekt_XY\\";
             string initpath = "d:\\__magán\\orto_mentések\\";            
             folderBrowserDialog1.SelectedPath = initpath;
             DialogResult result = folderBrowserDialog1.ShowDialog();
@@ -55,17 +54,17 @@ namespace OM_Form.ViewModel
                     {
                         form1.SavePath = folderBrowserDialog1.SelectedPath;
                         form1.openToolStripMenuItem.Enabled = true;
-                        //return SavePath;
+
                     }
                 }
                 else
                 {
                     form1.SavePath = folderBrowserDialog1.SelectedPath;
                     form1.openToolStripMenuItem.Enabled = true;
-                    //return SavePath;
+
                 }
             }
-            //return SavePath;
+
         }
 
 
@@ -106,7 +105,7 @@ namespace OM_Form.ViewModel
                 form1.filetype = int.Parse(s);
                 
                 form1.pictureBox1.Image = form1.sf.LoadSurface(SavePath, form1);
-                GCHandle gch = GCHandle.Alloc(form1.pictureBox1.Image,GCHandleType.Normal);
+
 
                 if (form1.filetype == 7)
                 {

@@ -67,7 +67,7 @@ namespace OrthoMachine.View
             this.filename = filename;
             this.orientation = orientation;
             this.form1 = form1;
-            GCHandle gchphoto = GCHandle.Alloc(photo, GCHandleType.Pinned);
+            GCHandle gchphoto = GCHandle.Alloc(photo, GCHandleType.Pinned); 
             photo = new Image<Bgra, byte>(form1.SavePath + "\\photos\\" + filename);
             photo_orig = photo.Clone();
             this.pictureBox1.Image = photo.ToBitmap();
@@ -160,8 +160,7 @@ namespace OrthoMachine.View
             catch { }
             listView1.Refresh();
             DrawMarkersPhoto();
-            listView2.Refresh();
-            //SSS = ShowState.depth;            
+            listView2.Refresh();      
             surface = form1.sf.sc.image;
             DrawMarkerSurface();
             SetOrientationForm();
@@ -351,6 +350,8 @@ namespace OrthoMachine.View
             this.buttonSurfaceUp.Visible = true;
             this.buttonSurfaceDown.Visible = true;
             this.progressBar1.Visible = true;
+            this.label1.Visible = true;
+            this.textBox1.Visible = true;
            
 
         }
@@ -381,8 +382,7 @@ namespace OrthoMachine.View
         {
             if (EnablePickpoints)
             {
-                Point pp = e.Location;
-                //markers.Add(new Marker(pp.X / ImageScale, pp.Y / ImageScale, filename));
+                Point pp = e.Location;                
                 int xx = (int)(pp.X / ImageScaleS);
                 int yy = (int)(pp.Y / ImageScaleS);
 
@@ -496,8 +496,7 @@ namespace OrthoMachine.View
             else
             {
                 toDraw = new Image<Bgra, byte>(ortho.Bitmap);
-            }
-            //Image<Bgra, byte> temp = ((toDraw).Clone());
+            }            
             Image<Bgra, byte> temp = new Image<Bgra, byte>(toDraw.Bitmap);
             if (listView2.Items.Count != 0)
             {
@@ -521,8 +520,7 @@ namespace OrthoMachine.View
 
                     markerimage._SmoothGaussian(3, 3, 1, 1);
                     temp.SetValue((Bgra)colors[i], markerimage);
-                    i++;
-                    //GC.Collect();
+                    i++;                    
 
 
                 }
@@ -558,23 +556,19 @@ namespace OrthoMachine.View
                     listView2.Items.Insert(index, itemUpper);
                     listView2.Refresh();
                     if (SSS == ShowState.depth)
-                    {
-                        //DrawMarker(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
+                    {                        
                         DrawMarkerSurface();
                     }
                     else if (SSS == ShowState.rgb)
-                    {
-                        //DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
+                    {                        
                         DrawMarkerSurface();
                     }
                     else if (SSS == ShowState.ortho)
-                    {
-                        //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                    {                        
                         DrawMarkerSurface();
                     }
                     else
-                    {
-                        //DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
+                    {                        
                         DrawMarkerSurface();
                     }
                 }
@@ -597,19 +591,7 @@ namespace OrthoMachine.View
                     listView2.Items.RemoveAt(item.Index);
                     listView2.Items.Insert(index, lowerItem);
                     listView2.Items.Insert(index + 1, item);
-                    listView2.Refresh();
-                    /*if (SSS == ShowState.depth)
-                    {
-                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.image.ToBitmap());
-                    }
-                    else if (SSS == ShowState.rgb)
-                    {
-                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.RGBsurfImage.ToBitmap());
-                    }
-                    else
-                    {
-                        DrawMarkers(listView2, pictureBox2, form1.sf.sc.intSurfImage.ToBitmap());
-                    }*/
+                    listView2.Refresh();                   
                     DrawMarkerSurface();
                 }
             }
@@ -645,22 +627,7 @@ namespace OrthoMachine.View
             }
             catch { MessageBox.Show("No item selected!"); }
             listview.Refresh();
-            /*if (SSS == ShowState.depth)
-            {
-                DrawMarkers(listview, picturebox, form1.sf.sc.image.ToBitmap());
-            }
-            else if (SSS == ShowState.rgb)
-            {
-                DrawMarkers(listview, picturebox, form1.sf.sc.RGBsurfImage.ToBitmap());
-            }
-            else if (SSS == ShowState.intensity)
-            {
-                DrawMarkers(listview, picturebox, form1.sf.sc.intSurfImage.ToBitmap());
-            }
-            else if (SSS == ShowState.photo)
-            {
-                DrawMarkers(listview, picturebox, photo.ToBitmap());
-            }*/
+          
             if (SSS == ShowState.photo)
             {
                 DrawMarkersPhoto();
@@ -676,30 +643,7 @@ namespace OrthoMachine.View
 
         private ArrayList CreateColorList()
         {
-            ArrayList colors = new ArrayList();
-            /*
-            colors.Add(Color.Red);
-            colors.Add(Color.Blue);
-            colors.Add((Color.Green));
-            colors.Add((Color.Magenta));
-            colors.Add((Color.Cyan));
-            colors.Add((Color.Yellow));
-            colors.Add((Color.Violet));
-            colors.Add((Color.SpringGreen));
-            colors.Add((Color.Salmon));
-            colors.Add((Color.Purple));
-            colors.Add((Color.Olive));
-            colors.Add((Color.NavajoWhite));
-            colors.Add((Color.MidnightBlue));
-            colors.Add((Color.MediumPurple));
-            colors.Add((Color.LimeGreen));
-            colors.Add((Color.LightPink));
-            colors.Add((Color.Goldenrod));
-            colors.Add((Color.DarkViolet));
-            colors.Add((Color.Cornsilk));
-            colors.Add((Color.Bisque));
-
-            */
+            ArrayList colors = new ArrayList();         
 
             colors.Add(new Bgra(0, 0, 255, 255));
             colors.Add(new Bgra(0, 255, 0, 255));
@@ -707,7 +651,6 @@ namespace OrthoMachine.View
             colors.Add(new Bgra(255, 0, 255, 255));
             colors.Add(new Bgra(255, 255, 0, 255));
             colors.Add(new Bgra(0, 255, 255, 255));
-
             colors.Add(new Bgra(128, 128, 128, 255));
             colors.Add(new Bgra(128, 0, 0, 255));
             colors.Add(new Bgra(0, 128, 0, 255));
@@ -715,7 +658,6 @@ namespace OrthoMachine.View
             colors.Add(new Bgra(128, 128, 0, 255));
             colors.Add(new Bgra(0, 128, 128, 255));
             colors.Add(new Bgra(128, 0, 128, 255));
-
             colors.Add(new Bgra(50, 50, 50, 255));
             colors.Add(new Bgra(50, 0, 0, 255));
             colors.Add(new Bgra(0, 50, 0, 255));
@@ -728,9 +670,32 @@ namespace OrthoMachine.View
 
         }
 
+
+        float foc;
+        bool ok = false;
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
-            CalculateOrientation(listView1, listView2);
+           
+            
+            try
+            {
+                foc = float.Parse(this.textBox1.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
+               
+                if (foc > 0)
+                {
+                    foc = -1 * foc;
+                    ok = true;
+                }
+            }
+            catch (Exception)
+            {
+                ok = false;
+                MessageBox.Show("Invalid input!");
+            }                
+            if (ok==true)
+            {
+                CalculateOrientation(listView1, listView2, foc);
+            }
         }
 
         private void buttonPhotoUp_Click(object sender, EventArgs e)
@@ -766,8 +731,7 @@ namespace OrthoMachine.View
                 listView1.Items.RemoveAt(item.Index);
                 listView1.Items.Insert(index, lowerItem);
                 listView1.Items.Insert(index + 1, item);
-                listView1.Refresh();
-                //DrawMarkers(listView1, pictureBox1, photo.ToBitmap());
+                listView1.Refresh();                
                 DrawMarkersPhoto();
             }
         }
@@ -783,17 +747,14 @@ namespace OrthoMachine.View
         }
 
 
-        private void CalculateOrientation(ListView listView1, ListView listView2)
+        private void CalculateOrientation(ListView listView1, ListView listView2, float foc)
         {
             SaveMarkers();
             double sumX = 0;
             double sumY = 0;
             double sumZ = 0;
-            focus = -21;  //fake focus 
-            //focus = -16;
-            //pix_mm = 0.00156;
+            focus = foc;            
             pix_mm = 0.0067515;
-            // pix_mm = 0.005;
 
 
             foreach (ListViewItem item in listView2.Items)
@@ -805,8 +766,6 @@ namespace OrthoMachine.View
             Xo = sumX / listView2.Items.Count; //in meter
             Yo = sumY / listView2.Items.Count;  //start position in negative 
             Zo = (sumZ / listView2.Items.Count + 20);
-            //Xo = 20;
-            //Yo = 10;
 
             int iter = 0;
             double var2 = 0.01;
@@ -821,19 +780,17 @@ namespace OrthoMachine.View
             double[] xo = new double[pointpaircount * 2];
             double[] lm = new double[pointpaircount];
 
-            dX = MatrixCreate(1, 6);  // new double[1,6];
-            //double[] vec = new double[6];
+            dX = MatrixCreate(1, 6);  // new double[1,6];            
             Qxx = MatrixCreate(6, 6); // new double[6, 6];
 
-            //int i = 0;
-            //foreach (ListViewItem item in listView1.Items)
+            
             for (int j = 0 ; j < pointpaircount ; j++)
             {
                 ListViewItem item = listView1.Items[j];
                 x[j] = (double.Parse(item.SubItems[1].Text)) * pix_mm;
                 y[j] = (double.Parse(item.SubItems[2].Text)) * pix_mm;
             }
-            //int j = 0;
+            
             const int iterlimit = 1000;
             a = MatrixCreate(3, 3);
 
@@ -863,13 +820,11 @@ namespace OrthoMachine.View
 
                     xo[2 * i] = focus * (a[0][0] * DX[i] + a[1][0] * DY[i] + a[2][0] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
                     xo[2 * i + 1] = focus * (a[0][1] * DX[i] + a[1][1] * DY[i] + a[2][1] * DZ[i]) / (a[0][2] * DX[i] + a[1][2] * DY[i] + a[2][2] * DZ[i]);
-                    lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);
-                    Console.WriteLine("X[i]:" + item.SubItems[1].Text + " Y[i]:" + item.SubItems[2].Text + " Z[i]:" + item.SubItems[3].Text + " xo: " + xo[2 * i] / pix_mm + " yo:" + xo[2 * i + 1] / pix_mm);
+                    lm[i] = DZ[i] / (a[2][0] * x[i] + a[2][1] * y[i] + a[2][2] * focus);                   
 
                 }
 
-                //****Beobachtungsvektor               
-                //double[][] l = MatrixCreate(pointpaircount * 2, 1);
+                //Beobachtungsvektor                               
                 l = MatrixCreate(pointpaircount * 2, 1);
                 for (int i = 0 ; i < pointpaircount ; i++)
                 {
@@ -878,7 +833,6 @@ namespace OrthoMachine.View
                 }
 
                 //Designmatrix
-
                 double[] tmp = new double[pointpaircount];
 
                 A = MatrixCreate(pointpaircount * 2, 6);
@@ -929,7 +883,7 @@ namespace OrthoMachine.View
                 Console.WriteLine(Xo + " " + Yo + " " + Zo + " Omega:" + (o % Math.PI) + " Phi:" + (p % Math.PI) + " Kappa:" + (k % Math.PI));
 
 
-                //Exit conditions***********************************************
+                //Exit conditions
                 double[] dvec = new double[6];
                 var2 = 0;
                 for (int i = 0 ; i < 6 ; i++)
@@ -947,8 +901,6 @@ namespace OrthoMachine.View
                 }
 
                 iter++;
-
-                //  iteration end
             }//while
 
             if (iter > iterlimit)
@@ -961,7 +913,7 @@ namespace OrthoMachine.View
                 ff = ("Xo:" + Xo.ToString("0.000") + "\nYo:" + Yo.ToString("0.000") + " \nZo:" + Zo.ToString("0.000") +
                     "\nOmega:" + (o % Math.PI * 180 / Math.PI).ToString("0.000") + " deg\nPhi:" + (p % Math.PI * 180 / Math.PI).ToString("0.000") +
                     " deg\nKappa:" + (k % Math.PI * 180 / Math.PI).ToString("0.000") + " deg\n\n") + ff;
-                //string hiba = ("Standard deviation: " + ff + " pixel");
+                
                 DialogResult dr = MessageBox.Show(ff, "Exterior Orientation", MessageBoxButtons.YesNo);
                 switch (dr)
                 {
@@ -1004,13 +956,11 @@ namespace OrthoMachine.View
                         Visibilitycheck(sl, sh, 0, surface.Height);
                     }
                     finally
-                    {
-                        //onThreadfinished((int)(maxthreads/100));
+                    {                        
                         progressBar1.Invoke(new MethodInvoker(delegate { progressBar1.Value += 100 / maxthreads; }));
                     }
                     
-                });
-                //objThread[i].Priority = ThreadPriority.AboveNormal;
+                });                
                 objThread[i].Start();
 
             }
@@ -1021,17 +971,6 @@ namespace OrthoMachine.View
                 objThread[i].Join();
             }
         }
-
-       /*public void onThreadfinished(int percent)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<int>(onThreadfinished), new object[] { percent });
-                return;
-            }
-            progressBar1.Value += percent;
-        }
-        */
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1067,10 +1006,13 @@ namespace OrthoMachine.View
 
         private void MakeOrthoPhoto()
         {
-
+            if (!Directory.Exists(form1.SavePath + "\\ortho\\"))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(form1.SavePath + "\\ortho\\");
+            }
 
             ortho = new Image<Bgr, byte>(surface.Width, surface.Height);
-            visible.Save(form1.SavePath + "//ortho//visible.png");
+            //visible.Save(form1.SavePath + "\\ortho\\visible.png");
 
             double[][] aa = MatrixCreate(3, 3);
             double co = cos(o);
@@ -1131,12 +1073,8 @@ namespace OrthoMachine.View
             SSS = ShowState.ortho;
             pictureBox2.Image = ortho.Bitmap;
             string[] ss = filename.Split('.');
-            if (!Directory.Exists(form1.SavePath + "\\ortho\\"));
-            {
-                DirectoryInfo di = Directory.CreateDirectory(form1.SavePath + "\\ortho\\");
-            }
-
-            //ortho.Save(form1.SavePath + "\\ortho\\" + ss[0] + "_ortho." + ss[1]);
+           
+            
             string o_path = form1.SavePath + "\\ortho\\" + ss[0] + "_ortho.png";
             ortho.Save(o_path);
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\ortholist.txt", true);          
@@ -1296,12 +1234,17 @@ namespace OrthoMachine.View
 
         static double[][] MatrixIdentity(int n)
         {
-            // return an n x n Identity matrix
+            
             double[][] result = MatrixCreate(n, n);
             for (int i = 0 ; i < n ; ++i)
                 result[i][i] = 1.0;
 
             return result;
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
 
         static double[][] MatrixProduct(double[][] matrixA, double[][] matrixB)

@@ -163,8 +163,7 @@ namespace OM_Form.ViewModel
                     imgs.Images.Add(filename, Image.FromFile(file));
                     ListViewItem item = new ListViewItem(filename);
                     item.Tag = filename;
-                    item.ImageIndex = i;
-                    //j++;
+                    item.ImageIndex = i;              
                     form1.listView1.Items.Add(item);
                     i++;
                     form1.progressBar1.Value = (int)(i / projthumbfilenames.Count);

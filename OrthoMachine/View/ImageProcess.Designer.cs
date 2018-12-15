@@ -54,6 +54,8 @@ namespace OrthoMachine.View
             this.orthoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -296,11 +298,32 @@ namespace OrthoMachine.View
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(412, 473);
+            this.progressBar1.Location = new System.Drawing.Point(412, 481);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(113, 23);
+            this.progressBar1.Size = new System.Drawing.Size(113, 15);
             this.progressBar1.TabIndex = 13;
             this.progressBar1.Visible = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.textBox1.Location = new System.Drawing.Point(441, 455);
+            this.textBox1.MaximumSize = new System.Drawing.Size(58, 20);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(58, 20);
+            this.textBox1.TabIndex = 16;
+            this.textBox1.Text = "21";
+            this.textBox1.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label1.Location = new System.Drawing.Point(416, 439);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(110, 21);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Focal length im mm";
+            this.label1.Visible = false;
             // 
             // ImageProcess
             // 
@@ -309,6 +332,8 @@ namespace OrthoMachine.View
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(940, 503);
             this.ContextMenuStrip = this.contextMenuStrip1;
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.buttonCalculate);
@@ -369,5 +394,7 @@ namespace OrthoMachine.View
         public System.Windows.Forms.ToolStripMenuItem orthoToolStripMenuItem;
         private ContextMenuStrip contextMenuStrip1;
         private ProgressBar progressBar1;
+        private TextBox textBox1;
+        private Label label1;
     }
 }

@@ -12,9 +12,7 @@ namespace OM_Form.View
 {
     public partial class Surfaceresize : Form
     {
-        //float offset;
-        //float raster;
-        
+
 
         public Form1 form1;
 
@@ -34,8 +32,6 @@ namespace OM_Form.View
         {
             try
             {
-                //float newrastersize = float.Parse(this.rasterbox.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
-                //form1.offset = float.Parse(this.offsetbox.Text.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
                 this.DialogResult = DialogResult.OK;
                 form1.Show();
             }

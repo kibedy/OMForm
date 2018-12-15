@@ -9,11 +9,11 @@ namespace OrthoMachine.ViewModel
 {
     public class Orientation
     {
-        //List<Marker> markers;
+
 
         public Orientation()
         {
-           // markers = new List<Marker>();
+
         }
     }
 }

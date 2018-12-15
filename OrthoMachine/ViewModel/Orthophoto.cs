@@ -211,22 +211,6 @@ namespace OrthoMachine.ViewModel
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         internal int[] CountOverlappingPix(int imgnumber, int referenceOrtho)
         {
             int[] count = new int[imgnumber - 1];

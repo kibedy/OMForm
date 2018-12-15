@@ -16,16 +16,13 @@ using System.Windows.Forms;
 using OM_Form.View;
 using System.ComponentModel;
 
-//using Emgu.CV;
-//using Emgu.Util;
-//using Emgu.CV.Structure;
+
 
 namespace ortomachine.Model
 {
     public class ScanPoints
     {
         LinkedList<Points> PointList = new LinkedList<Points>();
-        //string path = "";        
         UInt16[,] surface;
         byte[,] intSurface;
         byte[,,] RGBsurface;
@@ -38,20 +35,16 @@ namespace ortomachine.Model
         public Bitmap SurfaceMap;
         string filename;
         Form1 form1;
-        //Form1 obj= null;
         public int lc;
         int actline;
         public int procbarvalue;
         public Image<Gray, ushort> image;
         public Image<Gray, byte> intSurfImage;
-        public Image<Bgr, byte> RGBsurfImage; 
-        //BackgroundWorker worker;
-        //public int progress;
-        //public delegate void ProgressUpdate(int value);
-        //public event ProgressUpdate OnProgressupdate;
+        public Image<Bgr, byte> RGBsurfImage;
 
 
-        //public ScanPoints(string filename, float rastersize, float offset, Form1 obj, BackgroundWorker worker, DoWorkEventArgs e)
+
+
         public ScanPoints(string filename, float rastersize, float offset, Form1 obj)
         {
             this.rastersize = rastersize;
@@ -59,11 +52,10 @@ namespace ortomachine.Model
             this.filename = filename;
             form1 = obj;
             procbarvalue = 0;
-            //startprocess(filename);
+
             procbarvalue = 0;
-            //this.worker = worker;
             lc = 0;
-            
+
 
         }
 
@@ -83,7 +75,7 @@ namespace ortomachine.Model
             SurfaceMap = saveSurface();
 
         }
-        
+
 
         private void preprocess(string fn)
         {
@@ -94,7 +86,7 @@ namespace ortomachine.Model
                 lc++;
             }
             srl.Close();
-           
+
             StreamReader sr = new StreamReader(fn);
             char[] delimiterChars = { ' ', ',', '\t' };
 
@@ -120,20 +112,15 @@ namespace ortomachine.Model
                 {
                     line = sr.ReadLine();
                     numbers = line.Split(delimiterChars);
-
-                    //procbarvalue = CountLines(lc);
                     CountLines(lc);
-                    ;
-                    //form1.backgroundWorker1.ReportProgress(pro);
 
 
-                    {
-                        point = new Points(
-                            double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
-                            double.Parse(numbers[1], System.Globalization.CultureInfo.InvariantCulture),
-                            double.Parse(numbers[2], System.Globalization.CultureInfo.InvariantCulture));
-                        PointList.AddLast(point);
-                    }
+                    point = new Points(
+                        double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
+                        double.Parse(numbers[1], System.Globalization.CultureInfo.InvariantCulture),
+                        double.Parse(numbers[2], System.Globalization.CultureInfo.InvariantCulture));
+                    PointList.AddLast(point);
+
                 }
             }
 
@@ -151,14 +138,14 @@ namespace ortomachine.Model
                     line = sr.ReadLine();
                     numbers = line.Split(delimiterChars);
                     CountLines(lc);
-                    {
-                        point = new Points(
-                            double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
-                            double.Parse(numbers[1], System.Globalization.CultureInfo.InvariantCulture),
-                            double.Parse(numbers[2], System.Globalization.CultureInfo.InvariantCulture),
-                            int.Parse(numbers[3]));
-                        PointList.AddLast(point);
-                    }
+
+                    point = new Points(
+                        double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
+                        double.Parse(numbers[1], System.Globalization.CultureInfo.InvariantCulture),
+                        double.Parse(numbers[2], System.Globalization.CultureInfo.InvariantCulture),
+                        int.Parse(numbers[3]));
+                    PointList.AddLast(point);
+
                 }
             }
 
@@ -182,17 +169,17 @@ namespace ortomachine.Model
                     line = sr.ReadLine();
                     numbers = line.Split(delimiterChars);
                     CountLines(lc);
-                    {
-                        point = new Points(
-                            double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
-                            double.Parse(numbers[1], System.Globalization.CultureInfo.InvariantCulture),
-                            double.Parse(numbers[2], System.Globalization.CultureInfo.InvariantCulture),
-                            int.Parse(numbers[3]),
-                            int.Parse(numbers[4]),
-                            int.Parse(numbers[5]),
-                            int.Parse(numbers[6]));
-                        PointList.AddLast(point);
-                    }
+
+                    point = new Points(
+                        double.Parse(numbers[0], System.Globalization.CultureInfo.InvariantCulture),
+                        double.Parse(numbers[1], System.Globalization.CultureInfo.InvariantCulture),
+                        double.Parse(numbers[2], System.Globalization.CultureInfo.InvariantCulture),
+                        int.Parse(numbers[3]),
+                        int.Parse(numbers[4]),
+                        int.Parse(numbers[5]),
+                        int.Parse(numbers[6]));
+                    PointList.AddLast(point);
+
                 }
             }
         }
@@ -206,7 +193,7 @@ namespace ortomachine.Model
             if (form1.filetype == 7)
             {
                 intSurface = new byte[xwidth, yheight];
-                RGBsurface = new byte[xwidth, yheight,3];
+                RGBsurface = new byte[xwidth, yheight, 3];
                 form1.intensityToolStripMenuItem.Enabled = true;
                 form1.depthToolStripMenuItem.Enabled = true;
                 form1.rGBToolStripMenuItem.Enabled = true;
@@ -230,7 +217,7 @@ namespace ortomachine.Model
             else if (form1.filetype == 4)
             {
                 form1.intensityToolStripMenuItem.Enabled = true;
-                form1.depthToolStripMenuItem.Enabled = true;                
+                form1.depthToolStripMenuItem.Enabled = true;
                 intSurface = new byte[xwidth, yheight];
                 foreach (Points item in PointList)
                 {
@@ -245,7 +232,7 @@ namespace ortomachine.Model
                 }
             }
 
-            //double minY = 999999;
+
 
             else
             {
@@ -272,7 +259,7 @@ namespace ortomachine.Model
                 form1.backgroundWorker1.ReportProgress(procbarvalue);
             }
         }
-      
+
 
         private void BoundingBox()
         {
@@ -304,14 +291,14 @@ namespace ortomachine.Model
         {
             GCHandle gch = GCHandle.Alloc(image, GCHandleType.Pinned);
             image = new Image<Gray, ushort>(xwidth, yheight);
-            if (filetype ==4)
-            {                
+            if (filetype == 4)
+            {
                 intSurfImage = new Image<Gray, byte>(xwidth, yheight);
-                for (int x = 0; x < xwidth; x++)
+                for (int x = 0 ; x < xwidth ; x++)
                 {
-                    for (int y = 0; y < yheight; y++)
+                    for (int y = 0 ; y < yheight ; y++)
                     {
-                        intSurfImage.Data[yheight - y - 1, x, 0] = intSurface[x, y];                       
+                        intSurfImage.Data[yheight - y - 1, x, 0] = intSurface[x, y];
                     }
                 }
                 intSurfImage.Save(form1.SavePath + "\\" + "surface_int.png");
@@ -320,9 +307,9 @@ namespace ortomachine.Model
             {
                 intSurfImage = new Image<Gray, byte>(xwidth, yheight);
                 RGBsurfImage = new Image<Bgr, byte>(xwidth, yheight);
-                for (int x = 0; x < xwidth; x++)
+                for (int x = 0 ; x < xwidth ; x++)
                 {
-                    for (int y = 0; y < yheight; y++)
+                    for (int y = 0 ; y < yheight ; y++)
                     {
                         intSurfImage.Data[yheight - y - 1, x, 0] = intSurface[x, y];
                         RGBsurfImage.Data[yheight - y - 1, x, 2] = RGBsurface[x, y, 0];
@@ -333,11 +320,11 @@ namespace ortomachine.Model
                 intSurfImage.Save(form1.SavePath + "\\" + "surface_int.png");
                 RGBsurfImage.Save(form1.SavePath + "\\" + "surface_rgb.png");
             }
-            
-            
-            for (int x = 0; x < xwidth; x++)
+
+
+            for (int x = 0 ; x < xwidth ; x++)
             {
-                for (int y = 0; y < yheight; y++)
+                for (int y = 0 ; y < yheight ; y++)
                 {
                     image.Data[yheight - y - 1, x, 0] = surface[x, y];
                 }
@@ -345,7 +332,7 @@ namespace ortomachine.Model
             image.Save(form1.SavePath + "\\" + "surface.png");
             image.Save(form1.SavePath + "\\" + "surface_raw.png");
             StreamWriter sw = new StreamWriter(form1.SavePath + "\\" + "surface.xyz");
-            sw.WriteLine("{0} {1} {2} {3}", (X0-offset).ToString(), (Y0-offset).ToString(), rastersize.ToString(), offset.ToString());
+            sw.WriteLine("{0} {1} {2} {3}", (X0 - offset).ToString(), (Y0 - offset).ToString(), rastersize.ToString(), offset.ToString());
             sw.Close();
             return image.ToBitmap();
         }
